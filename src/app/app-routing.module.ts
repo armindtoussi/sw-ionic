@@ -14,6 +14,30 @@ const routes: Routes = [
   {
     path: 'list',
     loadChildren: './list/list.module#ListPageModule'
+  },
+  { 
+    path: 'movies', 
+    loadChildren: './movies/movies.module#MoviesPageModule' 
+  },
+  { 
+    path: 'characters', 
+    loadChildren: './characters/characters.module#CharactersPageModule' 
+  },
+  { 
+    path: 'planets', 
+    loadChildren: './planets/planets.module#PlanetsPageModule' 
+  },
+  { 
+    path: 'starships', 
+    loadChildren: './starships/starships.module#StarshipsPageModule' 
+  },
+  { 
+    path: 'species', 
+    loadChildren: './species/species.module#SpeciesPageModule' 
+  },
+  { 
+    path: 'vehicles', 
+    loadChildren: './vehicles/vehicles.module#VehiclesPageModule' 
   }
 ];
 

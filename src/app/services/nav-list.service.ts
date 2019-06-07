@@ -16,7 +16,7 @@ export class NavListService {
             icon: 'videocam',
         }, 
         {
-            title: 'Charaters',
+            title: 'Characters',
             url: '/characters',
             icon: 'people'
         }, 
