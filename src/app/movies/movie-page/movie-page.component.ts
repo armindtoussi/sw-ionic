@@ -1,5 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 
+//Models
+import { FilmsModel } from 'src/app/models/films.model';
+import { ActivatedRoute, Router } from '@angular/router';
+
 @Component({
   selector: 'app-movie-page',
   templateUrl: './movie-page.component.html',
@@ -7,8 +11,15 @@ import { Component, OnInit } from '@angular/core';
 })
 export class MoviePageComponent implements OnInit {
 
-  constructor() { }
+  data: FilmsModel;
 
-  ngOnInit() {}
+  constructor(private route: ActivatedRoute, 
+              private router: Router) { }
+
+  ngOnInit() {
+    if(this.route.snapshot.data['special']) {
+      this.data = this.route.snapshot.data['special'];
+    }
+  }
 
 }

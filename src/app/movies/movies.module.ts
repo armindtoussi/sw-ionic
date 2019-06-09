@@ -12,13 +12,19 @@ import { MoviesPage } from './movies.page';
 //Components
 import { MoviePageComponent } from './movie-page/movie-page.component';
 
+//Services
+import { DataResolverService } from '../resolver/data-resolver.service';
+
 const routes: Routes = [
   {
     path: '',
     component: MoviesPage
   },
   {
-    path: 'movie',
+    path: 'movie/:id',
+    resolve: {
+      special: DataResolverService,
+    },
     component: MoviePageComponent,
   }
 ];

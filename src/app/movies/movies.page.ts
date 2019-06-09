@@ -9,6 +9,7 @@ import { Subscription } from 'rxjs';
 
 //Models
 import { FilmsModel } from '../models/films.model';
+import { DataService } from '../services/data.service';
 
 @Component({
   selector: 'app-movies',
@@ -25,9 +26,12 @@ export class MoviesPage implements OnInit, OnDestroy {
   /**
    * ctor
    * @param _swapiFetchService swapi fetch service.
+   * @param _dataService service for passing data.
+   * @param router for routing.
    * 
    */
   constructor(private _swapiFetchService: SwapiService,
+              private _dataService: DataService,
               private router: Router) { }
 
   /**
@@ -48,6 +52,17 @@ export class MoviesPage implements OnInit, OnDestroy {
     if(this.movieSub != undefined) {
       this.movieSub.unsubscribe();
     }
+  }
+
+  /**
+   * Click function that navigates to movie details page.
+   * Passes id, and data to service that gets resolved. 
+   * 
+   * @param movie the movie that was clicked. 
+   */
+  displayMovie(movie: FilmsModel): void {
+    this._dataService.setData(movie.episode_id.toString(), movie);
+    this.router.navigateByUrl(`/movie/${movie.episode_id}`);
   }
 
   /**

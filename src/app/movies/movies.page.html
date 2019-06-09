@@ -12,8 +12,10 @@
 
 <ion-content padding>
   <ion-list>
-    <ion-item *ngFor="let movie of movies" detail lines="full">
-      <ion-item-group [routerLink]="['/movie']">
+    <ion-item *ngFor="let movie of movies" detail 
+              lines="full" 
+              (click)="displayMovie(movie)">
+      <ion-item-group>
           <ion-label>{{ movie.title }}</ion-label>
           <ion-note>{{ movie.director }}</ion-note>
       </ion-item-group>
