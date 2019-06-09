@@ -1,10 +1,13 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Router } from '@angular/router';
 
 //Services
 import { SwapiService } from '../services/swapi.service';
 
 //RXJS
 import { Subscription } from 'rxjs';
+
+//Models
 import { FilmsModel } from '../models/films.model';
 
 @Component({
@@ -24,7 +27,8 @@ export class MoviesPage implements OnInit, OnDestroy {
    * @param _swapiFetchService swapi fetch service.
    * 
    */
-  constructor(private _swapiFetchService: SwapiService) { }
+  constructor(private _swapiFetchService: SwapiService,
+              private router: Router) { }
 
   /**
    * OnInit lifecycle hook. 

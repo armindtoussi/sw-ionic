@@ -4,12 +4,19 @@
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
     <ion-title>
-      Movies
+      Star Wars Movies
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
 
-<ion-content>
-
+<ion-content padding>
+  <ion-list>
+    <ion-item *ngFor="let movie of movies" detail lines="full">
+      <ion-item-group [routerLink]="['/movie']">
+          <ion-label>{{ movie.title }}</ion-label>
+          <ion-note>{{ movie.director }}</ion-note>
+      </ion-item-group>
+    </ion-item>
+  </ion-list>
 </ion-content>
