@@ -2,16 +2,16 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 //Models
-import { PlanetsModel } from 'src/app/models/planets.model';
+import { SpeciesModel } from 'src/app/models/species.model';
 
 @Component({
-  selector: 'app-planet-page',
-  templateUrl: './planet-page.component.html',
-  styleUrls: ['./planet-page.component.scss'],
+  selector: 'app-species-page',
+  templateUrl: './species-page.component.html',
+  styleUrls: ['./species-page.component.scss'],
 })
-export class PlanetPageComponent implements OnInit {
+export class SpeciesPageComponent implements OnInit {
 
-  data: PlanetsModel
+  data: SpeciesModel;
 
   constructor(private route: ActivatedRoute,
               private router: Router) { }
@@ -20,7 +20,7 @@ export class PlanetPageComponent implements OnInit {
     if(this.route.snapshot.data['special']) {
       this.data = this.route.snapshot.data['special'];
 
-      console.log('data: ', this.data);
+      console.log("data: ", this.data);
     }
   }
 }

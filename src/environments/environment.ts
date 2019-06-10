@@ -8,6 +8,9 @@ export const environment = {
   swapiPeople: 'people',
   swapiMovies: 'films',
   swapiPlanets: 'planets',
+  swapiSpecies: 'species',
+  swapiShips: 'starships',
+  swapiVehicles: 'vehicles',
 };
 
 /*

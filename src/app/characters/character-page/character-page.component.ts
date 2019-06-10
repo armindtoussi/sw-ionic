@@ -2,16 +2,17 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 //Models
-import { PlanetsModel } from 'src/app/models/planets.model';
+import { CharacterModel } from 'src/app/models/character.model';
+
 
 @Component({
-  selector: 'app-planet-page',
-  templateUrl: './planet-page.component.html',
-  styleUrls: ['./planet-page.component.scss'],
+  selector: 'app-character-page',
+  templateUrl: './character-page.component.html',
+  styleUrls: ['./character-page.component.scss'],
 })
-export class PlanetPageComponent implements OnInit {
+export class CharacterPageComponent implements OnInit {
 
-  data: PlanetsModel
+  data: CharacterModel;
 
   constructor(private route: ActivatedRoute,
               private router: Router) { }
@@ -20,7 +21,8 @@ export class PlanetPageComponent implements OnInit {
     if(this.route.snapshot.data['special']) {
       this.data = this.route.snapshot.data['special'];
 
-      console.log('data: ', this.data);
+      console.log("DATA; ", this.data);
     }
   }
+
 }

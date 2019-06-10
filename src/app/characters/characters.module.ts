@@ -1,16 +1,27 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { NgModule }             from '@angular/core';
+import { CommonModule }         from '@angular/common';
+import { FormsModule }          from '@angular/forms';
 import { Routes, RouterModule } from '@angular/router';
-
+//Ionic
 import { IonicModule } from '@ionic/angular';
-
+//Pages
 import { CharactersPage } from './characters.page';
+//Components
+import { CharacterPageComponent } from './character-page/character-page.component';
+//Services
+import { DataResolverService } from '../resolver/data-resolver.service';
 
 const routes: Routes = [
   {
     path: '',
     component: CharactersPage
+  },
+  {
+    path: 'character/:id',
+    resolve: {
+      special: DataResolverService,
+    },
+    component: CharacterPageComponent
   }
 ];
 
@@ -21,6 +32,9 @@ const routes: Routes = [
     IonicModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [CharactersPage]
+  declarations: [
+    CharactersPage,
+    CharacterPageComponent,
+  ]
 })
 export class CharactersPageModule {}

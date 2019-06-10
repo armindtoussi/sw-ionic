@@ -4,11 +4,29 @@
         <ion-menu-button></ion-menu-button>
       </ion-buttons>
       <ion-title>
-        Characters
+        Star Wars Characters
       </ion-title>
     </ion-toolbar>
   </ion-header>
 
-<ion-content>
+<ion-content padding>
+  
+  <ion-list>
+    <ion-item *ngFor="let char of characters" detail
+              lines="full"
+              (click)="displayCharacter(char)">
+      <ion-item-group>
+        <ion-label>{{ char.name }}</ion-label>
+        <ion-note>{{ char.birth_year }}</ion-note>
+      </ion-item-group>
+    </ion-item>
+  </ion-list>
 
+  <ion-infinite-scroll threshold="100px" (ionInfinite)="loadData($event)">
+    <ion-infinite-scroll-content
+      loadingSpinner="bubbles"
+      loadingText="Loading more characters...">
+    </ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+  
 </ion-content>

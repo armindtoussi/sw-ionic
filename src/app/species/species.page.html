@@ -4,11 +4,28 @@
         <ion-menu-button></ion-menu-button>
       </ion-buttons>
       <ion-title>
-        Species
+        Star Wars Species
       </ion-title>
     </ion-toolbar>
   </ion-header>
 
-<ion-content>
+<ion-content padding>
+  <ion-list>
+    <ion-item *ngFor="let spec of species" detail
+              lines="full"
+              (click)="displaySpecies(species)">
+      <ion-item-group>
+        <ion-label>{{ spec.name }}</ion-label>
+        <ion-note>{{ spec.population }}</ion-note>
+      </ion-item-group>
+    </ion-item>
+  </ion-list>
 
+  <ion-infinite-scroll threshold="100px" (ionInfinite)="loadData($event)">
+    <ion-infinite-scroll-content
+      loadingSpinner="bubbles"
+      loadingText="Loading more species...">
+    </ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+     
 </ion-content>

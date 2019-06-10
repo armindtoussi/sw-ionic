@@ -17,8 +17,10 @@ import { SwapiService }   from './services/swapi.service';
 import { DataService }    from './services/data.service';
 
 //Modules.
-import { MoviesPageModule }  from './movies/movies.module';
-import { PlanetsPageModule } from './planets/planets.module';
+import { MoviesPageModule }     from './movies/movies.module';
+import { PlanetsPageModule }    from './planets/planets.module';
+import { CharactersPageModule } from './characters/characters.module';
+import { SpeciesPageModule } from './species/species.module';
 
 @NgModule({
   declarations: [AppComponent],
@@ -28,6 +30,8 @@ import { PlanetsPageModule } from './planets/planets.module';
     IonicModule.forRoot(),
     MoviesPageModule,
     PlanetsPageModule,
+    CharactersPageModule,
+    SpeciesPageModule,
     AppRoutingModule,
     HttpClientModule,
   ],
