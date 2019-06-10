@@ -17,7 +17,8 @@ import { SwapiService }   from './services/swapi.service';
 import { DataService }    from './services/data.service';
 
 //Modules.
-import { MoviesPageModule } from './movies/movies.module';
+import { MoviesPageModule }  from './movies/movies.module';
+import { PlanetsPageModule } from './planets/planets.module';
 
 @NgModule({
   declarations: [AppComponent],
@@ -26,6 +27,7 @@ import { MoviesPageModule } from './movies/movies.module';
     BrowserModule,
     IonicModule.forRoot(),
     MoviesPageModule,
+    PlanetsPageModule,
     AppRoutingModule,
     HttpClientModule,
   ],

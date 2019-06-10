@@ -5,7 +5,7 @@ import { Injectable } from '@angular/core';
 })
 export class DataService {
   /** Stored data. */
-  private data: any[] = [];
+  private data: object = {};
 
   constructor() { }
 
@@ -16,7 +16,9 @@ export class DataService {
    * @param data the data to be stored and passed. 
    */
   setData(id: string, data: any): void {
+    console.log("setting data: ", id, " Data: ", data);
     this.data[id] = data;
+    console.log("this.data: ", this.data);
   }
 
   /**

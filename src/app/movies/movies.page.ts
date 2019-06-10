@@ -49,7 +49,7 @@ export class MoviesPage implements OnInit, OnDestroy {
    * 
    */
   ngOnDestroy(): void { 
-    if(this.movieSub != undefined) {
+    if(this.movieSub !== undefined) {
       this.movieSub.unsubscribe();
     }
   }
@@ -75,7 +75,6 @@ export class MoviesPage implements OnInit, OnDestroy {
         (results: object) =>
         {
           this.movies = results['results'];
-          console.log("this.movies: ", this.movies);
         }
       );
   }

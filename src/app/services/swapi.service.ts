@@ -26,4 +26,14 @@ export class SwapiService {
         return this._http.get(environment.swapiBase + 
                               environment.swapiMovies);
     }
+
+    getPlanets(): Observable<object> {
+        return this._http.get(environment.swapiBase + 
+                              environment.swapiPlanets);
+    }
+
+
+    genericFetch(url: string): Observable<object> {
+        return this._http.get(url);
+    }
 }

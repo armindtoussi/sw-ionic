@@ -7,6 +7,7 @@ export const environment = {
   swapiBase: "https://swapi.co/api/",
   swapiPeople: 'people',
   swapiMovies: 'films',
+  swapiPlanets: 'planets',
 };
 
 /*
