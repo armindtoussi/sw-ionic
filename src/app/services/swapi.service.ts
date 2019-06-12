@@ -42,6 +42,16 @@ export class SwapiService {
                               environment.swapiSpecies);
     }
 
+    getStarships(): Observable<object> {
+        return this._http.get(environment.swapiBase +
+                              environment.swapiShips);
+    }
+
+    getVehicles(): Observable<object> {
+        return this._http.get(environment.swapiBase + 
+                              environment.swapiVehicles);
+    }
+
     genericFetch(url: string): Observable<object> {
         return this._http.get(url);
     }

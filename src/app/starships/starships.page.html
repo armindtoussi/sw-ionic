@@ -1,14 +1,31 @@
 <ion-header>
-    <ion-toolbar>
-      <ion-buttons slot="start">
-        <ion-menu-button></ion-menu-button>
-      </ion-buttons>
-      <ion-title>
-        Starships
-      </ion-title>
-    </ion-toolbar>
-  </ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>
+      Star Wars Starships
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
 
-<ion-content>
+<ion-content padding>
+  <ion-list>
+    <ion-item *ngFor="let ship of ships" detail
+              lines="full"
+              (click)="displayShip(ship)">
+      <ion-item-group>
+        <ion-label>{{ ship.name }}</ion-label>
+        <ion-note>{{ ship.starship_class }}</ion-note>
+      </ion-item-group>
+    </ion-item>
+  </ion-list>
+
+  <ion-infinite-scroll threshold="100px" (ionInfinite)="loadData($event)">
+    <ion-infinite-scroll-content
+      loadingSpinner="bubbles"
+      loadingText="Loading more starships...">
+    </ion-infinite-scroll-content>
+  </ion-infinite-scroll>
 
 </ion-content>

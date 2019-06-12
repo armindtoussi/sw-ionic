@@ -21,6 +21,8 @@ import { MoviesPageModule }     from './movies/movies.module';
 import { PlanetsPageModule }    from './planets/planets.module';
 import { CharactersPageModule } from './characters/characters.module';
 import { SpeciesPageModule } from './species/species.module';
+import { StarshipsPageModule } from './starships/starships.module';
+import { VehiclesPageModule } from './vehicles/vehicles.module';
 
 @NgModule({
   declarations: [AppComponent],
@@ -32,6 +34,8 @@ import { SpeciesPageModule } from './species/species.module';
     PlanetsPageModule,
     CharactersPageModule,
     SpeciesPageModule,
+    StarshipsPageModule,
+    VehiclesPageModule,
     AppRoutingModule,
     HttpClientModule,
   ],

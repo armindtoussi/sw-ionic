@@ -4,10 +4,11 @@ import { Router } from '@angular/router';
 import { IonInfiniteScroll } from '@ionic/angular';
 //RXJS
 import { Subscription } from 'rxjs';
+import { map, flatMap } from 'rxjs/operators';
 //Services
 import { SwapiService } from '../services/swapi.service';
 import { DataService } from '../services/data.service';
-import { map, flatMap } from 'rxjs/operators';
+//Models
 import { SpeciesModel } from '../models/species.model';
 
 

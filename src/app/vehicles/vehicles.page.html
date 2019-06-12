@@ -1,13 +1,31 @@
 <ion-header>
-    <ion-toolbar>
-      <ion-buttons slot="start">
-        <ion-menu-button></ion-menu-button>
-      </ion-buttons>
-      <ion-title>
-        Vehicles
-      </ion-title>
-    </ion-toolbar>
-  </ion-header>
-<ion-content>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>
+      Star Wars Vehicles
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+  <ion-list>
+    <ion-item *ngFor="let vehicle of vehicles" detail
+              lines="full"
+              (click)="displayVehicle(vehicle)">
+      <ion-item-group>
+        <ion-label>{{ vehicle.name }}</ion-label>
+        <ion-note>{{ vehicle.manufacturer }}</ion-note>
+      </ion-item-group>
+    </ion-item>
+  </ion-list>
+
+  <ion-infinite-scroll threshold="100px" (ionInfinite)="loadData($event)">
+    <ion-infinite-scroll-content
+      loadingSpinner="bubbles"
+      loadingText="Loading more vehicles...">
+    </ion-infinite-scroll-content>
+  </ion-infinite-scroll>
 
 </ion-content>
