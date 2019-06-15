@@ -21,7 +21,7 @@ export class SpeciesPage implements OnInit, OnDestroy {
 
   @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
 
-  speciesSub: Subscription;
+  speciesSub: Subscription[] = [];
   species: SpeciesModel[];
   nextUrl: string;
   count: number;
@@ -36,9 +36,7 @@ export class SpeciesPage implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if(this.speciesSub !== undefined) {
-      this.speciesSub.unsubscribe();
-    }
+    this.unsubscribe();
   }
 
   displaySpecies(species: SpeciesModel): void {
@@ -53,21 +51,21 @@ export class SpeciesPage implements OnInit, OnDestroy {
    * @param event the scroll event.
    */
   loadData(event): void {
-    this._swapiFetchService.genericFetch(this.nextUrl)
-      .toPromise()
-      .then(data => {
-        this.species = this.species.concat(data['results']);
-        this.nextUrl = data['next'];
-        event.target.complete();
+    this.speciesSub[1] = this._swapiFetchService.genericFetch(this.nextUrl)
+      .subscribe(
+        (data: object) => {
+          this.species = this.species.concat(data['results']);
+          this.nextUrl = data['next'];
+          event.target.complete();
 
-        if(this.species.length === this.count) {
-          event.target.disabled = true;
-        }
+          if(this.species.length === this.count) {
+            event.target.disabled = true;
+          }
       });
   }
 
   private getSpecies(): void {
-    this.speciesSub = this._swapiFetchService.getSpecies()
+    this.speciesSub[0] = this._swapiFetchService.getSpecies()
       .pipe(
         map(res => {
           this.nextUrl = res['next'];
@@ -84,5 +82,13 @@ export class SpeciesPage implements OnInit, OnDestroy {
           console.log("Species: ", this.species);
         }
       );
+  }
+
+  private unsubscribe(): void {
+    for(let i = 0; i < this.speciesSub.length; i++) {
+      if(this.speciesSub[i] !== undefined) {
+        this.speciesSub[i].unsubscribe();
+      }
+    }
   }
 }

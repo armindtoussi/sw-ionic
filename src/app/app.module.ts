@@ -30,13 +30,13 @@ import { VehiclesPageModule } from './vehicles/vehicles.module';
   imports: [
     BrowserModule,
     IonicModule.forRoot(),
+    AppRoutingModule,
     MoviesPageModule,
     PlanetsPageModule,
     CharactersPageModule,
     SpeciesPageModule,
     StarshipsPageModule,
     VehiclesPageModule,
-    AppRoutingModule,
     HttpClientModule,
   ],
   providers: [

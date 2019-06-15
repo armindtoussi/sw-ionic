@@ -29,6 +29,7 @@ export class AppComponent implements OnInit{
 
   ngOnInit(): void {
     this.appPages = this._navListService.getNavList();
+    console.log("AppPAges: ", this.appPages);
   }
 
   initializeApp() {

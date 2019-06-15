@@ -21,6 +21,14 @@ api, and modify the data and pass that back to each individual page rather than 
 pages/components do the heavy lifting.
 
 Then we need to fix the navigation to the "display" pages. right now it's not popping off properly, 
-when we hit the back button it's not the correct back flow. 
+when we hit the back button it's not the correct back flow. - not sure how to approach this, i've found 
+little in the way of ion-nav information and how to push and pop with i-v4 using the back button. 
 
 From there new features. 
+
+Get working on android w/Cordova - having issues with libraries, sdks and their env paths.
+
+Completed
+----------
+
+Fixed loading to home page rather than movie component. 

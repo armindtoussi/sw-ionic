@@ -19,7 +19,7 @@ import { CharacterModel } from '../models/character.model';
 })
 export class CharactersPage implements OnInit, OnDestroy {
 
-  characterSub: Subscription;
+  characterSub: Subscription[] = [];
 
   characters: CharacterModel[];
   nextUrl: string;
@@ -34,9 +34,7 @@ export class CharactersPage implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if(this.characterSub !== undefined) {
-      this.characterSub.unsubscribe();
-    }
+    this.unsubscribe();
   } 
 
   displayCharacter(character: CharacterModel): void {
@@ -46,21 +44,21 @@ export class CharactersPage implements OnInit, OnDestroy {
   }
 
   loadData(event): void {
-    this._swapiFetchService.genericFetch(this.nextUrl)
-      .toPromise()
-      .then(data => {
-        this.characters = this.characters.concat(data['results']);
-        this.nextUrl = data['next'];
-        event.target.complete();
+    this.characterSub[1] = this._swapiFetchService.genericFetch(this.nextUrl)
+      .subscribe(
+        (results: object) => {
+          this.characters = this.characters.concat(results['results']);
+          this.nextUrl = results['next'];
+          event.target.complete();
 
-        if(this.characters.length === this.count) {
-          event.target.disabled = true;
-        }
+          if(this.characters.length === this.count) {
+            event.target.disabled = true;
+          }
       });
   }
 
   private getCharacaters(): void {
-    this.characterSub = this._swapiFetchService.getCharacters()
+    this.characterSub[0] = this._swapiFetchService.getCharacters()
       .pipe(
         map(res => {
           this.nextUrl = res['next'];
@@ -80,4 +78,11 @@ export class CharactersPage implements OnInit, OnDestroy {
       )
   }
 
+  private unsubscribe(): void {
+    for(let i = 0; i < this.characterSub.length; i++) {
+      if(this.characterSub[i] !== undefined) {
+        this.characterSub[i].unsubscribe();
+      }
+    }
+  }
 }

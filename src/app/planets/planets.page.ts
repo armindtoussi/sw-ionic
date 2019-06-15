@@ -25,7 +25,7 @@ export class PlanetsPage implements OnInit, OnDestroy {
   @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
 
   /** Planets subscription. */
-  planetSub: Subscription;
+  planetSub: Subscription[] = [];
 
   /** Planets array. */
   planets: PlanetsModel[];
@@ -58,9 +58,7 @@ export class PlanetsPage implements OnInit, OnDestroy {
    * Unsubscribes to observables.
    */
   ngOnDestroy(): void {
-    if(this.planetSub !== undefined) {
-      this.planetSub.unsubscribe();
-    }
+    this.unsubscribe();
   }
 
   displayPlanet(planet: PlanetsModel): void {
@@ -75,16 +73,16 @@ export class PlanetsPage implements OnInit, OnDestroy {
    * @param event the scroll event.
    */
   loadData(event): void {
-    this._swapiFetchService.genericFetch(this.nextUrl)
-      .toPromise()
-      .then(data => {
-        this.planets = this.planets.concat(data['results']);
-        this.nextUrl = data['next'];
-        event.target.complete();
+    this.planetSub[1] = this._swapiFetchService.genericFetch(this.nextUrl)
+      .subscribe(
+        (results: object) => {
+          this.planets = this.planets.concat(results['results']);
+          this.nextUrl = results['next'];
+          event.target.complete();
 
-        if(this.planets.length === this.count) {
-          event.target.disabled = true;
-        }
+          if(this.planets.length === this.count) {
+            event.target.disabled = true;
+          }
       });
   }
 
@@ -93,7 +91,7 @@ export class PlanetsPage implements OnInit, OnDestroy {
    * 
    */
   private getPlanets(): void {
-    this.planetSub = this._swapiFetchService.getPlanets()
+    this.planetSub[0] = this._swapiFetchService.getPlanets()
       .pipe(
         map(res => {
           this.nextUrl = res['next'];
@@ -111,5 +109,13 @@ export class PlanetsPage implements OnInit, OnDestroy {
           console.log("Planets: ", this.planets);
         }
       );
+  }
+
+  private unsubscribe(): void {
+    for(let i = 0; i < this.planetSub.length; i++) {
+      if(this.planetSub[i] !== undefined) {
+        this.planetSub[i].unsubscribe();
+      }
+    }
   }
 }

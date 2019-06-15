@@ -40,7 +40,7 @@ export class VehiclesPage implements OnInit, OnDestroy {
   displayVehicle(vehicle: VehiclesModel): void {
     console.log("clicked:", vehicle);
     this._dataService.setData(vehicle.name, vehicle);
-    this.router.navigateByUrl(`/vehicle/${vehicle.name}`);
+    this.router.navigateByUrl(`/vehicle/${this.replaceSlashses(vehicle.name)}`);
   }
 
   loadData(event): void {
@@ -56,6 +56,10 @@ export class VehiclesPage implements OnInit, OnDestroy {
           }
         }
       );
+  }
+
+  replaceSlashses(str: string): string {
+    return str.replace(/\//g, "-");
   }
 
   private getVehicles(): void {
