@@ -5,7 +5,8 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 
 //RXJS
-import { Observable } from 'rxjs';
+import { Observable, from, concat, forkJoin } from 'rxjs';
+import { concatMap, map } from 'rxjs/operators';
 
 @Injectable({
     providedIn: 'root'
@@ -54,5 +55,14 @@ export class SwapiService {
 
     genericFetch(url: string): Observable<object> {
         return this._http.get(url);
+    }
+
+    arrayFetch(urls: string[]): Observable<any> {
+        let arr = [];
+        for(let i of urls) {
+            arr.push(this._http.get(i));
+        }
+        
+        return forkJoin(arr);
     }
 }

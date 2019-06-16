@@ -14,13 +14,12 @@ For more information see here : https://swapi.co/documentation#rate
 Next Todo
 -----------
 
-I also want to go back and make individual services for each page, use those to consume the 
-api, and modify the data and pass that back to each individual page rather than have the 
-pages/components do the heavy lifting.
+TODO later - I also want to go back and make individual services for each page, use those to consume the api, and modify the data and pass that back to each individual page rather than have the pages/components do the heavy lifting.
 
-Then we need to fix the navigation to the "display" pages. right now it's not popping off properly, 
-when we hit the back button it's not the correct back flow. - not sure how to approach this, i've found 
-little in the way of ion-nav information and how to push and pop with i-v4 using the back button. 
+TODO see info - Then we need to fix the navigation to the "display" pages. right now it's not popping off properly. 
+INFO - when we hit the back button it's not the correct back flow. - not sure how to approach this i've found little in the way of ion-nav information and how to push and pop with i-v4 using the back button. 
+
+6/16/2019 - Currently implemeting movie-page component. Working on getting characters. which comes with fetching characters as well....this comes with the problem of implementing characters in storage and all that fun stuff. 
 
 From there new features. 
 

@@ -10,7 +10,7 @@ import { SwapiService } from '../services/swapi.service';
 import { DataService } from '../services/data.service';
 
 //Models
-import { CharacterModel } from '../models/character.model';
+import { CharacterModel, Character } from '../models/character.model';
 
 @Component({
   selector: 'app-characters',
@@ -21,7 +21,7 @@ export class CharactersPage implements OnInit, OnDestroy {
 
   characterSub: Subscription[] = [];
 
-  characters: CharacterModel[];
+  characters: Character[];
   nextUrl: string;
   count: number;
 
@@ -37,7 +37,7 @@ export class CharactersPage implements OnInit, OnDestroy {
     this.unsubscribe();
   } 
 
-  displayCharacter(character: CharacterModel): void {
+  displayCharacter(character: Character): void {
     console.log("Clicked: ", character);
     this._dataService.setData(character.name, character);
     this.router.navigateByUrl(`/character/${character.name}`);

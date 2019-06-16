@@ -9,11 +9,65 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content padding>
-  <ion-list>
-    <ion-list-header>
-      <h1>Episode {{ data?.episode_id }}: {{ data?.title }}</h1>
-    </ion-list-header>
+<ion-content>
+  <h1>Episode {{ data?.episode_id }}: {{ data?.title }}</h1>
+  <ion-list lines="full">
+    <ion-item-group>
+      <ion-item-divider mode="ios">
+        <ion-label>Movie Information</ion-label>
+      </ion-item-divider>
+    <ion-item>
+      <ion-grid>
+        <ion-row>
+          <ion-col size="4">
+            <ion-label>Director:</ion-label>
+          </ion-col>
+          <ion-col>
+            <ion-label text-wrap><strong>{{ data?.director }}</strong></ion-label>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-item>    
+    <ion-item>
+      <ion-grid>
+        <ion-row>
+          <ion-col size="4">
+            <ion-label>Producer:</ion-label>
+          </ion-col>
+          <ion-col>
+            <ion-label text-wrap><strong>{{ data?.producer }}</strong></ion-label>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-item>
+    <ion-item>
+      <ion-grid>
+        <ion-row>
+          <ion-col size="4">
+            <ion-label>Released:</ion-label>
+          </ion-col>
+          <ion-col text-wrap><strong>{{ data?.release_date | date:mediumDate }}</strong></ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-item>
+    <ion-item detail>
+      <ion-grid>
+        <ion-row>
+          <ion-col> <!-- TODO - click funtion that opens a modal that displays the crawl. -->
+            <ion-label>View the Opening Crawl</ion-label>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-item>
+    </ion-item-group>
+    <ion-item-group>
+      <ion-item-divider mode="ios">
+        <ion-label>Characters</ion-label>
+      </ion-item-divider>
+      <ion-item>
+
+      </ion-item>
+    </ion-item-group>
   </ion-list>
 </ion-content>
 

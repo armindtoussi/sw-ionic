@@ -1,4 +1,11 @@
 export interface CharacterModel {
+    count: number;
+    next: string;
+    previous: string;
+    results: Character[];
+}
+
+export interface Character {
     birth_year: string;
     eye_color:  string; 
     films:      string[];

@@ -3,9 +3,13 @@ import { Storage } from '@ionic/storage';
 
 //models
 import { FilmsModel, Film } from '../models/films.model';
+import { CharacterModel, Character } from '../models/character.model';
+import { element } from '@angular/core/src/render3';
 
 
-const MOVIES_KEY = "sw-movies";
+const MOVIES_KEY     = "sw-movies";
+const CHARACTERS_KEY = "sw-characters";    
+
 
 @Injectable({
     providedIn: 'root'
@@ -62,7 +66,24 @@ export class StorageService {
         });
     }
 
-    update(data: any) {
+    addCharacters(characters: CharacterModel): Promise<void> {
+        return this.storage.set(CHARACTERS_KEY, characters);
+    }
 
+    //TODO - FIX THIS GARBAGE. 
+    addCharacter(character: Character): Promise<void> {
+        return this.storage.get(CHARACTERS_KEY).then((characters: CharacterModel) =>{
+            if(characters) {
+                let search = characters.results.find((element: any) => {
+                    return element.name === character.name;
+                });
+                console.log("Search? ", search);
+                if(search) {
+                    return;
+                } else {
+                    characters.results.push(character);
+                }
+            }
+        });
     }
 }
