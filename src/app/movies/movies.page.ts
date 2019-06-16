@@ -8,8 +8,9 @@ import { SwapiService } from '../services/swapi.service';
 import { Subscription } from 'rxjs';
 
 //Models
-import { FilmsModel } from '../models/films.model';
-import { DataService } from '../services/data.service';
+import { FilmsModel, Film }     from '../models/films.model';
+import { DataService }    from '../services/data.service';
+import { StorageService } from '../services/storage.service';
 
 @Component({
   selector: 'app-movies',
@@ -21,7 +22,7 @@ export class MoviesPage implements OnInit, OnDestroy {
   /** Movie fetch subscription. */
   movieSub: Subscription;
   /** Movies result array. */
-  movies: FilmsModel[];
+  movies: Film[];
 
   /**
    * ctor
@@ -32,6 +33,7 @@ export class MoviesPage implements OnInit, OnDestroy {
    */
   constructor(private _swapiFetchService: SwapiService,
               private _dataService: DataService,
+              private _storage: StorageService,
               private router: Router) { }
 
   /**
@@ -40,7 +42,13 @@ export class MoviesPage implements OnInit, OnDestroy {
    * 
    */
   ngOnInit(): void {
-    this.getMovies();
+    this._storage.getMovies().then((films: Film[] | null) => {
+      if(films) {
+        this.movies = films;
+      } else {
+        this.getMovies();
+      }
+    });
   }
 
   /**
@@ -60,7 +68,7 @@ export class MoviesPage implements OnInit, OnDestroy {
    * 
    * @param movie the movie that was clicked. 
    */
-  displayMovie(movie: FilmsModel): void {
+  displayMovie(movie: Film): void {
     this._dataService.setData(movie.episode_id.toString(), movie);
     this.router.navigateByUrl(`/movie/${movie.episode_id}`);
   }
@@ -72,9 +80,11 @@ export class MoviesPage implements OnInit, OnDestroy {
   private getMovies(): void {
     this.movieSub = this._swapiFetchService.getSWMovies()
       .subscribe(
-        (results: object) =>
+        (results: FilmsModel) =>
         {
+          console.log("Results: ", results);
           this.movies = results['results'];
+          this._storage.addMovies(results);
         }
       );
   }

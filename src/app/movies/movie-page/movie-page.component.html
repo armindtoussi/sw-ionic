@@ -9,8 +9,12 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-    {{ data | json }}
+<ion-content padding>
+  <ion-list>
+    <ion-list-header>
+      <h1>Episode {{ data?.episode_id }}: {{ data?.title }}</h1>
+    </ion-list-header>
+  </ion-list>
 </ion-content>
 
   

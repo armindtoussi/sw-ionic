@@ -13,8 +13,6 @@ For more information see here : https://swapi.co/documentation#rate
 
 Next Todo
 -----------
-Need to go back and fix toPromise() on components as i learned using toPromise() in 
-rxjs observables is considered an anti-pattern in most situations. So this needs to be fixed. 
 
 I also want to go back and make individual services for each page, use those to consume the 
 api, and modify the data and pass that back to each individual page rather than have the 
@@ -32,3 +30,4 @@ Completed
 ----------
 
 Fixed loading to home page rather than movie component. 
+Fixed toPromise usage on components due to it being an anti pattern with rxjs.

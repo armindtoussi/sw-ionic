@@ -4,6 +4,7 @@ import { RouteReuseStrategy } from '@angular/router';
 import { HttpClientModule }   from '@angular/common/http';
 //Ionic
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
+import { IonicStorageModule } from '@ionic/storage';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar }    from '@ionic-native/status-bar/ngx';
 
@@ -15,14 +16,16 @@ import { AppRoutingModule } from './app-routing.module';
 import { NavListService } from './services/nav-list.service';
 import { SwapiService }   from './services/swapi.service';
 import { DataService }    from './services/data.service';
+import { StorageService } from './services/storage.service';
 
 //Modules.
 import { MoviesPageModule }     from './movies/movies.module';
 import { PlanetsPageModule }    from './planets/planets.module';
 import { CharactersPageModule } from './characters/characters.module';
-import { SpeciesPageModule } from './species/species.module';
-import { StarshipsPageModule } from './starships/starships.module';
-import { VehiclesPageModule } from './vehicles/vehicles.module';
+import { SpeciesPageModule }    from './species/species.module';
+import { StarshipsPageModule }  from './starships/starships.module';
+import { VehiclesPageModule }   from './vehicles/vehicles.module';
+import { ToastService } from './services/toast.service';
 
 @NgModule({
   declarations: [AppComponent],
@@ -30,6 +33,7 @@ import { VehiclesPageModule } from './vehicles/vehicles.module';
   imports: [
     BrowserModule,
     IonicModule.forRoot(),
+    IonicStorageModule.forRoot(),
     AppRoutingModule,
     MoviesPageModule,
     PlanetsPageModule,
@@ -46,6 +50,8 @@ import { VehiclesPageModule } from './vehicles/vehicles.module';
     NavListService,
     SwapiService,
     DataService,
+    StorageService,
+    ToastService,
   ],
   bootstrap: [AppComponent]
 })

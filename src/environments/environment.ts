@@ -11,6 +11,8 @@ export const environment = {
   swapiSpecies: 'species',
   swapiShips: 'starships',
   swapiVehicles: 'vehicles',
+
+  notFound: 'We could not find the droids you\'re looking for...',
 };
 
 /*
