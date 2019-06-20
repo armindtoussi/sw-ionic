@@ -1,7 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router }       from '@angular/router';
 //Models
-import { Film } from 'src/app/models/films.model';
+import { Film }      from 'src/app/models/films.model';
+import { Character } from 'src/app/models/character.model';
+
 //Services
 import { StorageService } from 'src/app/services/storage.service';
 import { ToastService }   from 'src/app/services/toast.service';
@@ -22,7 +24,8 @@ export class MoviePageComponent implements OnInit, OnDestroy {
   charSub: Subscription[];
 
   data: Film;
-  characters: any;
+  characters: Character[];
+  dictionary: any
 
   constructor(private route:    ActivatedRoute, 
               private router:   Router,
@@ -46,10 +49,15 @@ export class MoviePageComponent implements OnInit, OnDestroy {
         console.log("no chars here");
         this.fetchCharacters();
       } else {
-        this.characters = characters;
+        this.dictionary = characters;
+        console.log("This.dictionary: ", this.dictionary);
+        // parse dictionary into character array, here. 
+        this.parseDictionary();
+
         //Here i need to check that all the characters i need are here, 
         // if not, then i need to grab the missing ones, and cache those in 
         // the dictionary. 
+        // TODO - this later. 
       }
     });
   }
@@ -68,12 +76,10 @@ export class MoviePageComponent implements OnInit, OnDestroy {
 
   private async cacheAllCharacters(): Promise<void> {
     let chars = {};
-    console.log("trying to cache", this.characters);
+
     for(let char of this.characters) {
-      console.log("Char: ", char);
       chars[char.url] = char;
     }
-    console.log("dictionary: ", chars);
     return this._storage.addCharactersDict(chars);
   }
 
@@ -85,8 +91,8 @@ export class MoviePageComponent implements OnInit, OnDestroy {
         this.data = result;
         
         this.getCharacters();
-      } else {
-        this._toast.presentToast(environment.notFound).then(
+      } else {//toasts could be a service.
+        this._toast.presentToast(environment.notFound).then( 
           (res: any) => {
             this.router.navigateByUrl(`/`);
         });
@@ -109,6 +115,20 @@ export class MoviePageComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Parses character dictionary into an array for display.
+   */
+  private parseDictionary(): void {
+    this.characters = [];
+
+    Object.getOwnPropertyNames(this.dictionary).forEach((element) => {
+      this.characters.push(this.dictionary[element]);
+    });
+  }
+
+  /**
+   * Unsubs from subs.
+   */
   private unsubscribe(): void {
     for(let i = 0; i < this.charSub.length; i++) {
       if(this.charSub[i] !== undefined) {

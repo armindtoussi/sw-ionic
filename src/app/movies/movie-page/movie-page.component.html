@@ -64,8 +64,15 @@
       <ion-item-divider mode="ios">
         <ion-label>Characters</ion-label>
       </ion-item-divider>
-      <ion-item>
-
+      <ion-item *ngFor="let char of characters" detail>
+        <!-- TODO - Click function added above to char component page.  -->
+        <ion-grid>
+          <ion-row>
+            <ion-col>
+              <ion-label>{{ char?.name }}</ion-label>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
       </ion-item>
     </ion-item-group>
   </ion-list>
