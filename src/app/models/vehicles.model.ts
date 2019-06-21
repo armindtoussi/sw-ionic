@@ -1,4 +1,11 @@
 export interface VehiclesModel {
+    count:    number;
+    next:     string; 
+    previous: string; 
+    results:  Vehicle[];
+}
+
+export interface Vehicle {
     cargo_capacity:         string;
     consumables:            string;
     cost_in_credits:        string;

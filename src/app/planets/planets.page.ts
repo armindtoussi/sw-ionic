@@ -13,7 +13,7 @@ import { Subscription } from 'rxjs';
 import { map, flatMap } from 'rxjs/operators';
 
 //Models
-import { PlanetsModel } from '../models/planets.model';
+import { Planet } from '../models/planets.model';
 
 @Component({
   selector: 'app-planets',
@@ -28,7 +28,7 @@ export class PlanetsPage implements OnInit, OnDestroy {
   planetSub: Subscription[] = [];
 
   /** Planets array. */
-  planets: PlanetsModel[];
+  planets: Planet[];
   /** url for next set of planets. */
   nextUrl: string;
   /** total number of planet entries. */
@@ -61,7 +61,7 @@ export class PlanetsPage implements OnInit, OnDestroy {
     this.unsubscribe();
   }
 
-  displayPlanet(planet: PlanetsModel): void {
+  displayPlanet(planet: Planet): void {
     console.log("cliked: ", planet);
     this._dataService.setData(planet.name, planet);
     this.router.navigateByUrl(`/planet/${planet.name}`);

@@ -9,7 +9,7 @@ import { DataService } from '../services/data.service';
 import { Subscription } from 'rxjs';
 import { map, flatMap } from 'rxjs/operators';
 //Models
-import { StarshipsModel } from '../models/starships.model';
+import { Starship } from '../models/starships.model';
 
 @Component({
   selector: 'app-starships',
@@ -21,7 +21,7 @@ export class StarshipsPage implements OnInit, OnDestroy {
   @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
 
   shipSub: Subscription[] = [];
-  ships: StarshipsModel[];
+  ships: Starship[];
   nextUrl: string;
   count: number;
 
@@ -37,7 +37,7 @@ export class StarshipsPage implements OnInit, OnDestroy {
     this.unsubscribe();
   }
 
-  displayShip(ship: StarshipsModel): void {
+  displayShip(ship: Starship): void {
     console.log("Clicked: ", ship);
     this._dataService.setData(ship.name, ship);
     this.router.navigateByUrl(`/starship/${ship.name}`);

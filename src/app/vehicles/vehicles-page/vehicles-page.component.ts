@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { VehiclesModel } from 'src/app/models/vehicles.model';
+import { Vehicle } from 'src/app/models/vehicles.model';
 import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
@@ -9,7 +9,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 })
 export class VehiclesPageComponent implements OnInit {
 
-  data: VehiclesModel;
+  data: Vehicle;
 
   constructor(private route: ActivatedRoute,
               private router: Router) { }

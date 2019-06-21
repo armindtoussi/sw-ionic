@@ -9,7 +9,7 @@ import { map, flatMap } from 'rxjs/operators';
 import { SwapiService } from '../services/swapi.service';
 import { DataService } from '../services/data.service';
 //Models
-import { SpeciesModel } from '../models/species.model';
+import { Species } from '../models/species.model';
 
 
 @Component({
@@ -22,7 +22,7 @@ export class SpeciesPage implements OnInit, OnDestroy {
   @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
 
   speciesSub: Subscription[] = [];
-  species: SpeciesModel[];
+  species: Species[];
   nextUrl: string;
   count: number;
 
@@ -39,7 +39,7 @@ export class SpeciesPage implements OnInit, OnDestroy {
     this.unsubscribe();
   }
 
-  displaySpecies(species: SpeciesModel): void {
+  displaySpecies(species: Species): void {
     console.log("clicked: ", species);
     this._dataService.setData(species.name, species);
     this.router.navigateByUrl(`/species/${species.name}`);

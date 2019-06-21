@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 //Models
-import { SpeciesModel } from 'src/app/models/species.model';
+import { Species } from 'src/app/models/species.model';
 
 @Component({
   selector: 'app-species-page',
@@ -11,7 +11,7 @@ import { SpeciesModel } from 'src/app/models/species.model';
 })
 export class SpeciesPageComponent implements OnInit {
 
-  data: SpeciesModel;
+  data: Species;
 
   constructor(private route: ActivatedRoute,
               private router: Router) { }

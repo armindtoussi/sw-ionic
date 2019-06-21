@@ -12,6 +12,20 @@ export const environment = {
   swapiShips: 'starships',
   swapiVehicles: 'vehicles',
 
+
+  MOVIES_KEY: "sw-movies",
+  CHARACTERS_KEY: "sw-characters",    
+  CHARS_DICT_KEY: "sw-chars-dict",
+  PLANET_KEY: "sw-planets",
+  PLANET_DICT_KEY: "sw-planet-dict",
+  SHIPS_KEY: "sw-ships",
+  SHIPS_DICT_KEY: "sw-ships-dict",
+  SPECIES_KEY: "sw-species",
+  SPECIES_DICT_KEY: "sw-species-dict",
+  VEHICLE_KEY: "sw-vehicle",
+  VEHICLE_DICT_KEY: "sw-vehicle-dict",
+
+
   notFound: 'We could not find the droids you\'re looking for...',
 };
 
@@ -22,4 +36,4 @@ export const environment = {
  * This import should be commented out in production mode because it will have a negative impact
  * on performance if an error is thrown.
  */
-// import 'zone.js/dist/zone-error';  // Included with Angular CLI.
+// import 'zone.js/dist/zone-error',  // Included with Angular CLI.

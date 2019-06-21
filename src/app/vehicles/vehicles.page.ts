@@ -9,7 +9,7 @@ import { map, flatMap } from 'rxjs/operators';
 import { SwapiService } from '../services/swapi.service';
 import { DataService } from '../services/data.service';
 //Models
-import { VehiclesModel } from '../models/vehicles.model';
+import { Vehicle } from '../models/vehicles.model';
 
 @Component({
   selector: 'app-vehicles',
@@ -21,7 +21,7 @@ export class VehiclesPage implements OnInit, OnDestroy {
   @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
 
   vehicleSub: Subscription[] = [];
-  vehicles: VehiclesModel[];
+  vehicles: Vehicle[];
   nextUrl: string;
   count: number;
 
@@ -37,7 +37,7 @@ export class VehiclesPage implements OnInit, OnDestroy {
     this.unsubscribe();
   }
 
-  displayVehicle(vehicle: VehiclesModel): void {
+  displayVehicle(vehicle: Vehicle): void {
     console.log("clicked:", vehicle);
     this._dataService.setData(vehicle.name, vehicle);
     this.router.navigateByUrl(`/vehicle/${this.replaceSlashses(vehicle.name)}`);

@@ -1,4 +1,11 @@
 export interface PlanetsModel {
+    count:    number;
+    next:     string; 
+    previous: string;
+    results:  Planet[];
+}
+
+export interface Planet {
     climate:         string;
     diameter:        string;
     films:           string[];

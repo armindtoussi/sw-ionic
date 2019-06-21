@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 //Models
-import { StarshipsModel } from 'src/app/models/starships.model';
+import { Starship } from 'src/app/models/starships.model';
 
 @Component({
   selector: 'app-starships-page',
@@ -11,7 +11,7 @@ import { StarshipsModel } from 'src/app/models/starships.model';
 })
 export class StarshipsPageComponent implements OnInit {
 
-  data: StarshipsModel;
+  data: Starship;
 
   constructor(private route: ActivatedRoute,
               private router: Router) { }

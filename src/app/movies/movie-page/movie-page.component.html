@@ -75,6 +75,69 @@
         </ion-grid>
       </ion-item>
     </ion-item-group>
+    <ion-item-group>
+      <ion-item-divider mode="ios">
+        <ion-label>Planets</ion-label>
+      </ion-item-divider>
+      <ion-item *ngFor="let planet of planets" detail>
+        <!-- TODO - Click function added above to planet component page.  -->
+        <ion-grid>
+          <ion-row>
+            <ion-col>
+              <ion-label>{{ planet?.name }}</ion-label>
+              <ion-note>{{ planet?.population }}</ion-note>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-item>
+    </ion-item-group>
+    <ion-item-group>
+      <ion-item-divider mode="ios">
+        <ion-label>Starships</ion-label>
+      </ion-item-divider>
+      <ion-item *ngFor="let ship of starships" detail>
+          <!-- TODO - Click function added above to starships component page.  -->
+          <ion-grid>
+            <ion-row>
+              <ion-col>
+                <ion-label>{{ ship?.name }}</ion-label>
+                <ion-note>{{ ship?.starship_class }}</ion-note>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+      </ion-item>
+    </ion-item-group>
+    <ion-item-group>
+      <ion-item-divider mode="ios">
+        <ion-label>Vehicles</ion-label>
+      </ion-item-divider>
+      <ion-item *ngFor="let vehicle of vehicles" detail>
+          <!-- TODO - Click function added above to starships component page.  -->
+          <ion-grid>
+            <ion-row>
+              <ion-col>
+                <ion-label>{{ vehicle?.name }}</ion-label>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+      </ion-item>
+    </ion-item-group>
+    <ion-item-group>
+      <ion-item-divider mode="ios">
+        <ion-label>Species</ion-label>
+      </ion-item-divider>
+      <ion-item *ngFor="let spec of species" detail>
+         <!-- TODO - Click function added above to starships component page.  -->
+          <ion-grid>
+            <ion-row>
+              <ion-col>
+                <ion-label>{{ spec?.name }}</ion-label>
+                <ion-note>{{ spec?.classification }}</ion-note>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+      </ion-item>
+    </ion-item-group>
   </ion-list>
 </ion-content>
 

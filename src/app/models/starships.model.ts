@@ -1,4 +1,11 @@
 export interface StarshipsModel {
+    count: number;
+    next: string; 
+    previous: string;
+    results: Starship[];
+}
+
+export interface Starship {
     MGLT:                   string;
     cargo_capacity:         string;
     consumables:            string;

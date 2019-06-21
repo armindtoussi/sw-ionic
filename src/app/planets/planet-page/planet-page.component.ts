@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 //Models
-import { PlanetsModel } from 'src/app/models/planets.model';
+import { Planet } from 'src/app/models/planets.model';
 
 @Component({
   selector: 'app-planet-page',
@@ -11,7 +11,7 @@ import { PlanetsModel } from 'src/app/models/planets.model';
 })
 export class PlanetPageComponent implements OnInit {
 
-  data: PlanetsModel
+  data: Planet
 
   constructor(private route: ActivatedRoute,
               private router: Router) { }

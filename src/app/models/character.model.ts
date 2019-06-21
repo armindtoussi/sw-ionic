@@ -1,8 +1,8 @@
 export interface CharacterModel {
-    count: number;
-    next: string;
+    count:    number;
+    next:     string;
     previous: string;
-    results: Character[];
+    results:  Character[];
 }
 
 export interface Character {
