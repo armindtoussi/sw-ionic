@@ -67,10 +67,28 @@ export class StorageService {
         return this.storage.set(key, dictionary);
     }
 
+    async addIndividualDictionary(entry: any, key: string): Promise<void> {
+        const dictionary = await this.storage.get(key);
+        console.log("does this exist: ", dictionary[entry.url]);
+        dictionary[entry.url] = entry;
+        return this.storage.set(key, dictionary);
+    }
+
     async getFullDictionary(key: string): Promise<any> {
         const dictionary = await this.storage.get(key);
         return dictionary;
         //no need to check for existance, it's doing that in the component.
+    }
+
+    async getSingleDictionaryEntry(url: string, key: string): Promise<any> {
+        return await this.storage.get(key).then((dict: object) => {
+            console.log("dict: ", dict);
+            console.log("obj: ", dict[url]);
+            if(dict && dict[url]) {
+                return {url: dict[url]};
+            }
+            return null;
+        }); 
     }
 }
 

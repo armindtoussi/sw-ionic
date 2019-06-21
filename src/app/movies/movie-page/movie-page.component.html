@@ -60,7 +60,7 @@
       </ion-grid>
     </ion-item>
     </ion-item-group>
-    <ion-item-group>
+    <ion-item-group *ngIf="characters">
       <ion-item-divider mode="ios">
         <ion-label>Characters</ion-label>
       </ion-item-divider>
@@ -75,7 +75,7 @@
         </ion-grid>
       </ion-item>
     </ion-item-group>
-    <ion-item-group>
+    <ion-item-group *ngIf="planets">
       <ion-item-divider mode="ios">
         <ion-label>Planets</ion-label>
       </ion-item-divider>
@@ -91,7 +91,7 @@
         </ion-grid>
       </ion-item>
     </ion-item-group>
-    <ion-item-group>
+    <ion-item-group *ngIf="starships">
       <ion-item-divider mode="ios">
         <ion-label>Starships</ion-label>
       </ion-item-divider>
@@ -107,7 +107,7 @@
           </ion-grid>
       </ion-item>
     </ion-item-group>
-    <ion-item-group>
+    <ion-item-group *ngIf="vehicles">
       <ion-item-divider mode="ios">
         <ion-label>Vehicles</ion-label>
       </ion-item-divider>
@@ -122,7 +122,7 @@
           </ion-grid>
       </ion-item>
     </ion-item-group>
-    <ion-item-group>
+    <ion-item-group *ngIf="species">
       <ion-item-divider mode="ios">
         <ion-label>Species</ion-label>
       </ion-item-divider>

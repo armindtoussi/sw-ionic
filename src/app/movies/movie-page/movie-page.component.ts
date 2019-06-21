@@ -34,12 +34,6 @@ export class MoviePageComponent implements OnInit, OnDestroy {
   starships:  Starship[];
   vehicles:   Vehicle[];
 
-  charDictionary:      object;
-  planetDictionary:    object;
-  speciesDictionary:   object;  
-  starshipsDictionary: object;
-  vehicleDictionary:   object; 
-
   constructor(private route:    ActivatedRoute, 
               private router:   Router,
               private _storage: StorageService,
@@ -55,87 +49,104 @@ export class MoviePageComponent implements OnInit, OnDestroy {
     this.unsubscribe();
   }
 
-  private async getCharacters(): Promise<void> {
-    this._storage.getFullDictionary(environment.CHARS_DICT_KEY).then(
-      (characters: any) => {
-        if(!characters) {
-          console.log("no chars here");
-          this.fetchCharacters();
-        } else {
-          this.charDictionary = characters;
-          console.log("This.charDictionary: ", this.charDictionary);
-          // parse charDictionary into character array, here. 
-          this.characters = this.parseDictionary(this.charDictionary);
+  private async getCharacters(): Promise<void | any[]> {
+    this._storage.getFullDictionary(environment.CHARS_DICT_KEY)
+      .then((characters: any) => {
+        if(characters) {
+          let fetchArr    = this.compareFetch(characters, this.data.characters);
+          this.characters = <Character[]>this.filterDictionary(characters, this.data.characters);
 
-          //Here i need to check that all the characters i need are here, 
-          // if not, then i need to grab the missing ones, and cache those in 
-          // the charDictionary. 
-          // TODO - this later. 
+          this.fetchIndiviual(fetchArr, this.characters).then((res) => {
+            this.characters = res;
+
+            this.cacheArray(this.characters, environment.CHARS_DICT_KEY);
+          });
+        } else {
+          this.fetchCharacters();
         }
-    });
+      });
   }
 
   private async getPlanets(): Promise<void> {
-    this._storage.getFullDictionary(environment.PLANET_DICT_KEY).then((planets: object) => {
-      console.log("planets: ", planets);
-      if(!planets) {
-        console.log("no planets here: ");
-        this.fetchPlanets();
-      } else {
-        this.planetDictionary = planets;
-        console.log("This.planetsDict: ", this.planetDictionary);
-        // todo - here same as with characters.... must be a better way.
-      
-        this.planets = this.parseDictionary(this.planetDictionary);
-      }
-    });
+    this._storage.getFullDictionary(environment.PLANET_DICT_KEY)
+      .then((planets: object) => {
+        if(planets) {
+          let fetchArr = this.compareFetch(planets, this.data.planets);
+          this.planets = <Planet[]>this.filterDictionary(planets, this.data.planets);
+
+          this.fetchIndiviual(fetchArr, this.planets).then((res) => {
+            this.planets = res;
+
+            this.cacheArray(this.planets, environment.PLANET_DICT_KEY);
+          });
+        } else {
+          this.fetchPlanets();
+        }
+      });
   }
 
   private async getSpecies(): Promise<void> {
-    this._storage.getFullDictionary(environment.SPECIES_DICT_KEY).then((species: any) => {
-      console.log("The species: ", species);
-      if(!species) {
-        console.log("No species here: ");
-        this.fetchSpecies();
-      } else {
-        this.speciesDictionary = species;
-        console.log("This.speciesDict: ", this.speciesDictionary);
+    this._storage.getFullDictionary(environment.SPECIES_DICT_KEY)
+      .then((species: object) => {
+        if(species) {
+          let fetchArr = this.compareFetch(species, this.data.species);
+          this.species = <Species[]>this.filterDictionary(species, this.data.species);
 
-        this.species = this.parseDictionary(this.speciesDictionary);
-      }
-    });
+          this.fetchIndiviual(fetchArr, this.species).then((res) => {
+            this.species = res;
+
+            this.cacheArray(this.species, environment.SPECIES_DICT_KEY);
+          });
+        } else {
+          this.fetchSpecies();
+        }
+      });
   }
 
   //gets are from cache. 
   private async getStarships(): Promise<void> {
-    this._storage.getFullDictionary(environment.SHIPS_DICT_KEY).then((ships: any) => {
-      console.log("The ships: ", ships);
-      if(!ships) {
-        console.log("No ships here");
-        this.fetchStarships();
-      } else {
-        this.starshipsDictionary = ships;
-        console.log("This.shipsDict: ", this.starshipsDictionary);
+    this._storage.getFullDictionary(environment.SHIPS_DICT_KEY)
+      .then((ships: object) => {
+        if(ships) {
+          let fetchArr   = this.compareFetch(ships, this.data.starships);
+          this.starships = <Starship[]>this.filterDictionary(ships, this.data.starships);
 
-        this.starships = this.parseDictionary(this.starshipsDictionary);
-      }
-    });
+          this.fetchIndiviual(fetchArr, this.starships).then((res) => {
+            this.starships = res;
+
+            this.cacheArray(this.starships, environment.SHIPS_DICT_KEY);
+          });
+        } else {
+          this.fetchStarships();
+        }
+      });
   }
 
   private async getVehicles(): Promise<void> {
-    this._storage.getFullDictionary(environment.VEHICLE_DICT_KEY).then(
-      (vehicles: any) => {
-        console.log("the Vehicles: ", vehicles);
-        if(!vehicles) {
-          console.log("no vehicles here: ");
-          this.fetchVehicles();
-        } else {
-          this.vehicleDictionary = vehicles;
-          console.log("Vehicles Dict: ", this.vehicleDictionary);
+    this._storage.getFullDictionary(environment.VEHICLE_DICT_KEY)
+      .then((vehicles: any) => {
+        if(vehicles) {
+          let fetchArr = this.compareFetch(vehicles, this.data.vehicles);
+          this.vehicles = <Vehicle[]>this.filterDictionary(vehicles, this.data.vehicles);
 
-          this.vehicles = this.parseDictionary(this.vehicleDictionary);
+          this.fetchIndiviual(fetchArr, this.vehicles).then((res) => {
+            this.vehicles = res;
+
+            this.cacheArray(this.vehicles, environment.VEHICLE_DICT_KEY);
+          });
+        } else {
+          this.fetchVehicles();
         }
+
+        console.log("vehicles: " , this.vehicles);
     });
+  }
+
+  private async fetchIndiviual(urlArr: string[], dataArray: object[]): Promise<any[]> {
+    return await this._swapiService.arrayFetch(urlArr).toPromise().then(
+      (data: any) => {
+        return dataArray.concat(...data);
+      });
   }
 
   private fetchVehicles(): void {
@@ -152,7 +163,7 @@ export class MoviePageComponent implements OnInit, OnDestroy {
   private fetchStarships(): void {
     this.movieSubs[3] = this._swapiService.arrayFetch(this.data.starships)
       .subscribe((data: any) => {
-        console.log("Starships brah: ", data);
+        // console.log("Starships brah: ", data);
         this.starships = data; 
 
         this.cacheAll(this.starships, environment.SHIPS_DICT_KEY);
@@ -162,7 +173,7 @@ export class MoviePageComponent implements OnInit, OnDestroy {
   private fetchSpecies(): void {
     this.movieSubs[2] = this._swapiService.arrayFetch(this.data.species)
       .subscribe((data: any) => {
-        console.log("Species brah: ", data);
+        // console.log("Species brah: ", data);
         this.species = data;
 
         this.cacheAll(this.species, environment.SPECIES_DICT_KEY);
@@ -172,7 +183,7 @@ export class MoviePageComponent implements OnInit, OnDestroy {
   private fetchPlanets(): void {
     this.movieSubs[1] = this._swapiService.arrayFetch(this.data.planets)  
       .subscribe((data: any) => {
-        console.log('planets: ', data);
+        // console.log('planets: ', data);
         this.planets = data;
 
         this.cacheAll(this.planets, environment.PLANET_DICT_KEY);
@@ -182,7 +193,6 @@ export class MoviePageComponent implements OnInit, OnDestroy {
   private fetchCharacters(): void {
     this.movieSubs[0] = this._swapiService.arrayFetch(this.data.characters)
       .subscribe((data: any) => {
-          console.log("Character fetch: ", data);
           this.characters = data; 
           
           this.cacheAll(this.characters, environment.CHARS_DICT_KEY);
@@ -229,6 +239,28 @@ export class MoviePageComponent implements OnInit, OnDestroy {
       this.getVehicles();
   }
 
+  private filterDictionary(dictionary: object, urls: string[]): object[] {
+    let arr = [];
+
+    for(let url of urls) {
+      if(dictionary[url]) {
+        arr.push(dictionary[url]);
+      }
+    }
+    return arr;
+  }
+
+  private compareFetch(dictionary: object, arr: any[]): string[] {
+    let fetchArr = [];
+
+    for(let a of arr) {
+      if(!dictionary[a]) {
+        fetchArr.push(a);
+      }
+    }
+    return fetchArr;
+  }
+  
   /**
    * Parses character dictionary into an array for display.
    */
@@ -249,6 +281,17 @@ export class MoviePageComponent implements OnInit, OnDestroy {
       obj[item.url] = item;
     }
     return this._storage.addFullDictionary(obj, key);
+  }
+
+  private async cacheArray(cacheArr: any[], key: string): Promise<any> {
+    let promises = [];
+
+    for(let i of cacheArr) {
+      let promise = this._storage.addIndividualDictionary(i, key);
+      promises.push(promise);
+    }
+
+    return Promise.all(promises);
   }
 
   /**
