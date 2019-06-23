@@ -17,7 +17,8 @@ import { NavListService } from './services/nav-list.service';
 import { SwapiService }   from './services/swapi.service';
 import { DataService }    from './services/data.service';
 import { StorageService } from './services/storage.service';
-
+import { ToastService }   from './services/toast.service';
+import { CacheService }   from './services/cache.service';
 //Modules.
 import { MoviesPageModule }     from './movies/movies.module';
 import { PlanetsPageModule }    from './planets/planets.module';
@@ -25,7 +26,7 @@ import { CharactersPageModule } from './characters/characters.module';
 import { SpeciesPageModule }    from './species/species.module';
 import { StarshipsPageModule }  from './starships/starships.module';
 import { VehiclesPageModule }   from './vehicles/vehicles.module';
-import { ToastService } from './services/toast.service';
+
 
 @NgModule({
   declarations: [AppComponent],
@@ -51,6 +52,7 @@ import { ToastService } from './services/toast.service';
     SwapiService,
     DataService,
     StorageService,
+    CacheService,
     ToastService,
   ],
   bootstrap: [AppComponent]

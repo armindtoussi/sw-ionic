@@ -1,11 +1,10 @@
-export interface SpeciesModel {
-    count:    number;
-    next:     string;
-    previous: string; 
+import { SWapiModel, SWapi } from './SWapi.model';
+
+export interface SpeciesModel extends SWapiModel {
     results:  Species[];
 }
 
-export interface Species {
+export interface Species extends SWapi {
     average_height:   string;
     average_lifespan: string;
     classification:   string;
@@ -18,7 +17,4 @@ export interface Species {
     name:             string;
     people:           string[];
     skin_colors:      string;
-    url:              string;
-    created:          string;
-    edited:           string;
 }

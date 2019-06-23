@@ -1,11 +1,10 @@
-export interface FilmsModel {
-    count:    number;
-    next:     string;
-    previous: string;
+import { SWapiModel, SWapi } from './SWapi.model';
+
+export interface FilmsModel extends SWapiModel {
     results:  Film[];
 }
 
-export interface Film {
+export interface Film extends SWapi {
     title:         string;
     episode_id:    number;
     opening_crawl: string;
@@ -17,7 +16,4 @@ export interface Film {
     starships:     string[];
     vehicles:      string[];
     species:       string[];
-    created:       string;
-    edited:        string;
-    url:           string;
 }

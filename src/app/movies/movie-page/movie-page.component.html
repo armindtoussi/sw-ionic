@@ -109,7 +109,7 @@
     </ion-item-group>
     <ion-item-group *ngIf="vehicles">
       <ion-item-divider mode="ios">
-        <ion-label>Vehicles</ion-label>
+        <ion-label *ngIf="vehicles">Vehicles</ion-label>
       </ion-item-divider>
       <ion-item *ngFor="let vehicle of vehicles" detail>
           <!-- TODO - Click function added above to starships component page.  -->

@@ -1,11 +1,10 @@
-export interface PlanetsModel {
-    count:    number;
-    next:     string; 
-    previous: string;
+import { SWapiModel, SWapi } from './SWapi.model';
+
+export interface PlanetsModel extends SWapiModel{
     results:  Planet[];
 }
 
-export interface Planet {
+export interface Planet extends SWapi{
     climate:         string;
     diameter:        string;
     films:           string[];
@@ -17,7 +16,4 @@ export interface Planet {
     rotation_period: string;
     surface_water:   string;
     terrain:         string;
-    url:             string;
-    created:         string;
-    edited:          string;
 }

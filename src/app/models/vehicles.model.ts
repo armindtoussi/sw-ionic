@@ -1,11 +1,10 @@
-export interface VehiclesModel {
-    count:    number;
-    next:     string; 
-    previous: string; 
+import { SWapiModel, SWapi } from './SWapi.model';
+
+export interface VehiclesModel extends SWapiModel {
     results:  Vehicle[];
 }
 
-export interface Vehicle {
+export interface Vehicle extends SWapi {
     cargo_capacity:         string;
     consumables:            string;
     cost_in_credits:        string;
@@ -18,8 +17,5 @@ export interface Vehicle {
     name:                   string;
     passengers:             string;
     pilots:                 string[];
-    url:                    string;
     vehicle_class:          string;
-    created:                string;
-    edited:                 string;
 }

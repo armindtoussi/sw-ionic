@@ -1,11 +1,10 @@
-export interface CharacterModel {
-    count:    number;
-    next:     string;
-    previous: string;
+import { SWapiModel, SWapi } from './SWapi.model';
+
+export interface CharacterModel extends SWapiModel {
     results:  Character[];
 }
 
-export interface Character {
+export interface Character extends SWapi {
     birth_year: string;
     eye_color:  string; 
     films:      string[];
@@ -18,8 +17,5 @@ export interface Character {
     skin_color: string;
     species:    string[];
     starships:  string[];
-    url:        string;
     vehicles:   string[];
-    created:    string;
-    edited:     string;
 }

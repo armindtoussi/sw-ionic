@@ -1,11 +1,10 @@
-export interface StarshipsModel {
-    count: number;
-    next: string; 
-    previous: string;
+import { SWapiModel, SWapi } from './SWapi.model';
+
+export interface StarshipsModel extends SWapiModel {
     results: Starship[];
 }
 
-export interface Starship {
+export interface Starship extends SWapi {
     MGLT:                   string;
     cargo_capacity:         string;
     consumables:            string;
@@ -21,7 +20,4 @@ export interface Starship {
     passengers:             string;
     pilots:                 string[];
     starship_class:         string;
-    url:                    string;
-    created:                string;
-    edited:                 string;
 }
