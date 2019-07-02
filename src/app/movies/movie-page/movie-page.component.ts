@@ -7,17 +7,15 @@ import { Planet }    from 'src/app/models/planets.model';
 import { Species }   from 'src/app/models/species.model';
 import { Starship }  from 'src/app/models/starships.model';
 import { Vehicle }   from 'src/app/models/vehicles.model';
-
 //Services
 import { StorageService } from 'src/app/services/storage.service';
 import { ToastService }   from 'src/app/services/toast.service';
 import { SwapiService }   from 'src/app/services/swapi.service';
+import { CacheService } from 'src/app/services/cache.service';
 //RXJS
 import { Subscription } from 'rxjs';
 //Env 
 import { environment } from 'src/environments/environment';
-import { SWapi } from 'src/app/models/SWapi.model';
-import { CacheService } from 'src/app/services/cache.service';
 
 
 @Component({
@@ -54,93 +52,61 @@ export class MoviePageComponent implements OnInit, OnDestroy {
 
   private async getCharacters(): Promise<void> {
     this._cache.fetchType(this.data.characters, environment.CHARS_DICT_KEY).then((result) => {
-      console.log("Characters afdter $#$: ", result);
       if(result) {
         this.characters = result;
       } else {
-        console.log("fetching:", this.characters);
         this.fetchCharacters();
       }
     });
   }
 
   private async getPlanets(): Promise<void> {
-    this._storage.getFullDictionary(environment.PLANET_DICT_KEY)
-      .then((planets: object) => {
-        if(planets) {
-          let fetchArr = this.compareFetch(planets, this.data.planets);
-          this.planets = <Planet[]>this.filterDictionary(planets, this.data.planets);
-
-          this._cache.fetchFromUrls(fetchArr, this.planets).then((res) => {
-            this.planets = res;
-
-            this._cache.cacheArray(this.planets, environment.PLANET_DICT_KEY);
-          });
-        } else {
-          this.fetchPlanets();
-        }
-      });
+    this._cache.fetchType(this.data.planets, environment.PLANET_DICT_KEY).then((result) => {
+      if(result) {
+        this.planets = result;
+        console.log("MoviePage::GetPlanets()::planets: ", result);
+      } else {
+        this.fetchPlanets();
+      }
+    });
   }
 
   private async getSpecies(): Promise<void> {
-    this._storage.getFullDictionary(environment.SPECIES_DICT_KEY)
-      .then((species: object) => {
-        if(species) {
-          let fetchArr = this.compareFetch(species, this.data.species);
-          this.species = <Species[]>this.filterDictionary(species, this.data.species);
-
-          this._cache.fetchFromUrls(fetchArr, this.species).then((res) => {
-            this.species = res;
-
-            this._cache.cacheArray(this.species, environment.SPECIES_DICT_KEY);
-          });
-        } else {
-          this.fetchSpecies();
-        }
-      });
+    this._cache.fetchType(this.data.species, environment.SPECIES_DICT_KEY).then((result) => {
+      if(result) {
+        this.species = result;
+        console.log("MoviePage::GetSpecies()::species: ", result);
+      } else {
+        this.fetchSpecies();
+      }
+    });
   }
 
   //gets are from cache. 
   private async getStarships(): Promise<void> {
-    this._storage.getFullDictionary(environment.SHIPS_DICT_KEY)
-      .then((ships: object) => {
-        if(ships) {
-          let fetchArr   = this.compareFetch(ships, this.data.starships);
-          this.starships = <Starship[]>this.filterDictionary(ships, this.data.starships);
-
-          this._cache.fetchFromUrls(fetchArr, this.starships).then((res) => {
-            this.starships = res;
-
-            this._cache.cacheArray(this.starships, environment.SHIPS_DICT_KEY);
-          });
-        } else {
-          this.fetchStarships();
-        }
-      });
+    this._cache.fetchType(this.data.starships, environment.SHIPS_DICT_KEY).then((result) => {
+      if(result) {
+        this.starships = result;
+        console.log("MoviePage::GetStarships()::starships: ", result);
+      } else {
+        this.fetchStarships();
+      }
+    });
   }
 
   private async getVehicles(): Promise<void> {
-    this._storage.getFullDictionary(environment.VEHICLE_DICT_KEY)
-      .then((vehicles: any) => {
-        if(vehicles) {
-          let fetchArr = this.compareFetch(vehicles, this.data.vehicles);
-          this.vehicles = <Vehicle[]>this.filterDictionary(vehicles, this.data.vehicles);
-
-          this._cache.fetchFromUrls(fetchArr, this.vehicles).then((res) => {
-            this.vehicles = res;
-
-            this._cache.cacheArray(this.vehicles, environment.VEHICLE_DICT_KEY);
-          });
-        } else {
-          this.fetchVehicles();
-        }
-
-        console.log("vehicles: " , this.vehicles);
+    this._cache.fetchType(this.data.vehicles, environment.VEHICLE_DICT_KEY).then((result) => {
+      if(result) {
+        this.vehicles = result;
+        console.log("MoviePage::GetVehicle()::vehicle: ", result);
+      } else {
+        this.fetchVehicles();
+      }
     });
   }
 
   private fetchVehicles(): void {
-    this.movieSubs[4] = this._swapiService.arrayFetch(this.data.vehicles)
+    this.movieSubs[4] = this._cache.fetch(this.data.vehicles)
       .subscribe((data: any) => {
         console.log("vehicles brah: ", data);
         this.vehicles = data;
@@ -151,7 +117,7 @@ export class MoviePageComponent implements OnInit, OnDestroy {
 
   //fetches are from api
   private fetchStarships(): void {
-    this.movieSubs[3] = this._swapiService.arrayFetch(this.data.starships)
+    this.movieSubs[3] = this._cache.fetch(this.data.starships)
       .subscribe((data: any) => {
         // console.log("Starships brah: ", data);
         this.starships = data; 
@@ -161,7 +127,7 @@ export class MoviePageComponent implements OnInit, OnDestroy {
   }
 
   private fetchSpecies(): void {
-    this.movieSubs[2] = this._swapiService.arrayFetch(this.data.species)
+    this.movieSubs[2] = this._cache.fetch(this.data.species)
       .subscribe((data: any) => {
         // console.log("Species brah: ", data);
         this.species = data;
@@ -171,7 +137,7 @@ export class MoviePageComponent implements OnInit, OnDestroy {
   }
 
   private fetchPlanets(): void {
-    this.movieSubs[1] = this._swapiService.arrayFetch(this.data.planets)  
+    this.movieSubs[1] = this._cache.fetch(this.data.planets)  
       .subscribe((data: any) => {
         // console.log('planets: ', data);
         this.planets = data;
@@ -223,33 +189,10 @@ export class MoviePageComponent implements OnInit, OnDestroy {
 
   private getExtraData(): void {
       this.getCharacters();
-      // this.getPlanets();
-      // this.getSpecies();
-      // this.getStarships();
-      // this.getVehicles();
-  }
-
-  private filterDictionary(dictionary: object, urls: string[]): SWapi[] {
-    let arr = [];
-
-    for(let url of urls) {
-      if(dictionary[url]) {
-        arr.push(dictionary[url]);
-      }
-    }
-
-    return arr;
-  }
-
-  private compareFetch(dictionary: object, arr: any[]): string[] {
-    let fetchArr = [];
-
-    for(let a of arr) {
-      if(!dictionary[a]) {
-        fetchArr.push(a);
-      }
-    }
-    return fetchArr;
+      this.getPlanets();
+      this.getSpecies();
+      this.getStarships();
+      this.getVehicles();
   }
 
   /**

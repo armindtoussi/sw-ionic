@@ -69,7 +69,7 @@ export class StorageService {
 
     async addIndividualDictionary(entry: any, key: string): Promise<void> {
         const dictionary = await this.storage.get(key);
-        console.log("does this exist: ", dictionary[entry.url]);
+        // console.log("does this exist: ", dictionary[entry.url]);
         dictionary[entry.url] = entry;
         return this.storage.set(key, dictionary);
     }
