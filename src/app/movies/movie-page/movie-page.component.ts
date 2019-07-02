@@ -64,7 +64,6 @@ export class MoviePageComponent implements OnInit, OnDestroy {
     this._cache.fetchType(this.data.planets, environment.PLANET_DICT_KEY).then((result) => {
       if(result) {
         this.planets = result;
-        console.log("MoviePage::GetPlanets()::planets: ", result);
       } else {
         this.fetchPlanets();
       }
@@ -75,7 +74,6 @@ export class MoviePageComponent implements OnInit, OnDestroy {
     this._cache.fetchType(this.data.species, environment.SPECIES_DICT_KEY).then((result) => {
       if(result) {
         this.species = result;
-        console.log("MoviePage::GetSpecies()::species: ", result);
       } else {
         this.fetchSpecies();
       }
@@ -87,7 +85,6 @@ export class MoviePageComponent implements OnInit, OnDestroy {
     this._cache.fetchType(this.data.starships, environment.SHIPS_DICT_KEY).then((result) => {
       if(result) {
         this.starships = result;
-        console.log("MoviePage::GetStarships()::starships: ", result);
       } else {
         this.fetchStarships();
       }
@@ -98,7 +95,6 @@ export class MoviePageComponent implements OnInit, OnDestroy {
     this._cache.fetchType(this.data.vehicles, environment.VEHICLE_DICT_KEY).then((result) => {
       if(result) {
         this.vehicles = result;
-        console.log("MoviePage::GetVehicle()::vehicle: ", result);
       } else {
         this.fetchVehicles();
       }
@@ -108,7 +104,6 @@ export class MoviePageComponent implements OnInit, OnDestroy {
   private fetchVehicles(): void {
     this.movieSubs[4] = this._cache.fetch(this.data.vehicles)
       .subscribe((data: any) => {
-        console.log("vehicles brah: ", data);
         this.vehicles = data;
 
         this._cache.cacheAll(this.vehicles, environment.VEHICLE_DICT_KEY);
@@ -119,7 +114,6 @@ export class MoviePageComponent implements OnInit, OnDestroy {
   private fetchStarships(): void {
     this.movieSubs[3] = this._cache.fetch(this.data.starships)
       .subscribe((data: any) => {
-        // console.log("Starships brah: ", data);
         this.starships = data; 
 
         this._cache.cacheAll(this.starships, environment.SHIPS_DICT_KEY);
@@ -129,7 +123,6 @@ export class MoviePageComponent implements OnInit, OnDestroy {
   private fetchSpecies(): void {
     this.movieSubs[2] = this._cache.fetch(this.data.species)
       .subscribe((data: any) => {
-        // console.log("Species brah: ", data);
         this.species = data;
 
         this._cache.cacheAll(this.species, environment.SPECIES_DICT_KEY);
@@ -139,7 +132,6 @@ export class MoviePageComponent implements OnInit, OnDestroy {
   private fetchPlanets(): void {
     this.movieSubs[1] = this._cache.fetch(this.data.planets)  
       .subscribe((data: any) => {
-        // console.log('planets: ', data);
         this.planets = data;
 
         this._cache.cacheAll(this.planets, environment.PLANET_DICT_KEY);
