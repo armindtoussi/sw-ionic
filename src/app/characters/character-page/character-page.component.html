@@ -1,19 +1,170 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button>
-        <ion-nav>
-          <ion-nav-pop></ion-nav-pop>
-        </ion-nav>
-      </ion-back-button>
+      <ion-back-button></ion-back-button>
     </ion-buttons>
     <ion-title>
-      Star Wars Characters
+      Star Wars Character Sheet
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  it works i guess ? 
-  {{ data | json }}
+  <h1>{{ data?.name }}</h1>
+  <ion-list lines="full">
+    <ion-item-group>
+      <ion-item-divider mode="ios">
+        <ion-label>Character Information</ion-label>
+      </ion-item-divider>
+      <ion-item>
+        <ion-grid>
+          <ion-row>
+            <ion-col size="5">
+              <ion-label>Hair Color:</ion-label>
+            </ion-col>
+            <ion-col>
+              <ion-label text-wrap><strong>{{ data?.hair_color }}</strong></ion-label>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-item>
+      <ion-item>
+        <ion-grid>
+          <ion-row>
+            <ion-col size="5">
+              <ion-label>Eye Color:</ion-label>
+            </ion-col>
+            <ion-col>
+              <ion-label text-wrap><strong>{{ data?.eye_color }}</strong></ion-label>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-item>
+      <ion-item>
+        <ion-grid>
+          <ion-row>
+            <ion-col size="5">
+              <ion-label>Skin:</ion-label>
+            </ion-col>
+            <ion-col text-wrap><strong>{{ data?.skin_color }}</strong></ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-item>
+      <ion-item>
+        <ion-grid>
+          <ion-row>
+            <ion-col size="5">
+              <ion-label>Gender:</ion-label>
+            </ion-col>
+            <ion-col>
+              <ion-label text-wrap><strong>{{ data?.gender }}</strong></ion-label>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-item>
+      <ion-item>
+        <ion-grid>
+          <ion-row>
+            <ion-col size="5">
+              <ion-label>Height:</ion-label>
+            </ion-col>
+            <ion-col *ngIf="isNumber(data?.height)">
+              <ion-label text-wrap><strong>{{ data?.height }}cm</strong></ion-label>
+            </ion-col>
+            <ion-col *ngIf="!isNumber(data?.height)">
+              <ion-label text-wrap><strong>{{ data?.height }}</strong></ion-label>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-item>
+      <ion-item>
+        <ion-grid>
+          <ion-row>
+            <ion-col size="5">
+              <ion-label>Weight</ion-label>
+            </ion-col>
+            <ion-col *ngIf="isNumber(data?.mass)">
+              <ion-label text-wrap><strong>{{ data?.mass }}kg</strong></ion-label>
+            </ion-col>
+            <ion-col *ngIf="!isNumber(data?.mass)">
+              <ion-label text-wrap><strong>{{ data?.mass }}</strong></ion-label>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-item>
+      <ion-item>
+        <ion-grid>
+          <ion-row>
+            <ion-col size="5">
+              <ion-label>Birth Year</ion-label>
+            </ion-col>
+            <ion-col>
+              <ion-label text-wrap><strong>{{ data?.birth_year }}</strong></ion-label>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-item>
+    </ion-item-group>
+    <ion-item-group *ngIf="films">
+      <ion-item-divider mode="ios">
+        <ion-label>Appeared In</ion-label>
+      </ion-item-divider>
+      <ion-item *ngFor="let film of films" detail>
+        <!-- TODO - Click function added above to char component page.  -->
+        <ion-grid>
+          <ion-row>
+            <ion-col>
+              <ion-label>{{ film?.title }}</ion-label>
+              <ion-note>Episode {{ film?.episode_id }}</ion-note>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-item>
+    </ion-item-group>
+    <ion-item-group *ngIf="species">
+      <ion-item-divider mode="ios">
+        <ion-label>Species</ion-label>
+      </ion-item-divider>
+        <ion-item *ngFor="let spec of species" detail>
+          <!-- TODO - Click function added above to char component page.  -->
+          <ion-grid>
+            <ion-row>
+              <ion-col>
+                <ion-label>{{ spec?.name }}</ion-label>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+        </ion-item>
+    </ion-item-group>
+    <ion-item-group *ngIf="ships">
+      <ion-item-divider mode="ios">
+        <ion-label>Associated Starships</ion-label>
+      </ion-item-divider>
+      <ion-item *ngFor="let ship of ships" detail>
+        <!-- TODO - Click function added above to char component page.  -->
+        <ion-grid>
+          <ion-row>
+            <ion-col>
+              <ion-label>{{ ship?.name }}</ion-label>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-item>
+    </ion-item-group>
+    <ion-item-group *ngIf="vehicles">
+      <ion-item-divider mode="ios">
+        <ion-label>Associated Vehicles</ion-label>
+      </ion-item-divider>
+        <ion-item *ngFor="let vehicle of vehicles" detail>
+          <!-- TODO - Click function added above to char component page.  -->
+          <ion-grid>
+            <ion-row>
+              <ion-col>
+                <ion-label>{{ vehicle?.name }}</ion-label>
+              </ion-col>
+            </ion-row>
+          </ion-grid>
+        </ion-item>
+    </ion-item-group>
+  </ion-list>
 </ion-content>

@@ -46,10 +46,10 @@ export class PlanetPageComponent implements OnInit, OnDestroy {
     return !isNaN(parseFloat(arg)) && !isNaN(arg - 0);
   }
 
-  private async getPlanet(): Promise<void> {
+  private getPlanet(): void {
     let id = this.parsePath();
 
-    this._cache.search(environment.swapiPlanets, id)
+    this.planetSubs[2] = this._cache.search(environment.swapiPlanets, id)
       .subscribe((data: any) => {
         if(data) {
           this.data = data.results[0];
