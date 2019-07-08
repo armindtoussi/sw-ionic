@@ -13,7 +13,7 @@
   <ion-list>
     <ion-item *ngFor="let spec of species" detail
               lines="full"
-              (click)="displaySpecies(species)">
+              (click)="displaySpecies(spec)">
       <ion-item-group>
         <ion-label>{{ spec.name }}</ion-label>
         <ion-note>{{ spec.population }}</ion-note>
