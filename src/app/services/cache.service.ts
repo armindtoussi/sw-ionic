@@ -24,6 +24,11 @@ export class CacheService {
         return this._swapiService.arrayFetch(fetchArr);
     }
 
+    public search(type: string, value: string): Observable<any> {
+        let url = `${environment.swapiBase}${type}/${environment.swapiSearch}${value}`;        
+        return this._swapiService.genericFetch(url);
+    }
+
     public async cacheAll(array: SWapi[], key: string): Promise<void> {
         let obj = {};
 
@@ -34,11 +39,10 @@ export class CacheService {
         return this._storage.addFullDictionary(obj, key);
     }
 
-    public async cacheArray(array: SWapi[], key: string): Promise<any[]> {
+    public async cacheArray(array: any[]): Promise<any[]> {
         let promises = [];
-        console.log("cache array? ", array, " key: ", key);
         for(let i of array) {
-            let promise = this._storage.addIndividualDictionary(i, key);
+            let promise = this._storage.addSingleEntry(i, i.url);
             promises.push(promise);
         }
         return Promise.all(promises);
@@ -51,7 +55,6 @@ export class CacheService {
             }
         );
     }
-
 
     public async fetchType(data: any[], key: string): Promise<any[]> {
         let type = [];
@@ -69,7 +72,7 @@ export class CacheService {
                 console.log("fetchType(): result: ", result);
                 type = result;
                 if(type)
-                    this.cacheArray(type, key);
+                    this.cacheArray(type);
 
                 return type;
             });
@@ -96,5 +99,9 @@ export class CacheService {
         }
     
         return arr;
+    }
+
+    public async fetchSingleEntry(id: any, key: string, valueKey: string): Promise<any> {
+        return await this._storage.getSingleEntry(id, key, valueKey);
     }
 }

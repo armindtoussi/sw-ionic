@@ -4,16 +4,15 @@ import { Router } from '@angular/router';
 //Services 
 import { SwapiService } from '../services/swapi.service';
 import { DataService }  from '../services/data.service';
-
+import { CacheService } from '../services/cache.service';
 //Ionic
 import { IonInfiniteScroll } from '@ionic/angular';
-
 //RXJS
 import { Subscription } from 'rxjs';
 import { map, flatMap } from 'rxjs/operators';
-
 //Models
 import { Planet } from '../models/planets.model';
+
 
 @Component({
   selector: 'app-planets',
@@ -43,6 +42,7 @@ export class PlanetsPage implements OnInit, OnDestroy {
    */
   constructor(private _swapiFetchService: SwapiService,
               private _dataService: DataService,
+              private _cache: CacheService,
               private router: Router) { }
    
   /**
@@ -62,7 +62,6 @@ export class PlanetsPage implements OnInit, OnDestroy {
   }
 
   displayPlanet(planet: Planet): void {
-    console.log("cliked: ", planet);
     this._dataService.setData(planet.name, planet);
     this.router.navigateByUrl(`/planet/${planet.name}`);
   }
@@ -72,7 +71,7 @@ export class PlanetsPage implements OnInit, OnDestroy {
    * 
    * @param event the scroll event.
    */
-  loadData(event): void {
+  loadData(event: any): void {
     this.planetSub[1] = this._swapiFetchService.genericFetch(this.nextUrl)
       .subscribe(
         (results: object) => {
@@ -102,11 +101,9 @@ export class PlanetsPage implements OnInit, OnDestroy {
       ).subscribe(
         (results: object) => 
         {
-          this.count = results['count'];
+          this.count   = results['count'];
           this.nextUrl = results['next'];
           this.planets = this.planets.concat(results['results']);
-
-          console.log("Planets: ", this.planets);
         }
       );
   }

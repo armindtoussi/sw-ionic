@@ -63,21 +63,44 @@ export class StorageService {
         });
     }
 
+    async getSingleEntry(id: any, key: string, valueKey: string): Promise<any> {
+        return this.storage.get(key).then((result: any) => {
+            if(result) {
+                return result.results.find((element: any) => { 
+                    return element[valueKey] === id;
+                });
+            } else {
+                return null;
+            }
+        })
+    }
+
     async addFullDictionary(dictionary: object, key: string): Promise<any> {
-        return this.storage.set(key, dictionary);
+        // return this.storage.set(key, dictionary);
+        return await this.storage.get(key).then((dict: object) => {
+            console.log("dict: ", dict);
+            return this.storage.set(key, dictionary);
+        });
+    }
+
+    async addSingleEntry(entry: any, key: string): Promise<void> {
+        return await this.storage.set(key, entry);
     }
 
     async addIndividualDictionary(entry: any, key: string): Promise<void> {
-        const dictionary = await this.storage.get(key);
-        // console.log("does this exist: ", dictionary[entry.url]);
-        dictionary[entry.url] = entry;
-        return this.storage.set(key, dictionary);
+        return await this.storage.get(key).then((dict: object) => {
+            console.log("Dict: ", dict);
+            if(!dict) {
+                dict = {};
+            }
+            dict[entry.url] = entry;
+            return this.storage.set(key, dict);
+        });
     }
 
     async getFullDictionary(key: string): Promise<any> {
         const dictionary = await this.storage.get(key);
         return dictionary;
-        //no need to check for existance, it's doing that in the component.
     }
 
     async getSingleDictionaryEntry(url: string, key: string): Promise<any> {

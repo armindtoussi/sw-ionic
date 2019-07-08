@@ -11,7 +11,7 @@ export const environment = {
   swapiSpecies: 'species',
   swapiShips: 'starships',
   swapiVehicles: 'vehicles',
-
+  swapiSearch: '?search=',
 
   MOVIES_KEY: "sw-movies",
   CHARACTERS_KEY: "sw-characters",    

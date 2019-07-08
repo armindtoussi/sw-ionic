@@ -8,9 +8,7 @@ import { Species }   from 'src/app/models/species.model';
 import { Starship }  from 'src/app/models/starships.model';
 import { Vehicle }   from 'src/app/models/vehicles.model';
 //Services
-import { StorageService } from 'src/app/services/storage.service';
 import { ToastService }   from 'src/app/services/toast.service';
-import { SwapiService }   from 'src/app/services/swapi.service';
 import { CacheService } from 'src/app/services/cache.service';
 //RXJS
 import { Subscription } from 'rxjs';
@@ -36,10 +34,8 @@ export class MoviePageComponent implements OnInit, OnDestroy {
 
   constructor(private route:    ActivatedRoute, 
               private router:   Router,
-              private _storage: StorageService,
               private _toast:   ToastService,
-              private _cache:   CacheService,
-              private _swapiService: SwapiService) { }
+              private _cache:   CacheService) { }
 
   ngOnInit(): void {
     this.movieSubs = [];
@@ -50,63 +46,10 @@ export class MoviePageComponent implements OnInit, OnDestroy {
     this.unsubscribe();
   }
 
-  private async getCharacters(): Promise<void> {
-    this._cache.fetchType(this.data.characters, environment.CHARS_DICT_KEY).then((result) => {
-      if(result) {
-        this.characters = result;
-      } else {
-        this.fetchCharacters();
-      }
-    });
-  }
-
-  private async getPlanets(): Promise<void> {
-    this._cache.fetchType(this.data.planets, environment.PLANET_DICT_KEY).then((result) => {
-      if(result) {
-        this.planets = result;
-      } else {
-        this.fetchPlanets();
-      }
-    });
-  }
-
-  private async getSpecies(): Promise<void> {
-    this._cache.fetchType(this.data.species, environment.SPECIES_DICT_KEY).then((result) => {
-      if(result) {
-        this.species = result;
-      } else {
-        this.fetchSpecies();
-      }
-    });
-  }
-
-  //gets are from cache. 
-  private async getStarships(): Promise<void> {
-    this._cache.fetchType(this.data.starships, environment.SHIPS_DICT_KEY).then((result) => {
-      if(result) {
-        this.starships = result;
-      } else {
-        this.fetchStarships();
-      }
-    });
-  }
-
-  private async getVehicles(): Promise<void> {
-    this._cache.fetchType(this.data.vehicles, environment.VEHICLE_DICT_KEY).then((result) => {
-      if(result) {
-        this.vehicles = result;
-      } else {
-        this.fetchVehicles();
-      }
-    });
-  }
-
   private fetchVehicles(): void {
     this.movieSubs[4] = this._cache.fetch(this.data.vehicles)
       .subscribe((data: any) => {
         this.vehicles = data;
-
-        this._cache.cacheAll(this.vehicles, environment.VEHICLE_DICT_KEY);
       });
   }
 
@@ -115,8 +58,6 @@ export class MoviePageComponent implements OnInit, OnDestroy {
     this.movieSubs[3] = this._cache.fetch(this.data.starships)
       .subscribe((data: any) => {
         this.starships = data; 
-
-        this._cache.cacheAll(this.starships, environment.SHIPS_DICT_KEY);
       }); 
   }
 
@@ -124,8 +65,6 @@ export class MoviePageComponent implements OnInit, OnDestroy {
     this.movieSubs[2] = this._cache.fetch(this.data.species)
       .subscribe((data: any) => {
         this.species = data;
-
-        this._cache.cacheAll(this.species, environment.SPECIES_DICT_KEY);
       });
   }
 
@@ -133,8 +72,6 @@ export class MoviePageComponent implements OnInit, OnDestroy {
     this.movieSubs[1] = this._cache.fetch(this.data.planets)  
       .subscribe((data: any) => {
         this.planets = data;
-
-        this._cache.cacheAll(this.planets, environment.PLANET_DICT_KEY);
       });
   }
 
@@ -142,26 +79,25 @@ export class MoviePageComponent implements OnInit, OnDestroy {
     this.movieSubs[0] = this._cache.fetch(this.data.characters)
       .subscribe((data: any) => {
           this.characters = data; 
-          
-          this._cache.cacheAll(this.characters, environment.CHARS_DICT_KEY);
       });
   }
 
   private async getMovie(): Promise<void> {
     let id = this.parsePath();
 
-    this._storage.getMovie(id).then((result: any) => {
-      if(result) {
-        this.data = result;
-        
-        this.getExtraData();
-      } else {
-        this._toast.presentToast(environment.notFound).then( 
-          (res: any) => {
-            this.router.navigateByUrl(`/`);
-        });
-      }
-    });
+    await this._cache.fetchSingleEntry(id, environment.MOVIES_KEY, 'episode_id')
+      .then((result) => {
+        if(result) {
+          this.data = result;
+
+          this.getExtraData();
+        } else {
+          this._toast.presentToast(environment.notFound).then( 
+            (res: any) => {
+              this.router.navigateByUrl(`/`);
+          });
+        }
+      });
   }
 
   private parsePath(): number {
@@ -180,11 +116,11 @@ export class MoviePageComponent implements OnInit, OnDestroy {
   }
 
   private getExtraData(): void {
-      this.getCharacters();
-      this.getPlanets();
-      this.getSpecies();
-      this.getStarships();
-      this.getVehicles();
+      this.fetchCharacters();
+      this.fetchPlanets();
+      this.fetchSpecies();
+      this.fetchStarships();
+      this.fetchVehicles();
   }
 
   /**
