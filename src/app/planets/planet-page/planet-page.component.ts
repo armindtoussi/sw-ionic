@@ -70,7 +70,7 @@ export class PlanetPageComponent implements OnInit, OnDestroy {
 
     this.planetSubs[0] = this._cache.fetch(this.data.residents)
       .subscribe((data: any) => {
-          this.residents = data;
+        this.residents = data;
       });
   }
 

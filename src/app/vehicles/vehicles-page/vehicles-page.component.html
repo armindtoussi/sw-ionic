@@ -10,6 +10,181 @@
 </ion-header>
   
 <ion-content>
-  it works i guess ? 
-  {{ data | json }}
+  <h1>{{ data?.name }}</h1>
+  <ion-list lines="full">
+    <ion-item-group>
+      <ion-item-divider mode="ios">
+        <ion-label>Vehicle Information</ion-label>
+      </ion-item-divider>
+      <ion-item>
+        <ion-grid>
+          <ion-row>
+            <ion-col size="4">
+              <ion-label text-wrap>Model:</ion-label>
+            </ion-col>
+            <ion-col>
+              <ion-label text-wrap><strong>{{ data?.model }}</strong></ion-label>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-item>
+      <ion-item>
+        <ion-grid>
+          <ion-row>
+            <ion-col size="4">
+              <ion-label text-wrap>Manufacturer:</ion-label>
+            </ion-col>
+            <ion-col>
+              <ion-label text-wrap><strong>{{ data?.manufacturer }}</strong></ion-label>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-item>
+      <ion-item>
+        <ion-grid>
+          <ion-row>
+            <ion-col size="4">
+              <ion-label text-wrap>Class:</ion-label>
+            </ion-col>
+            <ion-col>
+              <ion-label text-wrap><strong>{{ data?.vehicle_class }}</strong></ion-label>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-item>
+      <ion-item>
+        <ion-grid>
+          <ion-row>
+            <ion-col size="4">
+              <ion-label text-wrap>Passengers:</ion-label>
+            </ion-col>
+            <ion-col>
+              <ion-label text-wrap><strong>{{ data?.passengers }}</strong></ion-label>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-item>
+      <ion-item>
+        <ion-grid>
+          <ion-row>
+            <ion-col size="4">
+              <ion-label text-wrap>Crew:</ion-label>
+            </ion-col>
+            <ion-col *ngIf="isNumber(data?.crew)">
+              <ion-label text-wrap><strong>{{ data?.crew | number }}</strong></ion-label>
+            </ion-col>
+            <ion-col *ngIf="!isNumber(data?.crew)">
+              <ion-label text-wrap><strong>{{ data?.crew }}</strong></ion-label>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-item>
+      <ion-item>
+        <ion-grid>
+          <ion-row>
+            <ion-col size="4">
+              <ion-label text-wrap>Length:</ion-label>
+            </ion-col>
+            <ion-col *ngIf="isNumber(data?.length)">
+              <ion-label text-wrap><strong>{{ data?.length | number }} m</strong></ion-label>
+            </ion-col>
+            <ion-col *ngIf="!isNumber(data?.length)">
+              <ion-label text-wrap><strong>{{ data?.length }}</strong></ion-label>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-item>
+      <ion-item>
+        <ion-grid>
+          <ion-row>
+            <ion-col size="4">
+              <ion-label text-wrap>Capacity:</ion-label>
+            </ion-col>
+            <ion-col *ngIf="isNumber(data?.cargo_capacity)">
+              <ion-label text-wrap><strong>{{ data?.cargo_capacity | number }} Kg</strong></ion-label>
+            </ion-col>
+            <ion-col *ngIf="!isNumber(data?.cargo_capacity)">
+              <ion-label text-wrap><strong>{{ data?.cargo_capacity }}</strong></ion-label>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-item>
+      <ion-item>
+        <ion-grid>
+          <ion-row>
+            <ion-col size="4">
+              <ion-label text-wrap>Cost(Creds):</ion-label>
+            </ion-col>
+            <ion-col *ngIf="isNumber(data?.cost_in_credits)">
+              <ion-label text-wrap><strong>{{ data?.cost_in_credits | number }}</strong></ion-label>
+            </ion-col>
+            <ion-col *ngIf="!isNumber(data?.cost_in_credits)">
+              <ion-label text-wrap><strong>{{ data?.cost_in_credits }}</strong></ion-label>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-item>
+      <ion-item>
+        <ion-grid>
+          <ion-row>
+            <ion-col size="4">
+              <ion-label text-wrap>Max Speed:</ion-label>
+            </ion-col>
+            <ion-col *ngIf="isNumber(data?.max_atmosphering_speed)">
+              <ion-label text-wrap><strong>{{ data?.max_atmosphering_speed | number }}</strong></ion-label>
+            </ion-col>
+            <ion-col *ngIf="!isNumber(data?.max_atmosphering_speed)">
+              <ion-label text-wrap><strong>{{ data?.max_atmosphering_speed }}</strong></ion-label>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-item>
+      <ion-item>
+        <ion-grid>
+          <ion-row>
+            <ion-col size="4">
+              <ion-label text-wrap>Consumables:</ion-label>
+            </ion-col>
+            <ion-col *ngIf="isNumber(data?.consumables)">
+              <ion-label text-wrap><strong>{{ data?.consumables | number }}</strong></ion-label>
+            </ion-col>
+            <ion-col *ngIf="!isNumber(data?.consumables)">
+              <ion-label text-wrap><strong>{{ data?.consumables }}</strong></ion-label>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-item>
+    </ion-item-group>
+    <ion-item-group *ngIf="films">
+      <ion-item-divider mode="ios">
+        <ion-label>Appeared In</ion-label>
+      </ion-item-divider>
+      <ion-item *ngFor="let film of films" detail>
+        <!-- TODO - Click function added above to char component page.  -->
+        <ion-grid>
+          <ion-row>
+            <ion-col>
+              <ion-label>{{ film?.title }}</ion-label>
+              <ion-note>Episode {{ film?.episode_id }}</ion-note>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-item>
+    </ion-item-group>
+    <ion-item-group *ngIf="pilots">
+      <ion-item-divider mode="ios">
+        <ion-label>Featured Pilots</ion-label>
+      </ion-item-divider>
+      <ion-item *ngFor="let pilot of pilots" detail>
+        <!-- TODO - Click function added above to char component page.  -->
+        <ion-grid>
+          <ion-row>
+            <ion-col>
+              <ion-label>{{ pilot?.name }}</ion-label>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-item>
+    </ion-item-group>
+  </ion-list>
 </ion-content>

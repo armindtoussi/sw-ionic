@@ -38,7 +38,6 @@ export class StarshipsPage implements OnInit, OnDestroy {
   }
 
   displayShip(ship: Starship): void {
-    console.log("Clicked: ", ship);
     this._dataService.setData(ship.name, ship);
     this.router.navigateByUrl(`/starship/${ship.name}`);
   }
