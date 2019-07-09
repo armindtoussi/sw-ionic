@@ -14,15 +14,6 @@ For more information see here : https://swapi.co/documentation#rate
 Next Todo
 -----------
 
-TODO later - I also want to go back and make individual services for each page, use those to consume the api, and modify the data and pass that back to each individual page rather than have the pages/components do the heavy lifting.
-
-TODO see info - Then we need to fix the navigation to the "display" pages. right now it's not popping off properly. 
-INFO - when we hit the back button it's not the correct back flow. - not sure how to approach this i've found little in the way of ion-nav information and how to push and pop with i-v4 using the back button. 
-
-6/16/2019 - Currently implemeting movie-page component. Working on getting characters. which comes with fetching characters as well....this comes with the problem of implementing characters in storage and all that fun stuff. 
-
-From there new features. 
-
 Get working on android w/Cordova - having issues with libraries, sdks and their env paths.
 
 Completed
@@ -30,3 +21,7 @@ Completed
 
 Fixed loading to home page rather than movie component. 
 Fixed toPromise usage on components due to it being an anti pattern with rxjs.
+
+Finished up display pages. 
+Decided on removing a large portion of the caching, it didn't really make sense to, basically, cache everything in a local storge on the user device. I'd basically, eventually, be downloading the entire api contents on to a user device. Instead we're just keeping track of current selection via url. We can download things as needed through the api. 
+I may implement some light caching later. Just to reload what the user is currently on when they paused the app. 
