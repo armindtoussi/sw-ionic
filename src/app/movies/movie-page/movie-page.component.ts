@@ -1,5 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router }       from '@angular/router';
+//Ionic
+import { ModalController } from '@ionic/angular';
 //Models
 import { Film }      from 'src/app/models/films.model';
 import { Character } from 'src/app/models/character.model';
@@ -14,6 +16,8 @@ import { CacheService } from 'src/app/services/cache.service';
 import { Subscription } from 'rxjs';
 //Env 
 import { environment } from 'src/environments/environment';
+//Modal
+import { CrawlModalPage } from '../crawl-modal/crawl-modal.page';
 
 
 @Component({
@@ -32,10 +36,11 @@ export class MoviePageComponent implements OnInit, OnDestroy {
   starships:  Starship[];
   vehicles:   Vehicle[];
 
-  constructor(private route:    ActivatedRoute, 
-              private router:   Router,
-              private _toast:   ToastService,
-              private _cache:   CacheService) { }
+  constructor(private route:     ActivatedRoute, 
+              private router:    Router,
+              private _toast:    ToastService,
+              private _cache:    CacheService,
+              private modalCtrl: ModalController) { }
 
   ngOnInit(): void {
     this.movieSubs = [];
@@ -46,7 +51,24 @@ export class MoviePageComponent implements OnInit, OnDestroy {
     this.unsubscribe();
   }
 
+  async presentCrawlModal(): Promise<void> {
+    const modal = await this.modalCtrl.create({
+      component: CrawlModalPage,
+      componentProps: {
+        'crawl': this.data.opening_crawl,
+        'id': this.data.episode_id,
+        'title': this.data.title,
+      }
+    });
+
+    return await modal.present();
+  }
+
   private fetchVehicles(): void {
+    if(this.data.vehicles.length === 0) {
+      return; 
+    }
+
     this.movieSubs[4] = this._cache.fetch(this.data.vehicles)
       .subscribe((data: any) => {
         this.vehicles = data;
@@ -55,6 +77,10 @@ export class MoviePageComponent implements OnInit, OnDestroy {
 
   //fetches are from api
   private fetchStarships(): void {
+    if(this.data.starships.length === 0) {
+      return;
+    }
+
     this.movieSubs[3] = this._cache.fetch(this.data.starships)
       .subscribe((data: any) => {
         this.starships = data; 
@@ -62,6 +88,10 @@ export class MoviePageComponent implements OnInit, OnDestroy {
   }
 
   private fetchSpecies(): void {
+    if(this.data.species.length === 0) {
+      return; 
+    }
+
     this.movieSubs[2] = this._cache.fetch(this.data.species)
       .subscribe((data: any) => {
         this.species = data;
@@ -69,6 +99,10 @@ export class MoviePageComponent implements OnInit, OnDestroy {
   }
 
   private fetchPlanets(): void {
+    if(this.data.planets.length === 0) {
+      return;
+    }
+
     this.movieSubs[1] = this._cache.fetch(this.data.planets)  
       .subscribe((data: any) => {
         this.planets = data;
@@ -76,6 +110,10 @@ export class MoviePageComponent implements OnInit, OnDestroy {
   }
 
   private fetchCharacters(): void {
+    if(this.data.characters.length === 0) {
+      return;
+    }
+
     this.movieSubs[0] = this._cache.fetch(this.data.characters)
       .subscribe((data: any) => {
           this.characters = data; 

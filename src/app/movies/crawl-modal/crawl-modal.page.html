@@ -1,0 +1,22 @@
+<ion-header translucent> 
+    <ion-toolbar>
+        <ion-buttons slot="end">
+            <ion-button (click)="dismiss()">Close</ion-button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+<ion-content fullscreen class="star-wars">
+    <div class="fade"></div>
+    <div class="intro">
+        <p>A long time ago in a galaxy far, <br> far away....</p>
+    </div>
+    <div class="crawl">
+        <img src="assets/Star_Wars_Logo.png" alt="Star Wars Logo" width=350px />
+        <div class="title">
+            <p>Episode {{ id }}</p>
+            <h1>{{ title }}</h1>
+        </div>
+        <p>{{ crawlText }}</p>
+    </div>
+    <div class="bot-fade"></div>
+</ion-content>

@@ -1,0 +1,130 @@
+@import url('https://fonts.googleapis.com/css?family=Archivo+Narrow&display=swap');
+
+@-webkit-keyframes crawl {
+    0% {
+        top: 0;
+        -webkit-transform: rotateX(20deg) translateY(0);
+             -o-transform: rotateX(20deg) translateY(0);
+                transform: rotateX(20deg) translateY(0);
+    }
+    100% {
+        top: -6000px;
+        -webkit-transform: rotateX(25deg) translateY(-2500px);
+             -o-transform: rotateX(25deg) translateY(-2500px);
+                transform: rotateX(25deg) translateY(-2500px);
+    }
+}
+@keyframes crawl {
+    0% {
+        top: 0;
+        -webkit-transform: rotateX(20deg) translateY(0);
+             -o-transform: rotateX(20deg) translateY(0);
+                transform: rotateX(20deg) translateY(0);
+    }
+    100% {
+        top: -6000px;
+        -webkit-transform: rotateX(25deg) translateY(-2500px);
+             -o-transform: rotateX(25deg) translateY(-2500px);
+                transform: rotateX(25deg) translateY(-2500px);
+    }
+}
+
+@-webkit-keyframes prelude {
+    from{opacity: 0;}
+    20%{opacity: 1;}
+    80%{opacity: 1;}
+    to{opacity: 0;}
+}
+  
+@-moz-keyframes prelude {
+    from{opacity: 0;}
+    20%{opacity: 1;}
+    80%{opacity: 1;}
+    to{opacity: 0;}
+}
+@-o-keyframes prelude {
+    from{opacity: 0;}
+    20%{opacity: 1;}
+    80%{opacity: 1;}
+    to{opacity: 0;}
+}
+@keyframes prelude {
+    from{opacity: 0;}
+    20%{opacity: 1;}
+    80%{opacity: 1;}
+    to{opacity: 0;}
+}  
+ion-toolbar {
+    --background: black;
+    color: #ff6;
+}
+
+ion-content {
+    --overflow: hidden;
+    white-space: pre-wrap;
+    --background: #000;
+    width: 100%; 
+    height: 100%;
+}
+.star-wars {
+    display: block; 
+    justify-content: center; 
+    position: relative;
+    height: 800px;
+    perspective: 300px;
+    -moz-perspective: 300px;
+    --color: #ff6;
+    font-family: 'Archivo Narrow', sans-serif;
+    font-size: 1.5em;
+    font-weight: bold;
+    line-height: 180%;
+    text-align: center;
+}
+.intro {
+    display: block;
+    position: relative;
+    top: -120px;
+    color: #1B7DEB;
+    font-size: 1.1em;
+    -webkit-animation: prelude 9s linear;
+       -moz-animation: prelude 9s linear;
+         -o-animation: prelude 9s linear;
+            animation: prelude 9s linear;
+    -webkit-animation-iteration-count: 1;
+       -moz-animation-iteration-count: 1;
+         -o-animation-iteration-count: 1;
+            animation-iteration-count: 1;
+}
+.crawl {
+    display: none;
+    position: relative; 
+    top: -1000px;
+    perspective: 300px;
+    -moz-perspective: 300px;
+    transform-style: preserve-3d;
+    -webkit-animation: crawl 410s linear;
+       -moz-animation: crawl 410s linear;
+         -o-animation: crawl 410s linear;
+            animation: crawl 410s linear;
+}
+
+.crawl > p {
+    font-size: 1.3em;
+}
+.crawl > .title { 
+    font-size: 300%;
+    text-align: center; 
+}
+.crawl > .title h1 {
+    margin: 0 0 100px;
+    text-transform: uppercase;
+}
+
+.fade {
+    position: relative;
+    width: 100%;
+    min-height: 50vh;
+    top: -55px;
+    background-image: linear-gradient(0deg, transparent, black 75%);
+    z-index: 1;
+}

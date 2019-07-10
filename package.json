@@ -13,6 +13,7 @@
   },
   "private": true,
   "dependencies": {
+    "@angular/animations": "^8.1.0",
     "@angular/common": "^7.2.2",
     "@angular/core": "^7.2.2",
     "@angular/forms": "^7.2.2",
@@ -25,9 +26,11 @@
     "@ionic-native/status-bar": "^5.0.0",
     "@ionic/angular": "^4.1.0",
     "@ionic/storage": "^2.2.0",
+    "compass-mixins": "^0.12.10",
     "cordova-android": "8.0.0",
     "cordova-sqlite-storage": "3.2.0",
     "core-js": "^2.5.4",
+    "jquery": "^3.4.1",
     "rxjs": "~6.5.1",
     "tslib": "^1.9.0",
     "zone.js": "~0.8.29"
@@ -44,6 +47,7 @@
     "@ionic/angular-toolkit": "~1.5.1",
     "@types/jasmine": "~2.8.8",
     "@types/jasminewd2": "~2.0.3",
+    "@types/jquery": "^3.3.30",
     "@types/node": "~12.0.0",
     "codelyzer": "~4.5.0",
     "cordova-plugin-device": "^2.0.2",
