@@ -16,6 +16,10 @@ Next Todo
 
 Get working on android w/Cordova - having issues with libraries, sdks and their env paths.
 
+july 11th, currently working on finalizing the detail display pages. 
+
+Something for later, is to implement either loading spinners or maybe ion-skeleton-text.
+
 Completed
 ----------
 

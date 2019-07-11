@@ -18,36 +18,61 @@ import { CharacterModel, Character } from '../models/character.model';
   styleUrls: ['./characters.page.scss'],
 })
 export class CharactersPage implements OnInit, OnDestroy {
-
-  characterSub: Subscription[] = [];
-
+  /** subscriptions */
+  characterSub: Subscription[];
+  /** Data holding variables. */
   characters: Character[];
   nextUrl: string;
   count: number;
 
+  /**
+   * ctor
+   * @param _swapiFetchService api service layer. 
+   * @param _dataService data passing service. 
+   * @param router router. 
+   */
   constructor(private _swapiFetchService: SwapiService,
               private _dataService: DataService,
               private router: Router) { }
-
+  
+  /**
+   * lifecycle hook runs when component is being created. 
+   * Handles data. 
+   */
   ngOnInit(): void {
+    this.characterSub = [];
     this.getCharacaters();
   }
 
+  /**
+   * lifecycle hook runs when component is destroyed. 
+   * Unsubs to subs.
+   */
   ngOnDestroy(): void {
     this.unsubscribe();
   } 
 
+  /**
+   * Click function that navigates to movie details page.
+   * Passes id, and data to service that gets resolved. 
+   * 
+   * @param character the character that was clicked. 
+   */
   displayCharacter(character: Character): void {
-    console.log("Clicked: ", character);
     this._dataService.setData(character.name, character);
     this.router.navigateByUrl(`/character/${character.name}`);
   }
 
-  loadData(event): void {
+  /**
+   * Loads more data on scroll. (infinite scroll functionality).
+   * @param event scroll event of reaching bottom of list.
+   */
+  loadData(event: any): void {
     this.characterSub[1] = this._swapiFetchService.genericFetch(this.nextUrl)
       .subscribe(
         (results: object) => {
-          this.characters = this.characters.concat(results['results']);
+          this.characters = this.characters.concat(results['results'])
+                                           .sort((a: Character, b: Character) => this.sortArr(a.name, b.name));
           this.nextUrl = results['next'];
           event.target.complete();
 
@@ -57,6 +82,9 @@ export class CharactersPage implements OnInit, OnDestroy {
       });
   }
 
+  /**
+   * The initial character fetch, fetches 20 characters. 
+   */
   private getCharacaters(): void {
     this.characterSub[0] = this._swapiFetchService.getCharacters()
       .pipe(
@@ -71,18 +99,29 @@ export class CharactersPage implements OnInit, OnDestroy {
         {
           this.count = results['count'];
           this.nextUrl = results['next'];
-          this.characters = this.characters.concat(results['results']);
-
-          console.log("Characters: ", this.characters);
+          this.characters = this.characters.concat(results['results'])
+                                           .sort((a: Character, b: Character) => this.sortArr(a.name, b.name));
         }
       )
   }
 
+  /**
+   * Unsubs from subs.
+   */
   private unsubscribe(): void {
     for(let i = 0; i < this.characterSub.length; i++) {
       if(this.characterSub[i] !== undefined) {
         this.characterSub[i].unsubscribe();
       }
     }
+  }
+
+  /**
+   * String sort function. 
+   * @param a string to sort 
+   * @param b string to sort
+   */
+  private sortArr(a: string, b: string): number {
+    return (a).localeCompare(b);
   }
 }

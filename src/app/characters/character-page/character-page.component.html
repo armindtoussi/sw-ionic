@@ -109,8 +109,9 @@
       <ion-item-divider mode="ios">
         <ion-label>Appeared In</ion-label>
       </ion-item-divider>
-      <ion-item *ngFor="let film of films" detail>
-        <!-- TODO - Click function added above to char component page.  -->
+      <ion-item *ngFor="let film of films" 
+                (click)="navToElementPage(film?.episode_id, '/movie')" 
+                detail>
         <ion-grid>
           <ion-row>
             <ion-col>
@@ -125,8 +126,9 @@
       <ion-item-divider mode="ios">
         <ion-label>Species</ion-label>
       </ion-item-divider>
-        <ion-item *ngFor="let spec of species" detail>
-          <!-- TODO - Click function added above to char component page.  -->
+        <ion-item *ngFor="let spec of species" 
+                  (click)="navToElementPage(spec?.name, '/species')" 
+                  detail>
           <ion-grid>
             <ion-row>
               <ion-col>
@@ -140,8 +142,9 @@
       <ion-item-divider mode="ios">
         <ion-label>Associated Starships</ion-label>
       </ion-item-divider>
-      <ion-item *ngFor="let ship of ships" detail>
-        <!-- TODO - Click function added above to char component page.  -->
+      <ion-item *ngFor="let ship of ships"
+                (click)="navToElementPage(ship?.name, '/starship')" 
+                detail>
         <ion-grid>
           <ion-row>
             <ion-col>
@@ -155,8 +158,9 @@
       <ion-item-divider mode="ios">
         <ion-label>Associated Vehicles</ion-label>
       </ion-item-divider>
-        <ion-item *ngFor="let vehicle of vehicles" detail>
-          <!-- TODO - Click function added above to char component page.  -->
+        <ion-item *ngFor="let vehicle of vehicles"
+                  (click)="navToElementPage(vehicle?.name, '/vehicle')" 
+                  detail>
           <ion-grid>
             <ion-row>
               <ion-col>

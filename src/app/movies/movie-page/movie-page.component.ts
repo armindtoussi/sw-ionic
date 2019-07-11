@@ -180,7 +180,7 @@ export class MoviePageComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Gets main movie data in the case of a reload or navigation to this page. 
+   * Gets main movie data in the case of a reload or manual nav to this page. 
    */
   private async getMovie(): Promise<void> {
     let id = this.parsePath();

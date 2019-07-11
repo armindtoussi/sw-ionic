@@ -17,7 +17,8 @@
               (click)="displayPlanet(planet)">
       <ion-item-group>
         <ion-label>{{ planet.name }}</ion-label>
-        <ion-note>{{ planet.population }}</ion-note>
+        <ion-note *ngIf="isNumber(planet.population)">{{ planet.population | number }}</ion-note>
+        <ion-note *ngIf="!isNumber(planet.population)">{{ planet.population }}</ion-note>
       </ion-item-group>
     </ion-item>
   </ion-list>

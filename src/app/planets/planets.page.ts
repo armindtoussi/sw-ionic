@@ -1,6 +1,5 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-
 //Services 
 import { SwapiService } from '../services/swapi.service';
 import { DataService }  from '../services/data.service';
@@ -61,6 +60,18 @@ export class PlanetsPage implements OnInit, OnDestroy {
     this.unsubscribe();
   }
 
+  /**
+   * Determines if it's a number.
+   * @param arg value to check if it's a number.
+   */
+  isNumber(arg: any): boolean  {
+    return !isNaN(parseFloat(arg)) && !isNaN(arg - 0);
+  }
+
+  /**
+   * Navigates to planet detail display page. 
+   * @param planet planet to display. 
+   */
   displayPlanet(planet: Planet): void {
     this._dataService.setData(planet.name, planet);
     this.router.navigateByUrl(`/planet/${planet.name}`);
@@ -75,7 +86,8 @@ export class PlanetsPage implements OnInit, OnDestroy {
     this.planetSub[1] = this._swapiFetchService.genericFetch(this.nextUrl)
       .subscribe(
         (results: object) => {
-          this.planets = this.planets.concat(results['results']);
+          this.planets = this.planets.concat(results['results'])
+                                     .sort((a: Planet, b: Planet) => this.sortArr(a.name, b.name));
           this.nextUrl = results['next'];
           event.target.complete();
 
@@ -87,7 +99,6 @@ export class PlanetsPage implements OnInit, OnDestroy {
 
   /**
    * Gets first 20 planets through swapi service. 
-   * 
    */
   private getPlanets(): void {
     this.planetSub[0] = this._swapiFetchService.getPlanets()
@@ -103,16 +114,29 @@ export class PlanetsPage implements OnInit, OnDestroy {
         {
           this.count   = results['count'];
           this.nextUrl = results['next'];
-          this.planets = this.planets.concat(results['results']);
+          this.planets = this.planets.concat(results['results'])
+                                     .sort((a: Planet, b: Planet) => this.sortArr(a.name, b.name));
         }
       );
   }
 
+  /**
+   * Unsubs to subs. 
+   */
   private unsubscribe(): void {
     for(let i = 0; i < this.planetSub.length; i++) {
       if(this.planetSub[i] !== undefined) {
         this.planetSub[i].unsubscribe();
       }
     }
+  }
+
+  /**
+   * String sort function. 
+   * @param a string to sort 
+   * @param b string to sort
+   */
+  private sortArr(a: string, b: string): number {
+    return (a).localeCompare(b);
   }
 }
