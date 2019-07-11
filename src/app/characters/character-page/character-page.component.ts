@@ -142,7 +142,8 @@ export class CharacterPageComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Gets main character data in the case of a reload or manual nav to this page. 
+   * Gets main character data in the case of a reload or 
+   * manual nav to this page. 
    */
   private getCharacter(): void {
     let id = this.parsePath();

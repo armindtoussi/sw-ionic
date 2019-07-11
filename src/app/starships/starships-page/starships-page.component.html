@@ -186,8 +186,9 @@
       <ion-item-divider mode="ios">
         <ion-label>Pilots</ion-label>
       </ion-item-divider>
-      <ion-item *ngFor="let pilot of pilots" detail>
-        <!-- TODO - Click function added above to char component page.  -->
+      <ion-item *ngFor="let pilot of pilots"
+                (click)="navToElementPage(pilot?.name, '/character')" 
+                detail>
         <ion-grid>
           <ion-row>
             <ion-col>
@@ -201,8 +202,9 @@
       <ion-item-divider mode="ios">
         <ion-label>Pilots</ion-label>
       </ion-item-divider>
-      <ion-item *ngFor="let film of films" detail>
-        <!-- TODO - Click function added above to char component page.  -->
+      <ion-item *ngFor="let film of films" 
+                (click)="navToElementPage(film?.episode_id, '/movie')" 
+                detail>
         <ion-grid>
           <ion-row>
             <ion-col>
