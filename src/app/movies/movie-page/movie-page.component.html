@@ -87,7 +87,8 @@
           <ion-row>
             <ion-col>
               <ion-label>{{ planet?.name }}</ion-label>
-              <ion-note>{{ planet?.population }}</ion-note>
+              <ion-note *ngIf="isNumber(planet?.population)">{{ planet?.population | number }}</ion-note>
+              <ion-note *ngIf="!isNumber(planet?.population)">{{ planet?.population }}</ion-note>
             </ion-col>
           </ion-row>
         </ion-grid>
