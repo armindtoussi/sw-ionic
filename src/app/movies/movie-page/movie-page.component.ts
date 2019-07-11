@@ -51,6 +51,17 @@ export class MoviePageComponent implements OnInit, OnDestroy {
     this.unsubscribe();
   }
 
+  navToElementPage(id: string, segment: string): void {
+    if(id && segment) {
+      this.router.navigateByUrl(`/${segment}/${id}`);
+    } else {
+      this._toast.presentToast(environment.notFound)
+        .then((res: any) => {
+          this.router.navigateByUrl(`/`);
+      });
+    }
+  }
+
   async presentCrawlModal(): Promise<void> {
     const modal = await this.modalCtrl.create({
       component: CrawlModalPage,
