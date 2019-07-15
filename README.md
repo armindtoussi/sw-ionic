@@ -16,9 +16,12 @@ Next Todo
 
 Get working on android w/Cordova - having issues with libraries, sdks and their env paths.
 
-july 11th, currently working on finalizing the detail display pages. 
-
+Think about setting up a firebase to CDN images, would be a big job would have to link api -> firebase 
 Something for later, is to implement either loading spinners or maybe ion-skeleton-text.
+Think about new feature possibilities. ?
+    - favourites list, 
+    - search feature,
+    - 
 
 Completed
 ----------
@@ -29,3 +32,5 @@ Fixed toPromise usage on components due to it being an anti pattern with rxjs.
 Finished up display pages. 
 Decided on removing a large portion of the caching, it didn't really make sense to, basically, cache everything in a local storge on the user device. I'd basically, eventually, be downloading the entire api contents on to a user device. Instead we're just keeping track of current selection via url. We can download things as needed through the api. 
 I may implement some light caching later. Just to reload what the user is currently on when they paused the app. 
+
+Completed color theme, added some new icons. 
