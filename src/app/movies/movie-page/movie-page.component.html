@@ -10,7 +10,8 @@
 </ion-header>
 
 <ion-content>
-  <h1>Episode {{ data?.episode_id }}: {{ data?.title }}</h1>
+  <h1>Episode {{ data?.episode_id }}: 
+    {{ data?.title }}</h1>
   <ion-list lines="full">
     <ion-item-group>
       <ion-item-divider mode="ios">
@@ -23,7 +24,7 @@
             <ion-label>Director:</ion-label>
           </ion-col>
           <ion-col>
-            <ion-label text-wrap><strong>{{ data?.director }}</strong></ion-label>
+            <ion-label color="primary"  text-wrap><strong>{{ data?.director }}</strong></ion-label>
           </ion-col>
         </ion-row>
       </ion-grid>
@@ -35,7 +36,7 @@
             <ion-label>Producer:</ion-label>
           </ion-col>
           <ion-col>
-            <ion-label text-wrap><strong>{{ data?.producer }}</strong></ion-label>
+            <ion-label color="primary"  text-wrap><strong>{{ data?.producer }}</strong></ion-label>
           </ion-col>
         </ion-row>
       </ion-grid>
@@ -46,7 +47,9 @@
           <ion-col size="4">
             <ion-label>Released:</ion-label>
           </ion-col>
-          <ion-col text-wrap><strong>{{ data?.release_date | date:mediumDate }}</strong></ion-col>
+          <ion-col text-wrap>
+            <ion-label color="primary"><strong>{{ data?.release_date | date:mediumDate }}</strong></ion-label>
+          </ion-col>
         </ion-row>
       </ion-grid>
     </ion-item>

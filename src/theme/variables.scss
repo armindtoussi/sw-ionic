@@ -4,20 +4,20 @@
 /** Ionic CSS Variables **/
 :root {
   /** primary **/
-  --ion-color-primary: #3880ff;
-  --ion-color-primary-rgb: 56, 128, 255;
-  --ion-color-primary-contrast: #ffffff;
-  --ion-color-primary-contrast-rgb: 255, 255, 255;
-  --ion-color-primary-shade: #3171e0;
-  --ion-color-primary-tint: #4c8dff;
+  --ion-color-primary: #ffffff;
+  --ion-color-primary-rgb: 255,255,255;
+  --ion-color-primary-contrast: #000000;
+  --ion-color-primary-contrast-rgb: 0,0,0;
+  --ion-color-primary-shade: #e0e0e0;
+  --ion-color-primary-tint: #ffffff;
 
   /** secondary **/
-  --ion-color-secondary: #0cd1e8;
-  --ion-color-secondary-rgb: 12, 209, 232;
-  --ion-color-secondary-contrast: #ffffff;
-  --ion-color-secondary-contrast-rgb: 255, 255, 255;
-  --ion-color-secondary-shade: #0bb8cc;
-  --ion-color-secondary-tint: #24d6ea;
+  --ion-color-secondary: #F9D71C;
+  --ion-color-secondary-rgb: 249,215,28;
+  --ion-color-secondary-contrast: #000000;
+  --ion-color-secondary-contrast-rgb: 0,0,0;
+  --ion-color-secondary-shade: #dbbd19;
+  --ion-color-secondary-tint: #fadb33;
 
   /** tertiary **/
   --ion-color-tertiary: #7044ff;
@@ -74,4 +74,25 @@
   --ion-color-light-contrast-rgb: 0, 0, 0;
   --ion-color-light-shade: #d7d8da;
   --ion-color-light-tint: #f5f6f9;
+
+  --ion-text-color: #F9D71C;
+  --ion-text-color-secondary: #ffffff;
+  //Set various text colors.
+  --ion-color-step-850: #F9D71C;
+  --ion-color-step-600: #fff;
+  --ion-color-step-550: #ebebeb;
+  --ion-color-step-50 : #6A6A6A;
+  //Define dark background colors
+  --ion-color-bg: #2b2b2b;
+  --ion-color-bg-rgb: 43,43,43;
+  --ion-color-bg-contrast: #ffffff;
+  --ion-color-bg-contrast-rgb: 255,255,255;
+  --ion-color-bg-shade: #262626;
+  --ion-color-bg-tint: #555555;
+  //icon colors set.
+  --detail-icon-color: var(--ion-color-primary, #fff);
+  //Background color set
+  --ion-background-color: var(--ion-color-bg);
+
 }
+// box-shadow: 0px 3px 1px 2px rgba(255,255,255,0.2), 0px 2px 2px 0px rgba(255,255,255,0.14), 0px 1px 5px 0px rgba(255,255,255,0.12)

@@ -23,7 +23,7 @@
               <ion-label>Hair Color:</ion-label>
             </ion-col>
             <ion-col>
-              <ion-label text-wrap><strong>{{ data?.hair_color }}</strong></ion-label>
+              <ion-label color="primary" text-wrap><strong>{{ data?.hair_color }}</strong></ion-label>
             </ion-col>
           </ion-row>
         </ion-grid>
@@ -35,7 +35,7 @@
               <ion-label>Eye Color:</ion-label>
             </ion-col>
             <ion-col>
-              <ion-label text-wrap><strong>{{ data?.eye_color }}</strong></ion-label>
+              <ion-label color="primary" text-wrap><strong>{{ data?.eye_color }}</strong></ion-label>
             </ion-col>
           </ion-row>
         </ion-grid>
@@ -46,7 +46,9 @@
             <ion-col size="5">
               <ion-label>Skin:</ion-label>
             </ion-col>
-            <ion-col text-wrap><strong>{{ data?.skin_color }}</strong></ion-col>
+            <ion-col text-wrap>
+              <ion-label color="primary"><strong>{{ data?.skin_color }}</strong></ion-label>
+            </ion-col>
           </ion-row>
         </ion-grid>
       </ion-item>
@@ -57,7 +59,7 @@
               <ion-label>Gender:</ion-label>
             </ion-col>
             <ion-col>
-              <ion-label text-wrap><strong>{{ data?.gender }}</strong></ion-label>
+              <ion-label color="primary" text-wrap><strong>{{ data?.gender }}</strong></ion-label>
             </ion-col>
           </ion-row>
         </ion-grid>
@@ -69,10 +71,10 @@
               <ion-label>Height:</ion-label>
             </ion-col>
             <ion-col *ngIf="isNumber(data?.height)">
-              <ion-label text-wrap><strong>{{ data?.height }}cm</strong></ion-label>
+              <ion-label color="primary" text-wrap><strong>{{ data?.height }}cm</strong></ion-label>
             </ion-col>
             <ion-col *ngIf="!isNumber(data?.height)">
-              <ion-label text-wrap><strong>{{ data?.height }}</strong></ion-label>
+              <ion-label color="primary" text-wrap><strong>{{ data?.height }}</strong></ion-label>
             </ion-col>
           </ion-row>
         </ion-grid>
@@ -84,10 +86,10 @@
               <ion-label>Weight</ion-label>
             </ion-col>
             <ion-col *ngIf="isNumber(data?.mass)">
-              <ion-label text-wrap><strong>{{ data?.mass }}kg</strong></ion-label>
+              <ion-label color="primary" text-wrap><strong>{{ data?.mass }}kg</strong></ion-label>
             </ion-col>
             <ion-col *ngIf="!isNumber(data?.mass)">
-              <ion-label text-wrap><strong>{{ data?.mass }}</strong></ion-label>
+              <ion-label color="primary" text-wrap><strong>{{ data?.mass }}</strong></ion-label>
             </ion-col>
           </ion-row>
         </ion-grid>
@@ -99,7 +101,7 @@
               <ion-label>Birth Year</ion-label>
             </ion-col>
             <ion-col>
-              <ion-label text-wrap><strong>{{ data?.birth_year }}</strong></ion-label>
+              <ion-label color="primary" text-wrap><strong>{{ data?.birth_year }}</strong></ion-label>
             </ion-col>
           </ion-row>
         </ion-grid>

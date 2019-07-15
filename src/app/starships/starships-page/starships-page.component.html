@@ -23,7 +23,7 @@
               <ion-label text-wrap>Model:</ion-label>
             </ion-col>
             <ion-col>
-              <ion-label text-wrap><strong>{{ data?.model }}</strong></ion-label>
+              <ion-label color="primary" text-wrap><strong>{{ data?.model }}</strong></ion-label>
             </ion-col>
           </ion-row>
         </ion-grid>
@@ -35,7 +35,7 @@
               <ion-label text-wrap>Starship Class:</ion-label>
             </ion-col>
             <ion-col>
-              <ion-label text-wrap><strong>{{ data?.starship_class }}</strong></ion-label>
+              <ion-label color="primary" text-wrap><strong>{{ data?.starship_class }}</strong></ion-label>
             </ion-col>
           </ion-row>
         </ion-grid>
@@ -47,7 +47,7 @@
               <ion-label text-wrap>Manufacturer:</ion-label>
             </ion-col>
             <ion-col>
-              <ion-label text-wrap><strong>{{ data?.manufacturer }}</strong></ion-label>
+              <ion-label color="primary" text-wrap><strong>{{ data?.manufacturer }}</strong></ion-label>
             </ion-col>
           </ion-row>
         </ion-grid>
@@ -59,10 +59,10 @@
               <ion-label text-wrap>Crew:</ion-label>
             </ion-col>
             <ion-col *ngIf="isNumber(data?.crew)">
-              <ion-label text-wrap><strong>{{ data?.crew | number }}</strong></ion-label>
+              <ion-label color="primary" text-wrap><strong>{{ data?.crew | number }}</strong></ion-label>
             </ion-col>
             <ion-col *ngIf="!isNumber(data?.crew)">
-              <ion-label text-wrap><strong>{{ data?.crew }}</strong></ion-label>
+              <ion-label color="primary" text-wrap><strong>{{ data?.crew }}</strong></ion-label>
             </ion-col>
           </ion-row>
         </ion-grid>
@@ -74,10 +74,10 @@
               <ion-label text-wrap>Passengers:</ion-label>
             </ion-col>
             <ion-col *ngIf="isNumber(data?.passengers)">
-              <ion-label text-wrap><strong>{{ data?.passengers | number }}</strong></ion-label>
+              <ion-label color="primary" text-wrap><strong>{{ data?.passengers | number }}</strong></ion-label>
             </ion-col>
             <ion-col *ngIf="!isNumber(data?.passengers)">
-              <ion-label text-wrap><strong>{{ data?.passengers }}</strong></ion-label>
+              <ion-label color="primary" text-wrap><strong>{{ data?.passengers }}</strong></ion-label>
             </ion-col>
           </ion-row>
         </ion-grid>
@@ -89,10 +89,10 @@
               <ion-label text-wrap>Length:</ion-label>
             </ion-col>
             <ion-col *ngIf="isNumber(data?.length)">
-              <ion-label text-wrap><strong>{{ data?.length | number }}</strong></ion-label>
+              <ion-label color="primary" text-wrap><strong>{{ data?.length | number }}</strong></ion-label>
             </ion-col>
             <ion-col *ngIf="!isNumber(data?.length)">
-              <ion-label text-wrap><strong>{{ data?.length }}</strong></ion-label>
+              <ion-label color="primary" text-wrap><strong>{{ data?.length }}</strong></ion-label>
             </ion-col>
           </ion-row>
         </ion-grid>
@@ -104,10 +104,10 @@
               <ion-label text-wrap>Cargo Capacity:</ion-label>
             </ion-col>
             <ion-col *ngIf="isNumber(data?.cargo_capacity)">
-              <ion-label text-wrap><strong>{{ data?.cargo_capacity | number }}</strong></ion-label>
+              <ion-label color="primary" text-wrap><strong>{{ data?.cargo_capacity | number }}</strong></ion-label>
             </ion-col>
             <ion-col *ngIf="!isNumber(data?.cargo_capacity)">
-              <ion-label text-wrap><strong>{{ data?.cargo_capacity }}</strong></ion-label>
+              <ion-label color="primary" text-wrap><strong>{{ data?.cargo_capacity }}</strong></ion-label>
             </ion-col>
           </ion-row>
         </ion-grid>
@@ -119,10 +119,10 @@
               <ion-label text-wrap>Cost(Creds):</ion-label>
             </ion-col>
             <ion-col *ngIf="isNumber(data?.cost_in_credits)">
-              <ion-label text-wrap><strong>{{ data?.cost_in_credits | number }}</strong></ion-label>
+              <ion-label color="primary"text-wrap><strong>{{ data?.cost_in_credits | number }}</strong></ion-label>
             </ion-col>
             <ion-col *ngIf="!isNumber(data?.cost_in_credits)">
-              <ion-label text-wrap><strong>{{ data?.cost_in_credits }}</strong></ion-label>
+              <ion-label color="primary" text-wrap><strong>{{ data?.cost_in_credits }}</strong></ion-label>
             </ion-col>
           </ion-row>
         </ion-grid>
@@ -134,10 +134,10 @@
               <ion-label text-wrap>Max Speed:</ion-label>
             </ion-col>
             <ion-col *ngIf="isNumber(data?.max_atmosphering_speed)">
-              <ion-label text-wrap><strong>{{ data?.max_atmosphering_speed | number }}</strong></ion-label>
+              <ion-label color="primary" text-wrap><strong>{{ data?.max_atmosphering_speed | number }}</strong></ion-label>
             </ion-col>
             <ion-col *ngIf="!isNumber(data?.max_atmosphering_speed)">
-              <ion-label text-wrap><strong>{{ data?.max_atmosphering_speed }}</strong></ion-label>
+              <ion-label color="primary" text-wrap><strong>{{ data?.max_atmosphering_speed }}</strong></ion-label>
             </ion-col>
           </ion-row>
         </ion-grid>
@@ -149,7 +149,7 @@
               <ion-label text-wrap>Hyperdrive Rating:</ion-label>
             </ion-col>
             <ion-col>
-              <ion-label text-wrap><strong>{{ data?.hyperdrive_rating }}</strong></ion-label>
+              <ion-label color="primary" text-wrap><strong>{{ data?.hyperdrive_rating }}</strong></ion-label>
             </ion-col>
           </ion-row>
         </ion-grid>
@@ -161,10 +161,10 @@
               <ion-label text-wrap>MGLT:</ion-label>
             </ion-col>
             <ion-col *ngIf="isNumber(data?.MGLT)">
-              <ion-label text-wrap><strong>{{ data?.MGLT | number }}</strong></ion-label>
+              <ion-label color="primary" text-wrap><strong>{{ data?.MGLT | number }}</strong></ion-label>
             </ion-col>
             <ion-col *ngIf="!isNumber(data?.MGLT)">
-              <ion-label text-wrap><strong>{{ data?.MGLT }}</strong></ion-label>
+              <ion-label color="primary" text-wrap><strong>{{ data?.MGLT }}</strong></ion-label>
             </ion-col>
           </ion-row>
         </ion-grid>
@@ -176,7 +176,7 @@
               <ion-label text-wrap>Consumables:</ion-label>
             </ion-col>
             <ion-col>
-              <ion-label text-wrap><strong>{{ data?.consumables }}</strong></ion-label>
+              <ion-label color="primary" text-wrap><strong>{{ data?.consumables }}</strong></ion-label>
             </ion-col>
           </ion-row>
         </ion-grid>

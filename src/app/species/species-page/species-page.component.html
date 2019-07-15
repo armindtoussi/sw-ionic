@@ -24,7 +24,7 @@
             <ion-label text-wrap>Classification:</ion-label>
           </ion-col>
           <ion-col>
-            <ion-label text-wrap><strong>{{ data?.classification }}</strong></ion-label>
+            <ion-label color="primary" text-wrap><strong>{{ data?.classification }}</strong></ion-label>
           </ion-col>
         </ion-row>
       </ion-grid>
@@ -36,7 +36,7 @@
             <ion-label text-wrap>Designation:</ion-label>
           </ion-col>
           <ion-col>
-            <ion-label text-wrap><strong>{{ data?.designation }}</strong></ion-label>
+            <ion-label color="primary" text-wrap><strong>{{ data?.designation }}</strong></ion-label>
           </ion-col>
         </ion-row>
       </ion-grid>
@@ -48,7 +48,7 @@
             <ion-label text-wrap>Skin Colors:</ion-label>
           </ion-col>
           <ion-col>
-            <ion-label text-wrap><strong>{{ data?.skin_colors }}</strong></ion-label>
+            <ion-label color="primary" text-wrap><strong>{{ data?.skin_colors }}</strong></ion-label>
           </ion-col>
         </ion-row>
       </ion-grid>
@@ -60,7 +60,7 @@
             <ion-label text-wrap>Eye Colors:</ion-label>
           </ion-col>
           <ion-col>
-            <ion-label text-wrap><strong>{{ data?.eye_colors }}</strong></ion-label>
+            <ion-label color="primary" text-wrap><strong>{{ data?.eye_colors }}</strong></ion-label>
           </ion-col>
         </ion-row>
       </ion-grid>
@@ -72,7 +72,7 @@
             <ion-label text-wrap>Hair Colors:</ion-label>
           </ion-col>
           <ion-col>
-            <ion-label text-wrap><strong>{{ data?.hair_colors }}</strong></ion-label>
+            <ion-label color="primary" text-wrap><strong>{{ data?.hair_colors }}</strong></ion-label>
           </ion-col>
         </ion-row>
       </ion-grid>
@@ -84,7 +84,7 @@
             <ion-label text-wrap>Language:</ion-label>
           </ion-col>
           <ion-col>
-            <ion-label text-wrap><strong>{{ data?.language }}</strong></ion-label>
+            <ion-label color="primary" text-wrap><strong>{{ data?.language }}</strong></ion-label>
           </ion-col>
         </ion-row>
       </ion-grid>
@@ -96,10 +96,10 @@
             <ion-label text-wrap>Avg Height:</ion-label>
           </ion-col>
           <ion-col *ngIf="isNumber(data?.average_height)">
-            <ion-label text-wrap><strong>{{ data?.average_height | number }}cm</strong></ion-label>
+            <ion-label color="primary" text-wrap><strong>{{ data?.average_height | number }}cm</strong></ion-label>
           </ion-col>
           <ion-col *ngIf="!isNumber(data?.average_height)">
-            <ion-label text-wrap><strong>{{ data?.average_height }}</strong></ion-label>
+            <ion-label color="primary" text-wrap><strong>{{ data?.average_height }}</strong></ion-label>
           </ion-col>
         </ion-row>
       </ion-grid>
@@ -111,10 +111,10 @@
             <ion-label text-wrap>Avg Lifespan:</ion-label>
           </ion-col>
           <ion-col *ngIf="isNumber(data?.average_lifespan)">
-            <ion-label text-wrap><strong>{{ data?.average_lifespan | number }} years</strong></ion-label>
+            <ion-label color="primary" text-wrap><strong>{{ data?.average_lifespan | number }} years</strong></ion-label>
           </ion-col>
           <ion-col *ngIf="!isNumber(data?.average_lifespan)">
-            <ion-label text-wrap><strong>{{ data?.average_lifespan }}</strong></ion-label>
+            <ion-label color="primary" text-wrap><strong>{{ data?.average_lifespan }}</strong></ion-label>
           </ion-col>
         </ion-row>
       </ion-grid>
