@@ -11,6 +11,8 @@ import { Subscription } from 'rxjs';
 import { map, flatMap } from 'rxjs/operators';
 //Models
 import { Planet } from '../models/planets.model';
+//ENV
+import { environment } from 'src/environments/environment';
 
 
 @Component({
@@ -23,7 +25,7 @@ export class PlanetsPage implements OnInit, OnDestroy {
   @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
 
   /** Planets subscription. */
-  planetSub: Subscription[] = [];
+  planetSub: Subscription[];
 
   /** Planets array. */
   planets: Planet[];
@@ -31,6 +33,9 @@ export class PlanetsPage implements OnInit, OnDestroy {
   nextUrl: string;
   /** total number of planet entries. */
   count: number;
+
+  searchText: string;
+  isSearch: boolean;
 
   /**
    * ctor. 
@@ -49,6 +54,7 @@ export class PlanetsPage implements OnInit, OnDestroy {
    * Inits the planet list. 
    */            
   ngOnInit(): void {
+    this.planetSub = [];
     this.getPlanets();
   }
 
@@ -66,6 +72,24 @@ export class PlanetsPage implements OnInit, OnDestroy {
    */
   isNumber(arg: any): boolean  {
     return !isNaN(parseFloat(arg)) && !isNaN(arg - 0);
+  }
+
+  search(): void {
+    if(this.searchText === "" || this.searchText === undefined) {
+      return this.resetSearch();
+    }
+
+    this.planetSub[2] = this._swapiFetchService.search(this.searchText, environment.swapiPlanets)
+      .subscribe((results: any) => {
+        this.isSearch = true;
+        this.nextUrl = results['next'];
+        this.planets = results.results.sort((a: Planet, b: Planet) => this.sortArr(a.name, b.name));
+      });
+  }
+
+  resetSearch(): void {
+    this.isSearch = false;
+    this.getPlanets();
   }
 
   /**
@@ -95,6 +119,17 @@ export class PlanetsPage implements OnInit, OnDestroy {
             event.target.disabled = true;
           }
       });
+  }
+
+  loadMoreSearch(event: any): void {
+    this.planetSub[3] = this._swapiFetchService.genericFetch(this.nextUrl)
+      .subscribe((results: object) => {
+        this.planets = this.planets.concat(results['results'])
+                                   .sort((a: Planet, b: Planet) => this.sortArr(a.name, b.name));
+        this.nextUrl = results['next'];
+        
+        event.target.complete();
+      })
   }
 
   /**

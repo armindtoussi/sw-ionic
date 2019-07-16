@@ -10,9 +10,15 @@
   </ion-header>
 
 <ion-content padding>
-
   <ion-list>
-    <ion-item *ngFor="let planet of planets" detail
+    <ion-searchbar mode="ios" 
+                   placeholder="Search Planets..."
+                   animated="true"
+                   [(ngModel)]="searchText"
+                   (ionChange)="search()"
+                   ></ion-searchbar>
+    <ion-item *ngFor="let planet of planets" 
+              detail
               lines="full"
               (click)="displayPlanet(planet)">
       <ion-item-group>
@@ -23,8 +29,15 @@
     </ion-item>
   </ion-list>
 
-  <ion-infinite-scroll threshold="100px" (ionInfinite)="loadData($event)">
+  <ion-infinite-scroll *ngIf="!isSearch" threshold="100px" (ionInfinite)="loadData($event)">
     <ion-infinite-scroll-content
+      loadingSpinner="bubbles"
+      loadingText="Loading more planets...">
+    </ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+
+  <ion-infinite-scroll *ngIf="isSearch && nextUrl" threshold="100px" (ionInfinite)="loadMoreSearch($event)">
+      <ion-infinite-scroll-content
       loadingSpinner="bubbles"
       loadingText="Loading more planets...">
     </ion-infinite-scroll-content>

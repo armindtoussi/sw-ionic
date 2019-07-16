@@ -11,8 +11,12 @@
 
 
 <ion-content padding>
-
   <ion-list>
+    <ion-searchbar mode="ios" 
+                   placeholder="Search Movies..."
+                   animated="true"
+                   [(ngModel)]="searchText"
+                   (ionChange)="search()"></ion-searchbar>
     <ion-item *ngFor="let movie of movies" detail 
               lines="full" 
               (click)="displayMovie(movie)">
@@ -22,5 +26,4 @@
       </ion-item-group>
     </ion-item>
   </ion-list>
-  <!-- <ion-icon name="Star_Wars_Battle_Droid" md="md-Star_Wars_Battle_Droid" ios="ios-Star_Wars_Battle_Droid"></ion-icon> -->
 </ion-content>

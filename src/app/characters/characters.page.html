@@ -9,10 +9,16 @@
     </ion-toolbar>
   </ion-header>
 
-<ion-content padding>
-  
+<ion-content padding> 
   <ion-list>
-    <ion-item *ngFor="let char of characters" detail
+    <ion-searchbar mode="ios" 
+                   placeholder="Search Characters..."
+                   animated="true"
+                   [(ngModel)]="searchText"
+                   (ionChange)="search()"
+                   ></ion-searchbar>
+    <ion-item *ngFor="let char of characters" 
+              detail
               lines="full"
               (click)="displayCharacter(char)">
       <ion-item-group>
@@ -22,11 +28,18 @@
     </ion-item>
   </ion-list>
 
-  <ion-infinite-scroll threshold="100px" (ionInfinite)="loadData($event)">
+  <ion-infinite-scroll *ngIf="!isSearch" threshold="100px" (ionInfinite)="loadData($event)">
     <ion-infinite-scroll-content
       loadingSpinner="bubbles"
       loadingText="Loading more characters...">
     </ion-infinite-scroll-content>
   </ion-infinite-scroll>
-  
+
+  <ion-infinite-scroll *ngIf="isSearch && nextUrl" threshold="100px" (ionInfinite)="loadMoreSearch($event)">
+    <ion-infinite-scroll-content
+      loadingSpinner="bubbles"
+      loadingText="Loading more characters...">
+    </ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+
 </ion-content>

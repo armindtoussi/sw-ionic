@@ -10,6 +10,8 @@ import { SwapiService } from '../services/swapi.service';
 import { DataService } from '../services/data.service';
 //Models
 import { Vehicle } from '../models/vehicles.model';
+//ENV
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-vehicles',
@@ -27,6 +29,9 @@ export class VehiclesPage implements OnInit, OnDestroy {
   nextUrl: string;
   /** Total number of results. */
   count: number;
+
+  searchText: string;
+  isSearch: boolean; 
 
   /**
    * ctor
@@ -53,6 +58,24 @@ export class VehiclesPage implements OnInit, OnDestroy {
    */
   ngOnDestroy(): void {
     this.unsubscribe();
+  }
+
+  search(): void {
+    if(this.searchText === "" || this.searchText === undefined) {
+      return this.resetSearch(); 
+    }
+
+    this.vehicleSub[2] = this._swapiFetchService.search(this.searchText, environment.swapiVehicles)
+      .subscribe((results: any) => {
+        this.isSearch = true;
+        this.nextUrl = results['next'];
+        this.vehicles = results.results.sort((a: Vehicle, b: Vehicle) => this.sortArr(a.name, b.name));
+      });
+  }
+
+  resetSearch(): void {
+    this.isSearch = false;
+    this.getVehicles();
   }
 
   /**
@@ -84,6 +107,17 @@ export class VehiclesPage implements OnInit, OnDestroy {
           }
         }
       );
+  }
+
+  loadMoreSearch(event: any): void {
+    this.vehicleSub[3] = this._swapiFetchService.genericFetch(this.nextUrl) 
+      .subscribe((results: object) => {
+        this.vehicles = this.vehicles.concat(results['results'])
+                                     .sort((a: Vehicle, b: Vehicle) => this.sortArr(a.name, b.name));
+        this.nextUrl = results['next'];
+        
+        event.target.complete();
+      });
   }
 
   /**

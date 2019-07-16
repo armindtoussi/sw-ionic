@@ -1,16 +1,15 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-
 //Services
 import { SwapiService } from '../services/swapi.service';
-
 //RXJS
 import { Subscription } from 'rxjs';
-
 //Models
 import { FilmsModel, Film }     from '../models/films.model';
 import { DataService }    from '../services/data.service';
 import { StorageService } from '../services/storage.service';
+//ENV
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-movies',
@@ -20,10 +19,12 @@ import { StorageService } from '../services/storage.service';
 
 export class MoviesPage implements OnInit, OnDestroy {
   /** Movie fetch subscription. */
-  movieSub: Subscription;
+  movieSub: Subscription[];
   /** Movies result array. */
   movies: Film[];
-
+  /** Search text. */
+  searchText: string;
+  
   /**
    * ctor
    * @param _swapiFetchService swapi fetch service.
@@ -42,6 +43,8 @@ export class MoviesPage implements OnInit, OnDestroy {
    * 
    */
   ngOnInit(): void {
+    this.movieSub = [];
+
     this._storage.getMovies().then((films: Film[] | null) => {
       if(films) {
         this.movies = films.sort((a: Film, b: Film) => {
@@ -56,12 +59,9 @@ export class MoviesPage implements OnInit, OnDestroy {
   /**
    * OnDestroy lifecycle hook. 
    * Unsubs from subs. 
-   * 
    */
   ngOnDestroy(): void { 
-    if(this.movieSub !== undefined) {
-      this.movieSub.unsubscribe();
-    }
+    this.unsubscribe();
   }
 
   /**
@@ -76,18 +76,41 @@ export class MoviesPage implements OnInit, OnDestroy {
   }
 
   /**
+   * Search function, triggered on IonChange. 
+   */
+  search(): void {
+    console.log(this.searchText);
+    this.movieSub[1] = this._swapiFetchService.search(this.searchText, 
+                                                      environment.swapiMovies)
+      .subscribe((results: any) => {
+        this.movies = results.results;
+      });
+                        
+  }
+
+  /**
    * Fetches all movies through swapi service.
    * 
    */
   private getMovies(): void {
-    this.movieSub = this._swapiFetchService.getSWMovies()
+    this.movieSub[0] = this._swapiFetchService.getSWMovies()
       .subscribe(
         (results: FilmsModel) =>
         {
-          console.log("Results: ", results);
           this.movies = results['results'];
           this._storage.addMovies(results);
         }
       );
+  }
+
+  /**
+   * Unsub to subs. 
+   */
+  private unsubscribe(): void {
+    for(let i = 0; i < this.movieSub.length; i++) {
+      if(this.movieSub[i] !== undefined) {
+        this.movieSub[i].unsubscribe();
+      }
+    }
   }
 }

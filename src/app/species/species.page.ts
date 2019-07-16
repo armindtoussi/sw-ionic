@@ -10,6 +10,8 @@ import { SwapiService } from '../services/swapi.service';
 import { DataService } from '../services/data.service';
 //Models
 import { Species } from '../models/species.model';
+//ENV
+import { environment } from 'src/environments/environment';
 
 
 @Component({
@@ -29,6 +31,9 @@ export class SpeciesPage implements OnInit, OnDestroy {
   nextUrl: string;
   /** Total count of results */
   count: number;
+
+  searchText: string;
+  isSearch: boolean;
 
   /**
    * ctor.
@@ -53,6 +58,24 @@ export class SpeciesPage implements OnInit, OnDestroy {
    */
   ngOnDestroy(): void {
     this.unsubscribe();
+  }
+
+  search(): void {
+    if(this.searchText === "" || this.searchText === undefined) {
+      return this.resetSearch();
+    }
+
+    this.speciesSub[2] = this._swapiFetchService.search(this.searchText, environment.swapiSpecies)
+      .subscribe((results: any) => {
+        this.isSearch = true; 
+        this.nextUrl = results['next'];
+        this.species = results.results.sort((a: Species, b: Species) => this.sortArr(a.name, b.name));
+      });
+  }
+
+  resetSearch(): void {
+    this.isSearch = false;
+    this.getSpecies();
   }
 
   /**
@@ -81,6 +104,17 @@ export class SpeciesPage implements OnInit, OnDestroy {
           if(this.species.length === this.count) {
             event.target.disabled = true;
           }
+      });
+  }
+
+  loadMoreSearch(event: any): void {
+    this.speciesSub[3] = this._swapiFetchService.genericFetch(this.nextUrl)
+      .subscribe((results: object) => {
+        this.species = this.species.concat(results['results'])
+                                   .sort((a: Species, b: Species) => this.sortArr(a.name, b.name));
+        this.nextUrl = results['next'];
+
+        event.target.complete();
       });
   }
 

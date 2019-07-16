@@ -65,4 +65,15 @@ export class SwapiService {
         
         return forkJoin(arr);
     }
+
+    /**
+     * Searches api with given text and given type. 
+     * @param searchText text to search for. 
+     * @param type the search type.
+     */
+    search(searchText: string, type: string): Observable<any> {
+        let url = `${environment.swapiBase}${type}/${environment.swapiSearch}${searchText}`;
+        console.log("Search Url: ", url);
+        return this._http.get(url);
+    }
 }

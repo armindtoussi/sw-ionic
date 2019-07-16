@@ -10,7 +10,8 @@ import { SwapiService } from '../services/swapi.service';
 import { DataService } from '../services/data.service';
 
 //Models
-import { CharacterModel, Character } from '../models/character.model';
+import { Character } from '../models/character.model';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-characters',
@@ -24,6 +25,9 @@ export class CharactersPage implements OnInit, OnDestroy {
   characters: Character[];
   nextUrl: string;
   count: number;
+
+  searchText: string; 
+  isSearch: boolean;
 
   /**
    * ctor
@@ -41,7 +45,7 @@ export class CharactersPage implements OnInit, OnDestroy {
    */
   ngOnInit(): void {
     this.characterSub = [];
-    this.getCharacaters();
+    this.getCharacters();
   }
 
   /**
@@ -51,6 +55,23 @@ export class CharactersPage implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.unsubscribe();
   } 
+
+  search(): void {
+    if(this.searchText === "" || this.searchText === undefined) {
+      return this.resetSearch();
+    }
+    this.characterSub[2] = this._swapiFetchService.search(this.searchText, environment.swapiPeople)
+      .subscribe((results: any) => {
+        this.isSearch = true;
+        this.nextUrl = results['next'];
+        this.characters = results.results.sort((a: Character, b: Character) => this.sortArr(a.name, b.name));
+      });
+  }
+
+  resetSearch(): void {
+    this.isSearch = false;
+    this.getCharacters();
+  }
 
   /**
    * Click function that navigates to movie details page.
@@ -82,10 +103,21 @@ export class CharactersPage implements OnInit, OnDestroy {
       });
   }
 
+  loadMoreSearch(event: any): void {
+    this.characterSub[3] = this._swapiFetchService.genericFetch(this.nextUrl)
+      .subscribe((results: object) => {
+        this.characters = this.characters.concat(results['results'])
+                                         .sort((a: Character, b: Character) => this.sortArr(a.name, b.name));
+        this.nextUrl = results['next'];
+
+        event.target.complete();
+      });
+  }
+
   /**
    * The initial character fetch, fetches 20 characters. 
    */
-  private getCharacaters(): void {
+  private getCharacters(): void {
     this.characterSub[0] = this._swapiFetchService.getCharacters()
       .pipe(
         map(res => {

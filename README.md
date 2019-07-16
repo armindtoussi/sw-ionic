@@ -20,7 +20,7 @@ Think about setting up a firebase to CDN images, would be a big job would have t
 Something for later, is to implement either loading spinners or maybe ion-skeleton-text.
 Think about new feature possibilities. ?
     - favourites list, 
-    - search feature,
+    - search feature(done)
     - 
 
 Completed
@@ -34,3 +34,5 @@ Decided on removing a large portion of the caching, it didn't really make sense 
 I may implement some light caching later. Just to reload what the user is currently on when they paused the app. 
 
 Completed color theme, added some new icons. 
+
+July 16, 2019 - implemented search feature for each individual list page. Infinite scroll implemented on search results also.

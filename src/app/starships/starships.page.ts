@@ -10,6 +10,8 @@ import { Subscription } from 'rxjs';
 import { map, flatMap } from 'rxjs/operators';
 //Models
 import { Starship } from '../models/starships.model';
+//ENV
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-starships',
@@ -27,6 +29,9 @@ export class StarshipsPage implements OnInit, OnDestroy {
   nextUrl: string;
   /** Total number of results.  */
   count: number;
+
+  searchText: string;
+  isSearch: boolean;
 
   /**
    * ctor
@@ -53,6 +58,24 @@ export class StarshipsPage implements OnInit, OnDestroy {
    */
   ngOnDestroy(): void {
     this.unsubscribe();
+  }
+
+  search(): void { 
+    if(this.searchText === "" || this.searchText === undefined) {
+      return this.resetSearch();
+    }
+
+    this.shipSub[2] = this._swapiFetchService.search(this.searchText, environment.swapiShips)
+      .subscribe((results: any) => {
+        this.isSearch = true;
+        this.nextUrl = results['next'];
+        this.ships = results.results.sort((a: Starship, b: Starship) => this.sortArr(a.name, b.name));
+      });
+  }
+  
+  resetSearch(): void {
+    this.isSearch = false;
+    this.getShips();
   }
 
   /**
@@ -84,6 +107,17 @@ export class StarshipsPage implements OnInit, OnDestroy {
           }
         }
       );
+  }
+
+  loadMoreSearch(event: any): void { 
+    this.shipSub[3] = this._swapiFetchService.genericFetch(this.nextUrl)
+      .subscribe((results: object) => {
+        this.ships = this.ships.concat(results['results'])
+                               .sort((a: Starship, b: Starship) => this.sortArr(a.name, b.name));
+        this.nextUrl = results['next'];
+
+        event.target.complete();
+      })
   }
 
   /**
