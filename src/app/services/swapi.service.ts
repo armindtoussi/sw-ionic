@@ -1,12 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-
 //ENV config.
 import { environment } from 'src/environments/environment';
-
 //RXJS
-import { Observable, from, concat, forkJoin } from 'rxjs';
-import { concatMap, map } from 'rxjs/operators';
+import { Observable, forkJoin } from 'rxjs';
 
 @Injectable({
     providedIn: 'root'
@@ -73,7 +70,6 @@ export class SwapiService {
      */
     search(searchText: string, type: string): Observable<any> {
         let url = `${environment.swapiBase}${type}/${environment.swapiSearch}${searchText}`;
-        console.log("Search Url: ", url);
         return this._http.get(url);
     }
 }

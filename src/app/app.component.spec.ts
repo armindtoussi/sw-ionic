@@ -7,6 +7,7 @@ import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { AppComponent } from './app.component';
+import { NavListService } from './services/nav-list.service';
 
 describe('AppComponent', () => {
 
@@ -25,6 +26,7 @@ describe('AppComponent', () => {
         { provide: StatusBar, useValue: statusBarSpy },
         { provide: SplashScreen, useValue: splashScreenSpy },
         { provide: Platform, useValue: platformSpy },
+        NavListService,
       ],
       imports: [ RouterTestingModule.withRoutes([])],
     }).compileComponents();
@@ -49,9 +51,14 @@ describe('AppComponent', () => {
     await fixture.detectChanges();
     const app = fixture.nativeElement;
     const menuItems = app.querySelectorAll('ion-label');
-    expect(menuItems.length).toEqual(2);
+    expect(menuItems.length).toEqual(7);
     expect(menuItems[0].textContent).toContain('Home');
-    expect(menuItems[1].textContent).toContain('List');
+    expect(menuItems[1].textContent).toContain('Movies');
+    expect(menuItems[2].textContent).toContain('Characters');
+    expect(menuItems[3].textContent).toContain('Planets');
+    expect(menuItems[4].textContent).toContain('Starships');
+    expect(menuItems[5].textContent).toContain('Species');
+    expect(menuItems[6].textContent).toContain('Vehicles');
   });
 
   it('should have urls', async () => {
@@ -59,9 +66,14 @@ describe('AppComponent', () => {
     await fixture.detectChanges();
     const app = fixture.nativeElement;
     const menuItems = app.querySelectorAll('ion-item');
-    expect(menuItems.length).toEqual(2);
+    expect(menuItems.length).toEqual(7);
     expect(menuItems[0].getAttribute('ng-reflect-router-link')).toEqual('/home');
-    expect(menuItems[1].getAttribute('ng-reflect-router-link')).toEqual('/list');
+    expect(menuItems[1].getAttribute('ng-reflect-router-link')).toEqual('/movies');
+    expect(menuItems[2].getAttribute('ng-reflect-router-link')).toEqual('/characters');
+    expect(menuItems[3].getAttribute('ng-reflect-router-link')).toEqual('/planets');
+    expect(menuItems[4].getAttribute('ng-reflect-router-link')).toEqual('/starships');
+    expect(menuItems[5].getAttribute('ng-reflect-router-link')).toEqual('/species');
+    expect(menuItems[6].getAttribute('ng-reflect-router-link')).toEqual('/vehicles');
   });
 
 });
