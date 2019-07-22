@@ -5,6 +5,17 @@ Ionic app that allows you to view various star wars information
 This application is being used to learn ionic. 
 Built in my down time, it will access the swapi.co, to display various data about the star wars universe. 
 
+How to install
+---------------
+
+clone this bad boy. 
+nav to project folder.
+npm install
+ionic serve
+
+Since it's a mobile app you may want to set your browser viewport to mobile so you can experience the app properly. 
+I haven't gotten around to building with cordova and compiling the app properly.
+
 Rate Limits 
 ------------
 swapi.co tracks rate limits by individual IP, and can handle 10,000 requests per day. 
@@ -21,7 +32,7 @@ Something for later, is to implement either loading spinners or maybe ion-skelet
 Think about new feature possibilities. ?
     - favourites list, 
     - search feature(done)
-    - 
+    - Testing - have to learn testing so should take a bit of time. 
 
 Completed
 ----------
