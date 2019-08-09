@@ -75,5 +75,4 @@ describe('AppComponent', () => {
     expect(menuItems[5].getAttribute('ng-reflect-router-link')).toEqual('/species');
     expect(menuItems[6].getAttribute('ng-reflect-router-link')).toEqual('/vehicles');
   });
-
 });

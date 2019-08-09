@@ -44,16 +44,7 @@ export class MoviesPage implements OnInit, OnDestroy {
    */
   ngOnInit(): void {
     this.movieSub = [];
-
-    this._storage.getMovies().then((films: Film[] | null) => {
-      if(films) {
-        this.movies = films.sort((a: Film, b: Film) => {
-          return a.episode_id - b.episode_id;
-        });
-      } else {
-        this.getMovies();
-      }
-    });
+    this.getFilms();
   }
 
   /**
@@ -86,6 +77,18 @@ export class MoviesPage implements OnInit, OnDestroy {
         this.movies = results.results;
       });
                         
+  }
+
+  private getFilms(): void {
+    this._storage.getMovies().then((films: Film[] | null) => {
+      if(films) {
+        this.movies = films.sort((a: Film, b: Film) => {
+          return a.episode_id - b.episode_id;
+        });
+      } else {
+        this.getMovies();
+      }
+    });
   }
 
   /**

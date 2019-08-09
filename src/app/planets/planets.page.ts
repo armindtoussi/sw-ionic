@@ -46,7 +46,6 @@ export class PlanetsPage implements OnInit, OnDestroy {
    */
   constructor(private _swapiFetchService: SwapiService,
               private _dataService: DataService,
-              private _cache: CacheService,
               private router: Router) { }
    
   /**

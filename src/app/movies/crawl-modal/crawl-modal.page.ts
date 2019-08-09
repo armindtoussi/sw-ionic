@@ -33,9 +33,13 @@ export class CrawlModalPage implements OnInit {
     }
 
     private startCrawl(): void {
+        const crawlEl = document.getElementById('crawl');
+        const introEl = document.getElementById('intro');
         setTimeout(() => {
-            $('.crawl').css('display', 'block');
-            $('.intro').css('display', 'none');
+            crawlEl.style.display = "block";
+            introEl.style.display = "none";
+            // $('.crawl').css('display', 'block');
+            // $('.intro').css('display', 'none');
         }, 9000);
     }
     
