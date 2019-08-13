@@ -1,7 +1,11 @@
 //Service
 import { SwapiService } from './swapi.service';
 //Testing Helpers
-import { asyncData } from '../testing/async-observable-helpers';
+import { TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { HttpClientTestingModule, 
+         HttpTestingController 
+       } from '@angular/common/http/testing';
+
 //Models
 import { PlanetsModel }           from '../models/planets.model';
 import { CharacterModel }         from '../models/character.model';
@@ -9,883 +13,200 @@ import { FilmsModel, Film }       from '../models/films.model';
 import { SpeciesModel }           from '../models/species.model';
 import { StarshipsModel }         from '../models/starships.model';
 import { VehiclesModel, Vehicle } from '../models/vehicles.model';
+import { environment } from 'src/environments/environment';
 
 
 describe('SwapiService', () => {
-    let httpClientSpy: { get: jasmine.Spy };
-    let swapiService: SwapiService; 
+    let service: SwapiService;
+    let httpTestingController: HttpTestingController;
 
     beforeEach(() => {
-        httpClientSpy = jasmine.createSpyObj('HttpClient', ['get']);
-        swapiService  = new SwapiService(<any>httpClientSpy); //Casting.
+        TestBed.configureTestingModule({
+            imports: [HttpClientTestingModule],
+            providers: [SwapiService]
+        });
+        //Gets instance of service. 
+        service = TestBed.get(SwapiService);
+        // Inject http service and test controller fo reach test. 
+        httpTestingController = TestBed.get(HttpTestingController);
     });
 
-    it('should return expected movies (HttpClient called once)', () => {
-        const expectedMovies: FilmsModel = 
-            { 
-                "count": 1,
-                "next" : null,
-                "previous": null,
-                "results": [
-                    {
-                        "title": "A New Hope",
-                        "episode_id": 4,
-                        "opening_crawl": "It is a period of civil war.\r\nRebel spaceships, striking\r\nfrom a hidden base, have won\r\ntheir first victory against\r\nthe evil Galactic Empire.\r\n\r\nDuring the battle, Rebel\r\nspies managed to steal secret\r\nplans to the Empire's\r\nultimate weapon, the DEATH\r\nSTAR, an armored space\r\nstation with enough power\r\nto destroy an entire planet.\r\n\r\nPursued by the Empire's\r\nsinister agents, Princess\r\nLeia races home aboard her\r\nstarship, custodian of the\r\nstolen plans that can save her\r\npeople and restore\r\nfreedom to the galaxy....",
-                        "director": "George Lucas",
-                        "producer": "Gary Kurtz, Rick McCallum",
-                        "release_date": "1977-05-25",
-                        "characters": [
-                            "https://swapi.co/api/people/1/",
-                            "https://swapi.co/api/people/2/",
-                            "https://swapi.co/api/people/3/",
-                            "https://swapi.co/api/people/4/",
-                            "https://swapi.co/api/people/5/",
-                            "https://swapi.co/api/people/6/",
-                            "https://swapi.co/api/people/7/",
-                            "https://swapi.co/api/people/8/",
-                            "https://swapi.co/api/people/9/",
-                            "https://swapi.co/api/people/10/",
-                            "https://swapi.co/api/people/12/",
-                            "https://swapi.co/api/people/13/",
-                            "https://swapi.co/api/people/14/",
-                            "https://swapi.co/api/people/15/",
-                            "https://swapi.co/api/people/16/",
-                            "https://swapi.co/api/people/18/",
-                            "https://swapi.co/api/people/19/",
-                            "https://swapi.co/api/people/81/"
-                        ],
-                        "planets": [
-                            "https://swapi.co/api/planets/2/",
-                            "https://swapi.co/api/planets/3/",
-                            "https://swapi.co/api/planets/1/"
-                        ],
-                        "starships": [
-                            "https://swapi.co/api/starships/2/",
-                            "https://swapi.co/api/starships/3/",
-                            "https://swapi.co/api/starships/5/",
-                            "https://swapi.co/api/starships/9/",
-                            "https://swapi.co/api/starships/10/",
-                            "https://swapi.co/api/starships/11/",
-                            "https://swapi.co/api/starships/12/",
-                            "https://swapi.co/api/starships/13/"
-                        ],
-                        "vehicles": [
-                            "https://swapi.co/api/vehicles/4/",
-                            "https://swapi.co/api/vehicles/6/",
-                            "https://swapi.co/api/vehicles/7/",
-                            "https://swapi.co/api/vehicles/8/"
-                        ],
-                        "species": [
-                            "https://swapi.co/api/species/5/",
-                            "https://swapi.co/api/species/3/",
-                            "https://swapi.co/api/species/2/",
-                            "https://swapi.co/api/species/1/",
-                            "https://swapi.co/api/species/4/"
-                        ],
-                        "created": "2014-12-10T14:23:31.880000Z",
-                        "edited": "2015-04-11T09:46:52.774897Z",
-                        "url": "https://swapi.co/api/films/1/"
-                    },
-                ]
-            };
-        httpClientSpy.get.and.returnValue(asyncData(expectedMovies));  
-
-        swapiService.getSWMovies().subscribe(
-            (movies: object) => {
-                console.log("movies: ", movies);
-                expect(movies).toEqual(expectedMovies, 'expect movies');
-            },
-            (error: any) => {
-                console.log("GetSWMovies()::Caught error ", error);
-            }
-        );
-        expect(httpClientSpy.get.calls.count()).toBe(1, 'one call');
+    afterEach(() => {
+        //Clean up any remaining requests.
+        httpTestingController.verify();
     });
 
-    it('should return expected planets (HttpClient called once)', () => {
-        const expectedPlanets: PlanetsModel = {
-                "count": 61,
-                "next": "https://swapi.co/api/planets/?page=2",
-                "previous": null,
-                "results": [
-                    {
-                        "name": "Alderaan",
-                        "rotation_period": "24",
-                        "orbital_period": "364",
-                        "diameter": "12500",
-                        "climate": "temperate",
-                        "gravity": "1 standard",
-                        "terrain": "grasslands, mountains",
-                        "surface_water": "40",
-                        "population": "2000000000",
-                        "residents": [
-                            "https://swapi.co/api/people/5/",
-                            "https://swapi.co/api/people/68/",
-                            "https://swapi.co/api/people/81/"
-                        ],
-                        "films": [
-                            "https://swapi.co/api/films/6/",
-                            "https://swapi.co/api/films/1/"
-                        ],
-                        "created": "2014-12-10T11:35:48.479000Z",
-                        "edited": "2014-12-20T20:58:18.420000Z",
-                        "url": "https://swapi.co/api/planets/2/"
-                    },
-                    {
-                        "name": "Yavin IV",
-                        "rotation_period": "24",
-                        "orbital_period": "4818",
-                        "diameter": "10200",
-                        "climate": "temperate, tropical",
-                        "gravity": "1 standard",
-                        "terrain": "jungle, rainforests",
-                        "surface_water": "8",
-                        "population": "1000",
-                        "residents": [],
-                        "films": [
-                            "https://swapi.co/api/films/1/"
-                        ],
-                        "created": "2014-12-10T11:37:19.144000Z",
-                        "edited": "2014-12-20T20:58:18.421000Z",
-                        "url": "https://swapi.co/api/planets/3/"
-                    },
-                    {
-                        "name": "Hoth",
-                        "rotation_period": "23",
-                        "orbital_period": "549",
-                        "diameter": "7200",
-                        "climate": "frozen",
-                        "gravity": "1.1 standard",
-                        "terrain": "tundra, ice caves, mountain ranges",
-                        "surface_water": "100",
-                        "population": "unknown",
-                        "residents": [],
-                        "films": [
-                            "https://swapi.co/api/films/2/"
-                        ],
-                        "created": "2014-12-10T11:39:13.934000Z",
-                        "edited": "2014-12-20T20:58:18.423000Z",
-                        "url": "https://swapi.co/api/planets/4/"
-                    },
-                    {
-                        "name": "Dagobah",
-                        "rotation_period": "23",
-                        "orbital_period": "341",
-                        "diameter": "8900",
-                        "climate": "murky",
-                        "gravity": "N/A",
-                        "terrain": "swamp, jungles",
-                        "surface_water": "8",
-                        "population": "unknown",
-                        "residents": [],
-                        "films": [
-                            "https://swapi.co/api/films/2/",
-                            "https://swapi.co/api/films/6/",
-                            "https://swapi.co/api/films/3/"
-                        ],
-                        "created": "2014-12-10T11:42:22.590000Z",
-                        "edited": "2014-12-20T20:58:18.425000Z",
-                        "url": "https://swapi.co/api/planets/5/"
-                    },
-                    {
-                        "name": "Bespin",
-                        "rotation_period": "12",
-                        "orbital_period": "5110",
-                        "diameter": "118000",
-                        "climate": "temperate",
-                        "gravity": "1.5 (surface), 1 standard (Cloud City)",
-                        "terrain": "gas giant",
-                        "surface_water": "0",
-                        "population": "6000000",
-                        "residents": [
-                            "https://swapi.co/api/people/26/"
-                        ],
-                        "films": [
-                            "https://swapi.co/api/films/2/"
-                        ],
-                        "created": "2014-12-10T11:43:55.240000Z",
-                        "edited": "2014-12-20T20:58:18.427000Z",
-                        "url": "https://swapi.co/api/planets/6/"
-                    },
-                    {
-                        "name": "Endor",
-                        "rotation_period": "18",
-                        "orbital_period": "402",
-                        "diameter": "4900",
-                        "climate": "temperate",
-                        "gravity": "0.85 standard",
-                        "terrain": "forests, mountains, lakes",
-                        "surface_water": "8",
-                        "population": "30000000",
-                        "residents": [
-                            "https://swapi.co/api/people/30/"
-                        ],
-                        "films": [
-                            "https://swapi.co/api/films/3/"
-                        ],
-                        "created": "2014-12-10T11:50:29.349000Z",
-                        "edited": "2014-12-20T20:58:18.429000Z",
-                        "url": "https://swapi.co/api/planets/7/"
-                    },
-                    {
-                        "name": "Naboo",
-                        "rotation_period": "26",
-                        "orbital_period": "312",
-                        "diameter": "12120",
-                        "climate": "temperate",
-                        "gravity": "1 standard",
-                        "terrain": "grassy hills, swamps, forests, mountains",
-                        "surface_water": "12",
-                        "population": "4500000000",
-                        "residents": [
-                            "https://swapi.co/api/people/3/",
-                            "https://swapi.co/api/people/21/",
-                            "https://swapi.co/api/people/36/",
-                            "https://swapi.co/api/people/37/",
-                            "https://swapi.co/api/people/38/",
-                            "https://swapi.co/api/people/39/",
-                            "https://swapi.co/api/people/42/",
-                            "https://swapi.co/api/people/60/",
-                            "https://swapi.co/api/people/61/",
-                            "https://swapi.co/api/people/66/",
-                            "https://swapi.co/api/people/35/"
-                        ],
-                        "films": [
-                            "https://swapi.co/api/films/5/",
-                            "https://swapi.co/api/films/4/",
-                            "https://swapi.co/api/films/6/",
-                            "https://swapi.co/api/films/3/"
-                        ],
-                        "created": "2014-12-10T11:52:31.066000Z",
-                        "edited": "2014-12-20T20:58:18.430000Z",
-                        "url": "https://swapi.co/api/planets/8/"
-                    },
-                    {
-                        "name": "Coruscant",
-                        "rotation_period": "24",
-                        "orbital_period": "368",
-                        "diameter": "12240",
-                        "climate": "temperate",
-                        "gravity": "1 standard",
-                        "terrain": "cityscape, mountains",
-                        "surface_water": "unknown",
-                        "population": "1000000000000",
-                        "residents": [
-                            "https://swapi.co/api/people/34/",
-                            "https://swapi.co/api/people/55/",
-                            "https://swapi.co/api/people/74/"
-                        ],
-                        "films": [
-                            "https://swapi.co/api/films/5/",
-                            "https://swapi.co/api/films/4/",
-                            "https://swapi.co/api/films/6/",
-                            "https://swapi.co/api/films/3/"
-                        ],
-                        "created": "2014-12-10T11:54:13.921000Z",
-                        "edited": "2014-12-20T20:58:18.432000Z",
-                        "url": "https://swapi.co/api/planets/9/"
-                    },
-                    {
-                        "name": "Kamino",
-                        "rotation_period": "27",
-                        "orbital_period": "463",
-                        "diameter": "19720",
-                        "climate": "temperate",
-                        "gravity": "1 standard",
-                        "terrain": "ocean",
-                        "surface_water": "100",
-                        "population": "1000000000",
-                        "residents": [
-                            "https://swapi.co/api/people/22/",
-                            "https://swapi.co/api/people/72/",
-                            "https://swapi.co/api/people/73/"
-                        ],
-                        "films": [
-                            "https://swapi.co/api/films/5/"
-                        ],
-                        "created": "2014-12-10T12:45:06.577000Z",
-                        "edited": "2014-12-20T20:58:18.434000Z",
-                        "url": "https://swapi.co/api/planets/10/"
-                    },
-                    {
-                        "name": "Geonosis",
-                        "rotation_period": "30",
-                        "orbital_period": "256",
-                        "diameter": "11370",
-                        "climate": "temperate, arid",
-                        "gravity": "0.9 standard",
-                        "terrain": "rock, desert, mountain, barren",
-                        "surface_water": "5",
-                        "population": "100000000000",
-                        "residents": [
-                            "https://swapi.co/api/people/63/"
-                        ],
-                        "films": [
-                            "https://swapi.co/api/films/5/"
-                        ],
-                        "created": "2014-12-10T12:47:22.350000Z",
-                        "edited": "2014-12-20T20:58:18.437000Z",
-                        "url": "https://swapi.co/api/planets/11/"
-                    }
-                ]
-            };
-
-        httpClientSpy.get.and.returnValue(asyncData(expectedPlanets));
-
-        swapiService.getPlanets().subscribe(
-            (planets: object) => {
-                console.log("Planets: ", planets);
-                expect(planets).toEqual(expectedPlanets, 'expect planets');
-            },
-            (error: any) => {
-                console.log("GetPlanets()::Caught error ", error);
-            }
-        );
-        expect(httpClientSpy.get.calls.count()).toBe(1, 'one call');
-    });
-
-    it('should return expected characters (HttpClient called once)', () => {
-        const expectedChars: CharacterModel = {
-            "count": 87,
-            "next": "https://swapi.co/api/people/?page=2",
+    it('should return movies(calls getSWMovies)', fakeAsync(() => {
+        let mockRes = {
+            "count": 1,
+            "next": null,
             "previous": null,
             "results": [
                 {
-                    "name": "Luke Skywalker",
-                    "height": "172",
-                    "mass": "77",
-                    "hair_color": "blond",
-                    "skin_color": "fair",
-                    "eye_color": "blue",
-                    "birth_year": "19BBY",
-                    "gender": "male",
-                    "homeworld": "https://swapi.co/api/planets/1/",
-                    "films": [
-                        "https://swapi.co/api/films/2/",
-                        "https://swapi.co/api/films/6/",
-                        "https://swapi.co/api/films/3/",
-                        "https://swapi.co/api/films/1/",
-                        "https://swapi.co/api/films/7/"
-                    ],
-                    "species": [
-                        "https://swapi.co/api/species/1/"
-                    ],
-                    "vehicles": [
-                        "https://swapi.co/api/vehicles/14/",
-                        "https://swapi.co/api/vehicles/30/"
-                    ],
-                    "starships": [
-                        "https://swapi.co/api/starships/12/",
-                        "https://swapi.co/api/starships/22/"
-                    ],
-                    "created": "2014-12-09T13:50:51.644000Z",
-                    "edited": "2014-12-20T21:17:56.891000Z",
-                    "url": "https://swapi.co/api/people/1/"
-                },
+                    "title": "thetitle",
+                    "episode_id": 1,
+                    "opening_crawl": "the crawl goes here",
+                    "director": "me!",
+                    "producer": "me!?",
+                    "release_date": "1977-05-25",
+                    "characters": ["fake.chars.com"],
+                    "planets": ["fake.planets.url"],
+                    "starships": ["fake.ships.url"],
+                    "vehicles": ["fake.vehicles.url"], 
+                    "species": ["fake.species.url"],
+                    "created": "2014-12-10T14:23:31.880000Z",
+                    "edited": "2015-04-11T09:46:52.774897Z",
+                    "url": "fake.films.url"
+                }
+            ]
+        };
+        // Create cold observable
+        let $res = service.getSWMovies();
+        // Subscribe to cold obs, making it hot observable.
+        $res.subscribe(response => {
+                expect(response['results'].length).toBe(1);
+                expect(response).toEqual(mockRes);
+        });
+        // Tick once async resolved.
+        tick();
+        // http testing controller intercepts calls and response. 
+        const req = httpTestingController.expectOne(environment.swapiBase + environment.swapiMovies);
+        // Checking for request type to == GET.
+        expect(req.request.method).toEqual('GET');
+        // Resolves the fake request by responding with fake object we created. 
+        req.flush(mockRes);
+    }));
+
+    it('should return planets(calls getPlanets)', fakeAsync(() => {
+        let mockRes = {
+            "count": 1,
+            "next": null,
+            "previous": null,
+            "results": [
                 {
-                    "name": "C-3PO",
-                    "height": "167",
-                    "mass": "75",
-                    "hair_color": "n/a",
-                    "skin_color": "gold",
-                    "eye_color": "yellow",
-                    "birth_year": "112BBY",
-                    "gender": "n/a",
-                    "homeworld": "https://swapi.co/api/planets/1/",
-                    "films": [
-                        "https://swapi.co/api/films/2/",
-                        "https://swapi.co/api/films/5/",
-                        "https://swapi.co/api/films/4/",
-                        "https://swapi.co/api/films/6/",
-                        "https://swapi.co/api/films/3/",
-                        "https://swapi.co/api/films/1/"
-                    ],
-                    "species": [
-                        "https://swapi.co/api/species/2/"
-                    ],
-                    "vehicles": [],
-                    "starships": [],
-                    "created": "2014-12-10T15:10:51.357000Z",
-                    "edited": "2014-12-20T21:17:50.309000Z",
-                    "url": "https://swapi.co/api/people/2/"
-                },
-                {
-                    "name": "R2-D2",
-                    "height": "96",
-                    "mass": "32",
-                    "hair_color": "n/a",
-                    "skin_color": "white, blue",
-                    "eye_color": "red",
-                    "birth_year": "33BBY",
-                    "gender": "n/a",
-                    "homeworld": "https://swapi.co/api/planets/8/",
-                    "films": [
-                        "https://swapi.co/api/films/2/",
-                        "https://swapi.co/api/films/5/",
-                        "https://swapi.co/api/films/4/",
-                        "https://swapi.co/api/films/6/",
-                        "https://swapi.co/api/films/3/",
-                        "https://swapi.co/api/films/1/",
-                        "https://swapi.co/api/films/7/"
-                    ],
-                    "species": [
-                        "https://swapi.co/api/species/2/"
-                    ],
-                    "vehicles": [],
-                    "starships": [],
-                    "created": "2014-12-10T15:11:50.376000Z",
-                    "edited": "2014-12-20T21:17:50.311000Z",
-                    "url": "https://swapi.co/api/people/3/"
-                },
-                {
-                    "name": "Darth Vader",
-                    "height": "202",
-                    "mass": "136",
-                    "hair_color": "none",
-                    "skin_color": "white",
-                    "eye_color": "yellow",
-                    "birth_year": "41.9BBY",
-                    "gender": "male",
-                    "homeworld": "https://swapi.co/api/planets/1/",
-                    "films": [
-                        "https://swapi.co/api/films/2/",
-                        "https://swapi.co/api/films/6/",
-                        "https://swapi.co/api/films/3/",
-                        "https://swapi.co/api/films/1/"
-                    ],
-                    "species": [
-                        "https://swapi.co/api/species/1/"
-                    ],
-                    "vehicles": [],
-                    "starships": [
-                        "https://swapi.co/api/starships/13/"
-                    ],
-                    "created": "2014-12-10T15:18:20.704000Z",
-                    "edited": "2014-12-20T21:17:50.313000Z",
-                    "url": "https://swapi.co/api/people/4/"
-                },
-                {
-                    "name": "Leia Organa",
-                    "height": "150",
-                    "mass": "49",
-                    "hair_color": "brown",
-                    "skin_color": "light",
-                    "eye_color": "brown",
-                    "birth_year": "19BBY",
-                    "gender": "female",
-                    "homeworld": "https://swapi.co/api/planets/2/",
-                    "films": [
-                        "https://swapi.co/api/films/2/",
-                        "https://swapi.co/api/films/6/",
-                        "https://swapi.co/api/films/3/",
-                        "https://swapi.co/api/films/1/",
-                        "https://swapi.co/api/films/7/"
-                    ],
-                    "species": [
-                        "https://swapi.co/api/species/1/"
-                    ],
-                    "vehicles": [
-                        "https://swapi.co/api/vehicles/30/"
-                    ],
-                    "starships": [],
-                    "created": "2014-12-10T15:20:09.791000Z",
-                    "edited": "2014-12-20T21:17:50.315000Z",
-                    "url": "https://swapi.co/api/people/5/"
-                },
-                {
-                    "name": "Owen Lars",
-                    "height": "178",
-                    "mass": "120",
-                    "hair_color": "brown, grey",
-                    "skin_color": "light",
-                    "eye_color": "blue",
-                    "birth_year": "52BBY",
-                    "gender": "male",
-                    "homeworld": "https://swapi.co/api/planets/1/",
-                    "films": [
-                        "https://swapi.co/api/films/5/",
-                        "https://swapi.co/api/films/6/",
-                        "https://swapi.co/api/films/1/"
-                    ],
-                    "species": [
-                        "https://swapi.co/api/species/1/"
-                    ],
-                    "vehicles": [],
-                    "starships": [],
-                    "created": "2014-12-10T15:52:14.024000Z",
-                    "edited": "2014-12-20T21:17:50.317000Z",
-                    "url": "https://swapi.co/api/people/6/"
-                },
-                {
-                    "name": "Beru Whitesun lars",
-                    "height": "165",
-                    "mass": "75",
-                    "hair_color": "brown",
-                    "skin_color": "light",
-                    "eye_color": "blue",
-                    "birth_year": "47BBY",
-                    "gender": "female",
-                    "homeworld": "https://swapi.co/api/planets/1/",
-                    "films": [
-                        "https://swapi.co/api/films/5/",
-                        "https://swapi.co/api/films/6/",
-                        "https://swapi.co/api/films/1/"
-                    ],
-                    "species": [
-                        "https://swapi.co/api/species/1/"
-                    ],
-                    "vehicles": [],
-                    "starships": [],
-                    "created": "2014-12-10T15:53:41.121000Z",
-                    "edited": "2014-12-20T21:17:50.319000Z",
-                    "url": "https://swapi.co/api/people/7/"
-                },
-                {
-                    "name": "R5-D4",
-                    "height": "97",
-                    "mass": "32",
-                    "hair_color": "n/a",
-                    "skin_color": "white, red",
-                    "eye_color": "red",
-                    "birth_year": "unknown",
-                    "gender": "n/a",
-                    "homeworld": "https://swapi.co/api/planets/1/",
-                    "films": [
-                        "https://swapi.co/api/films/1/"
-                    ],
-                    "species": [
-                        "https://swapi.co/api/species/2/"
-                    ],
-                    "vehicles": [],
-                    "starships": [],
-                    "created": "2014-12-10T15:57:50.959000Z",
-                    "edited": "2014-12-20T21:17:50.321000Z",
-                    "url": "https://swapi.co/api/people/8/"
-                },
-                {
-                    "name": "Biggs Darklighter",
-                    "height": "183",
-                    "mass": "84",
-                    "hair_color": "black",
-                    "skin_color": "light",
-                    "eye_color": "brown",
-                    "birth_year": "24BBY",
-                    "gender": "male",
-                    "homeworld": "https://swapi.co/api/planets/1/",
-                    "films": [
-                        "https://swapi.co/api/films/1/"
-                    ],
-                    "species": [
-                        "https://swapi.co/api/species/1/"
-                    ],
-                    "vehicles": [],
-                    "starships": [
-                        "https://swapi.co/api/starships/12/"
-                    ],
-                    "created": "2014-12-10T15:59:50.509000Z",
-                    "edited": "2014-12-20T21:17:50.323000Z",
-                    "url": "https://swapi.co/api/people/9/"
-                },
-                {
-                    "name": "Obi-Wan Kenobi",
-                    "height": "182",
-                    "mass": "77",
-                    "hair_color": "auburn, white",
-                    "skin_color": "fair",
-                    "eye_color": "blue-gray",
-                    "birth_year": "57BBY",
-                    "gender": "male",
-                    "homeworld": "https://swapi.co/api/planets/20/",
-                    "films": [
-                        "https://swapi.co/api/films/2/",
-                        "https://swapi.co/api/films/5/",
-                        "https://swapi.co/api/films/4/",
-                        "https://swapi.co/api/films/6/",
-                        "https://swapi.co/api/films/3/",
-                        "https://swapi.co/api/films/1/"
-                    ],
-                    "species": [
-                        "https://swapi.co/api/species/1/"
-                    ],
-                    "vehicles": [
-                        "https://swapi.co/api/vehicles/38/"
-                    ],
-                    "starships": [
-                        "https://swapi.co/api/starships/48/",
-                        "https://swapi.co/api/starships/59/",
-                        "https://swapi.co/api/starships/64/",
-                        "https://swapi.co/api/starships/65/",
-                        "https://swapi.co/api/starships/74/"
-                    ],
-                    "created": "2014-12-10T16:16:29.192000Z",
-                    "edited": "2014-12-20T21:17:50.325000Z",
-                    "url": "https://swapi.co/api/people/10/"
+                    "name": "Planet1",
+                    "rotation_period": "the rotation",
+                    "orbital_period": "the orbit",
+                    "diameter": "the diameter",
+                    "climate": "sunnyyy",
+                    "gravity": "it's grav",
+                    "terrain": "grassy knowles",
+                    "surface_water": "it's wata",
+                    "population": "1 million dollars",
+                    "residents": ["fake.resident.url"],
+                    "films": ["fake.films.url"],
+                    "created": "2014-12-10T11:35:48.479000Z",
+                    "edited": "2014-12-20T20:58:18.420000Z",
+                    "url": "https://swapi.co/api/planets/2/",
                 }
             ]
         };
 
-        httpClientSpy.get.and.returnValue(asyncData(expectedChars));
+        let $res = service.getPlanets();
 
-        swapiService.getCharacters().subscribe(
-            (characters: object) => {
-                console.log("characters: ", characters);
-                expect(characters).toEqual(expectedChars, 'expect characters');
-            },
-            (error: any) => {
-                console.log("GetCharacters()::Caught error ", error);
-            }
-        );
+        $res.subscribe(response => {
+            expect(response['results'].length).toBe(1);
+            expect(response).toEqual(mockRes);
+        });
 
-        expect(httpClientSpy.get.calls.count()).toBe(1, 'one call');
-    });
+        tick();
 
-    it('should return expected species (HttpClient called once)', () => {
-        const expectedSpecies: SpeciesModel = {
-            "count": 37,
-            "next": "https://swapi.co/api/species/?page=2",
+        const req = httpTestingController.expectOne(environment.swapiBase + environment.swapiPlanets);
+
+        expect(req.request.method).toEqual('GET');
+
+        req.flush(mockRes);
+    }));
+
+    it('should return characters(calls getCharacters)', fakeAsync(() => {
+        let mockRes = {
+            "count": 1,
+            "next": null,
             "previous": null,
             "results": [
                 {
-                    "name": "Hutt",
-                    "classification": "gastropod",
+                    "name": "lukey",
+                    "height": "some height",
+                    "mass": "i'm phat",
+                    "hair_color": "grack",
+                    "skin_color": "purpilingo",
+                    "eye_color": "yellange",
+                    "birth_year": "1",
+                    "gender": "maleelf",
+                    "homeworld": "fake.planet.url",
+                    "films": ["fake.film.url"],
+                    "species": ["fake.species.url"],
+                    "vehicles": ["fake.vehicles.url"],
+                    "starships": ["fake.starships.url"],
+                    "created": "2014-12-09T13:50:51.644000Z",
+                    "edited": "2014-12-20T21:17:56.891000Z",
+                    "url": "https://swapi.co/api/people/1/"
+                }
+            ]
+        };
+
+        let $res = service.getCharacters();
+
+        $res.subscribe(response => {
+            expect(response['results'].length).toBe(1);
+            expect(response).toEqual(mockRes);
+        });
+
+        tick();
+
+        const req = httpTestingController.expectOne(environment.swapiBase + environment.swapiPeople);
+
+        expect(req.request.method).toEqual('GET');
+
+        req.flush(mockRes);
+    }));
+
+    it('should return species(calls getSpecies)', fakeAsync(() => {
+        let mockRes = {
+            "count": 1,
+            "next": null,
+            "previous": null,
+            "results": [
+                {
+                    "name": "hurt",
+                    "classification": "gastropedro",
                     "designation": "sentient",
                     "average_height": "300",
                     "skin_colors": "green, brown, tan",
                     "hair_colors": "n/a",
                     "eye_colors": "yellow, red",
                     "average_lifespan": "1000",
-                    "homeworld": "https://swapi.co/api/planets/24/",
+                    "homeworld": "fake.planet.url",
                     "language": "Huttese",
-                    "people": [
-                        "https://swapi.co/api/people/16/"
-                    ],
-                    "films": [
-                        "https://swapi.co/api/films/3/",
-                        "https://swapi.co/api/films/1/"
-                    ],
+                    "people": ["fake.character.url"],
+                    "films": ["fake.films.url"],
                     "created": "2014-12-10T17:12:50.410000Z",
                     "edited": "2014-12-20T21:36:42.146000Z",
                     "url": "https://swapi.co/api/species/5/"
-                },
-                {
-                    "name": "Yoda's species",
-                    "classification": "mammal",
-                    "designation": "sentient",
-                    "average_height": "66",
-                    "skin_colors": "green, yellow",
-                    "hair_colors": "brown, white",
-                    "eye_colors": "brown, green, yellow",
-                    "average_lifespan": "900",
-                    "homeworld": "https://swapi.co/api/planets/28/",
-                    "language": "Galactic basic",
-                    "people": [
-                        "https://swapi.co/api/people/20/"
-                    ],
-                    "films": [
-                        "https://swapi.co/api/films/2/",
-                        "https://swapi.co/api/films/5/",
-                        "https://swapi.co/api/films/4/",
-                        "https://swapi.co/api/films/6/",
-                        "https://swapi.co/api/films/3/"
-                    ],
-                    "created": "2014-12-15T12:27:22.877000Z",
-                    "edited": "2014-12-20T21:36:42.148000Z",
-                    "url": "https://swapi.co/api/species/6/"
-                },
-                {
-                    "name": "Trandoshan",
-                    "classification": "reptile",
-                    "designation": "sentient",
-                    "average_height": "200",
-                    "skin_colors": "brown, green",
-                    "hair_colors": "none",
-                    "eye_colors": "yellow, orange",
-                    "average_lifespan": "unknown",
-                    "homeworld": "https://swapi.co/api/planets/29/",
-                    "language": "Dosh",
-                    "people": [
-                        "https://swapi.co/api/people/24/"
-                    ],
-                    "films": [
-                        "https://swapi.co/api/films/2/"
-                    ],
-                    "created": "2014-12-15T13:07:47.704000Z",
-                    "edited": "2014-12-20T21:36:42.151000Z",
-                    "url": "https://swapi.co/api/species/7/"
-                },
-                {
-                    "name": "Mon Calamari",
-                    "classification": "amphibian",
-                    "designation": "sentient",
-                    "average_height": "160",
-                    "skin_colors": "red, blue, brown, magenta",
-                    "hair_colors": "none",
-                    "eye_colors": "yellow",
-                    "average_lifespan": "unknown",
-                    "homeworld": "https://swapi.co/api/planets/31/",
-                    "language": "Mon Calamarian",
-                    "people": [
-                        "https://swapi.co/api/people/27/"
-                    ],
-                    "films": [
-                        "https://swapi.co/api/films/3/"
-                    ],
-                    "created": "2014-12-18T11:09:52.263000Z",
-                    "edited": "2014-12-20T21:36:42.153000Z",
-                    "url": "https://swapi.co/api/species/8/"
-                },
-                {
-                    "name": "Ewok",
-                    "classification": "mammal",
-                    "designation": "sentient",
-                    "average_height": "100",
-                    "skin_colors": "brown",
-                    "hair_colors": "white, brown, black",
-                    "eye_colors": "orange, brown",
-                    "average_lifespan": "unknown",
-                    "homeworld": "https://swapi.co/api/planets/7/",
-                    "language": "Ewokese",
-                    "people": [
-                        "https://swapi.co/api/people/30/"
-                    ],
-                    "films": [
-                        "https://swapi.co/api/films/3/"
-                    ],
-                    "created": "2014-12-18T11:22:00.285000Z",
-                    "edited": "2014-12-20T21:36:42.155000Z",
-                    "url": "https://swapi.co/api/species/9/"
-                },
-                {
-                    "name": "Sullustan",
-                    "classification": "mammal",
-                    "designation": "sentient",
-                    "average_height": "180",
-                    "skin_colors": "pale",
-                    "hair_colors": "none",
-                    "eye_colors": "black",
-                    "average_lifespan": "unknown",
-                    "homeworld": "https://swapi.co/api/planets/33/",
-                    "language": "Sullutese",
-                    "people": [
-                        "https://swapi.co/api/people/31/"
-                    ],
-                    "films": [
-                        "https://swapi.co/api/films/3/"
-                    ],
-                    "created": "2014-12-18T11:26:20.103000Z",
-                    "edited": "2014-12-20T21:36:42.157000Z",
-                    "url": "https://swapi.co/api/species/10/"
-                },
-                {
-                    "name": "Neimodian",
-                    "classification": "unknown",
-                    "designation": "sentient",
-                    "average_height": "180",
-                    "skin_colors": "grey, green",
-                    "hair_colors": "none",
-                    "eye_colors": "red, pink",
-                    "average_lifespan": "unknown",
-                    "homeworld": "https://swapi.co/api/planets/18/",
-                    "language": "Neimoidia",
-                    "people": [
-                        "https://swapi.co/api/people/33/"
-                    ],
-                    "films": [
-                        "https://swapi.co/api/films/4/"
-                    ],
-                    "created": "2014-12-19T17:07:31.319000Z",
-                    "edited": "2014-12-20T21:36:42.160000Z",
-                    "url": "https://swapi.co/api/species/11/"
-                },
-                {
-                    "name": "Gungan",
-                    "classification": "amphibian",
-                    "designation": "sentient",
-                    "average_height": "190",
-                    "skin_colors": "brown, green",
-                    "hair_colors": "none",
-                    "eye_colors": "orange",
-                    "average_lifespan": "unknown",
-                    "homeworld": "https://swapi.co/api/planets/8/",
-                    "language": "Gungan basic",
-                    "people": [
-                        "https://swapi.co/api/people/36/",
-                        "https://swapi.co/api/people/37/",
-                        "https://swapi.co/api/people/38/"
-                    ],
-                    "films": [
-                        "https://swapi.co/api/films/5/",
-                        "https://swapi.co/api/films/4/"
-                    ],
-                    "created": "2014-12-19T17:30:37.341000Z",
-                    "edited": "2014-12-20T21:36:42.163000Z",
-                    "url": "https://swapi.co/api/species/12/"
-                },
-                {
-                    "name": "Toydarian",
-                    "classification": "mammal",
-                    "designation": "sentient",
-                    "average_height": "120",
-                    "skin_colors": "blue, green, grey",
-                    "hair_colors": "none",
-                    "eye_colors": "yellow",
-                    "average_lifespan": "91",
-                    "homeworld": "https://swapi.co/api/planets/34/",
-                    "language": "Toydarian",
-                    "people": [
-                        "https://swapi.co/api/people/40/"
-                    ],
-                    "films": [
-                        "https://swapi.co/api/films/5/",
-                        "https://swapi.co/api/films/4/"
-                    ],
-                    "created": "2014-12-19T17:48:56.893000Z",
-                    "edited": "2014-12-20T21:36:42.165000Z",
-                    "url": "https://swapi.co/api/species/13/"
-                },
-                {
-                    "name": "Dug",
-                    "classification": "mammal",
-                    "designation": "sentient",
-                    "average_height": "100",
-                    "skin_colors": "brown, purple, grey, red",
-                    "hair_colors": "none",
-                    "eye_colors": "yellow, blue",
-                    "average_lifespan": "unknown",
-                    "homeworld": "https://swapi.co/api/planets/35/",
-                    "language": "Dugese",
-                    "people": [
-                        "https://swapi.co/api/people/41/"
-                    ],
-                    "films": [
-                        "https://swapi.co/api/films/4/"
-                    ],
-                    "created": "2014-12-19T17:53:11.214000Z",
-                    "edited": "2014-12-20T21:36:42.167000Z",
-                    "url": "https://swapi.co/api/species/14/"
                 }
             ]
         };
 
-        httpClientSpy.get.and.returnValue(asyncData(expectedSpecies));
+        let $res = service.getSpecies();
 
-        swapiService.getSpecies().subscribe(
-            (species: object) => {
-                console.log("Species: ", species);
-                expect(species).toEqual(expectedSpecies, 'expect species');
-            },
-            (error: any) => {
-                console.log("GetSpecies()::Caught error ", error);
-            }
-        );
+        $res.subscribe(response => {
+            expect(response['results'].length).toBe(1);
+            expect(response).toEqual(mockRes);
+        });
 
-        expect(httpClientSpy.get.calls.count()).toBe(1, 'one call');
-    });
+        tick();
+
+        const req = httpTestingController.expectOne(environment.swapiBase + environment.swapiSpecies);
+
+        expect(req.request.method).toEqual('GET');
+
+        req.flush(mockRes);
+    }));
     
-    it('should return expected species (HttpClient called once)', () => {
-        const expectedStarships: StarshipsModel = {
-            "count": 37,
-            "next": "https://swapi.co/api/starships/?page=2",
+    it('should return starships(calls getStarships)', fakeAsync(() => {
+        let mockRes = {
+            "count": 1,
+            "next": null,
             "previous": null,
             "results": [
                 {
@@ -902,263 +223,35 @@ describe('SwapiService', () => {
                     "hyperdrive_rating": "2.0",
                     "MGLT": "40",
                     "starship_class": "Star dreadnought",
-                    "pilots": [],
-                    "films": [
-                        "https://swapi.co/api/films/2/",
-                        "https://swapi.co/api/films/3/"
-                    ],
+                    "pilots": ["fake.pilot.url"],
+                    "films": ["fake.films.url"],
                     "created": "2014-12-15T12:31:42.547000Z",
                     "edited": "2017-04-19T10:56:06.685592Z",
                     "url": "https://swapi.co/api/starships/15/"
-                },
-                {
-                    "name": "Sentinel-class landing craft",
-                    "model": "Sentinel-class landing craft",
-                    "manufacturer": "Sienar Fleet Systems, Cyngus Spaceworks",
-                    "cost_in_credits": "240000",
-                    "length": "38",
-                    "max_atmosphering_speed": "1000",
-                    "crew": "5",
-                    "passengers": "75",
-                    "cargo_capacity": "180000",
-                    "consumables": "1 month",
-                    "hyperdrive_rating": "1.0",
-                    "MGLT": "70",
-                    "starship_class": "landing craft",
-                    "pilots": [],
-                    "films": [
-                        "https://swapi.co/api/films/1/"
-                    ],
-                    "created": "2014-12-10T15:48:00.586000Z",
-                    "edited": "2014-12-22T17:35:44.431407Z",
-                    "url": "https://swapi.co/api/starships/5/"
-                },
-                {
-                    "name": "Death Star",
-                    "model": "DS-1 Orbital Battle Station",
-                    "manufacturer": "Imperial Department of Military Research, Sienar Fleet Systems",
-                    "cost_in_credits": "1000000000000",
-                    "length": "120000",
-                    "max_atmosphering_speed": "n/a",
-                    "crew": "342953",
-                    "passengers": "843342",
-                    "cargo_capacity": "1000000000000",
-                    "consumables": "3 years",
-                    "hyperdrive_rating": "4.0",
-                    "MGLT": "10",
-                    "starship_class": "Deep Space Mobile Battlestation",
-                    "pilots": [],
-                    "films": [
-                        "https://swapi.co/api/films/1/"
-                    ],
-                    "created": "2014-12-10T16:36:50.509000Z",
-                    "edited": "2014-12-22T17:35:44.452589Z",
-                    "url": "https://swapi.co/api/starships/9/"
-                },
-                {
-                    "name": "Millennium Falcon",
-                    "model": "YT-1300 light freighter",
-                    "manufacturer": "Corellian Engineering Corporation",
-                    "cost_in_credits": "100000",
-                    "length": "34.37",
-                    "max_atmosphering_speed": "1050",
-                    "crew": "4",
-                    "passengers": "6",
-                    "cargo_capacity": "100000",
-                    "consumables": "2 months",
-                    "hyperdrive_rating": "0.5",
-                    "MGLT": "75",
-                    "starship_class": "Light freighter",
-                    "pilots": [
-                        "https://swapi.co/api/people/13/",
-                        "https://swapi.co/api/people/14/",
-                        "https://swapi.co/api/people/25/",
-                        "https://swapi.co/api/people/31/"
-                    ],
-                    "films": [
-                        "https://swapi.co/api/films/2/",
-                        "https://swapi.co/api/films/7/",
-                        "https://swapi.co/api/films/3/",
-                        "https://swapi.co/api/films/1/"
-                    ],
-                    "created": "2014-12-10T16:59:45.094000Z",
-                    "edited": "2014-12-22T17:35:44.464156Z",
-                    "url": "https://swapi.co/api/starships/10/"
-                },
-                {
-                    "name": "Y-wing",
-                    "model": "BTL Y-wing",
-                    "manufacturer": "Koensayr Manufacturing",
-                    "cost_in_credits": "134999",
-                    "length": "14",
-                    "max_atmosphering_speed": "1000km",
-                    "crew": "2",
-                    "passengers": "0",
-                    "cargo_capacity": "110",
-                    "consumables": "1 week",
-                    "hyperdrive_rating": "1.0",
-                    "MGLT": "80",
-                    "starship_class": "assault starfighter",
-                    "pilots": [],
-                    "films": [
-                        "https://swapi.co/api/films/2/",
-                        "https://swapi.co/api/films/3/",
-                        "https://swapi.co/api/films/1/"
-                    ],
-                    "created": "2014-12-12T11:00:39.817000Z",
-                    "edited": "2014-12-22T17:35:44.479706Z",
-                    "url": "https://swapi.co/api/starships/11/"
-                },
-                {
-                    "name": "X-wing",
-                    "model": "T-65 X-wing",
-                    "manufacturer": "Incom Corporation",
-                    "cost_in_credits": "149999",
-                    "length": "12.5",
-                    "max_atmosphering_speed": "1050",
-                    "crew": "1",
-                    "passengers": "0",
-                    "cargo_capacity": "110",
-                    "consumables": "1 week",
-                    "hyperdrive_rating": "1.0",
-                    "MGLT": "100",
-                    "starship_class": "Starfighter",
-                    "pilots": [
-                        "https://swapi.co/api/people/1/",
-                        "https://swapi.co/api/people/9/",
-                        "https://swapi.co/api/people/18/",
-                        "https://swapi.co/api/people/19/"
-                    ],
-                    "films": [
-                        "https://swapi.co/api/films/2/",
-                        "https://swapi.co/api/films/3/",
-                        "https://swapi.co/api/films/1/"
-                    ],
-                    "created": "2014-12-12T11:19:05.340000Z",
-                    "edited": "2014-12-22T17:35:44.491233Z",
-                    "url": "https://swapi.co/api/starships/12/"
-                },
-                {
-                    "name": "TIE Advanced x1",
-                    "model": "Twin Ion Engine Advanced x1",
-                    "manufacturer": "Sienar Fleet Systems",
-                    "cost_in_credits": "unknown",
-                    "length": "9.2",
-                    "max_atmosphering_speed": "1200",
-                    "crew": "1",
-                    "passengers": "0",
-                    "cargo_capacity": "150",
-                    "consumables": "5 days",
-                    "hyperdrive_rating": "1.0",
-                    "MGLT": "105",
-                    "starship_class": "Starfighter",
-                    "pilots": [
-                        "https://swapi.co/api/people/4/"
-                    ],
-                    "films": [
-                        "https://swapi.co/api/films/1/"
-                    ],
-                    "created": "2014-12-12T11:21:32.991000Z",
-                    "edited": "2014-12-22T17:35:44.549047Z",
-                    "url": "https://swapi.co/api/starships/13/"
-                },
-                {
-                    "name": "Slave 1",
-                    "model": "Firespray-31-class patrol and attack",
-                    "manufacturer": "Kuat Systems Engineering",
-                    "cost_in_credits": "unknown",
-                    "length": "21.5",
-                    "max_atmosphering_speed": "1000",
-                    "crew": "1",
-                    "passengers": "6",
-                    "cargo_capacity": "70000",
-                    "consumables": "1 month",
-                    "hyperdrive_rating": "3.0",
-                    "MGLT": "70",
-                    "starship_class": "Patrol craft",
-                    "pilots": [
-                        "https://swapi.co/api/people/22/"
-                    ],
-                    "films": [
-                        "https://swapi.co/api/films/2/",
-                        "https://swapi.co/api/films/5/"
-                    ],
-                    "created": "2014-12-15T13:00:56.332000Z",
-                    "edited": "2014-12-22T17:35:44.716273Z",
-                    "url": "https://swapi.co/api/starships/21/"
-                },
-                {
-                    "name": "Imperial shuttle",
-                    "model": "Lambda-class T-4a shuttle",
-                    "manufacturer": "Sienar Fleet Systems",
-                    "cost_in_credits": "240000",
-                    "length": "20",
-                    "max_atmosphering_speed": "850",
-                    "crew": "6",
-                    "passengers": "20",
-                    "cargo_capacity": "80000",
-                    "consumables": "2 months",
-                    "hyperdrive_rating": "1.0",
-                    "MGLT": "50",
-                    "starship_class": "Armed government transport",
-                    "pilots": [
-                        "https://swapi.co/api/people/1/",
-                        "https://swapi.co/api/people/13/",
-                        "https://swapi.co/api/people/14/"
-                    ],
-                    "films": [
-                        "https://swapi.co/api/films/2/",
-                        "https://swapi.co/api/films/3/"
-                    ],
-                    "created": "2014-12-15T13:04:47.235000Z",
-                    "edited": "2014-12-22T17:35:44.795405Z",
-                    "url": "https://swapi.co/api/starships/22/"
-                },
-                {
-                    "name": "EF76 Nebulon-B escort frigate",
-                    "model": "EF76 Nebulon-B escort frigate",
-                    "manufacturer": "Kuat Drive Yards",
-                    "cost_in_credits": "8500000",
-                    "length": "300",
-                    "max_atmosphering_speed": "800",
-                    "crew": "854",
-                    "passengers": "75",
-                    "cargo_capacity": "6000000",
-                    "consumables": "2 years",
-                    "hyperdrive_rating": "2.0",
-                    "MGLT": "40",
-                    "starship_class": "Escort ship",
-                    "pilots": [],
-                    "films": [
-                        "https://swapi.co/api/films/2/",
-                        "https://swapi.co/api/films/3/"
-                    ],
-                    "created": "2014-12-15T13:06:30.813000Z",
-                    "edited": "2014-12-22T17:35:44.848329Z",
-                    "url": "https://swapi.co/api/starships/23/"
                 }
             ]
         };
 
-        httpClientSpy.get.and.returnValue(asyncData(expectedStarships));
+        let $res = service.getStarships();
 
-        swapiService.getStarships().subscribe(
-            (ships: object) => {
-                console.log("Starships: ", ships);
-                expect(ships).toEqual(expectedStarships, 'expect starships');
-            },
-            (error: any) => {
-                console.log("GetStarships()::Caught error ", error);
-            }
-        );
+        $res.subscribe(response => {
+            expect(response['results'].length).toBe(1);
+            expect(response).toEqual(mockRes);
+        });
 
-        expect(httpClientSpy.get.calls.count()).toBe(1, 'one call');
-    });
+        tick();
 
-    it('should return expected vehicles (HttpClient called once)', () => {
-        const expectedVehicles: VehiclesModel = {
-            "count": 39,
-            "next": "https://swapi.co/api/vehicles/?page=2",
+        const req = httpTestingController.expectOne(environment.swapiBase + environment.swapiShips);
+ 
+        expect(req.request.method).toEqual('GET');
+
+        req.flush(mockRes);
+    }));
+
+    it('should return vehicles(calls getVehicles)', fakeAsync(() => {
+        let mockRes = {
+            "count": 1,
+            "next": null,
             "previous": null,
             "results": [
                 {
@@ -1175,461 +268,131 @@ describe('SwapiService', () => {
                     "vehicle_class": "wheeled",
                     "pilots": [],
                     "films": [
-                        "https://swapi.co/api/films/5/",
-                        "https://swapi.co/api/films/1/"
+                        "fake.film.url"
                     ],
                     "created": "2014-12-10T15:36:25.724000Z",
                     "edited": "2014-12-22T18:21:15.523587Z",
                     "url": "https://swapi.co/api/vehicles/4/"
-                },
-                {
-                    "name": "T-16 skyhopper",
-                    "model": "T-16 skyhopper",
-                    "manufacturer": "Incom Corporation",
-                    "cost_in_credits": "14500",
-                    "length": "10.4",
-                    "max_atmosphering_speed": "1200",
-                    "crew": "1",
-                    "passengers": "1",
-                    "cargo_capacity": "50",
-                    "consumables": "0",
-                    "vehicle_class": "repulsorcraft",
-                    "pilots": [],
-                    "films": [
-                        "https://swapi.co/api/films/1/"
-                    ],
-                    "created": "2014-12-10T16:01:52.434000Z",
-                    "edited": "2014-12-22T18:21:15.552614Z",
-                    "url": "https://swapi.co/api/vehicles/6/"
-                },
-                {
-                    "name": "X-34 landspeeder",
-                    "model": "X-34 landspeeder",
-                    "manufacturer": "SoroSuub Corporation",
-                    "cost_in_credits": "10550",
-                    "length": "3.4",
-                    "max_atmosphering_speed": "250",
-                    "crew": "1",
-                    "passengers": "1",
-                    "cargo_capacity": "5",
-                    "consumables": "unknown",
-                    "vehicle_class": "repulsorcraft",
-                    "pilots": [],
-                    "films": [
-                        "https://swapi.co/api/films/1/"
-                    ],
-                    "created": "2014-12-10T16:13:52.586000Z",
-                    "edited": "2014-12-22T18:21:15.583700Z",
-                    "url": "https://swapi.co/api/vehicles/7/"
-                },
-                {
-                    "name": "TIE/LN starfighter",
-                    "model": "Twin Ion Engine/Ln Starfighter",
-                    "manufacturer": "Sienar Fleet Systems",
-                    "cost_in_credits": "unknown",
-                    "length": "6.4",
-                    "max_atmosphering_speed": "1200",
-                    "crew": "1",
-                    "passengers": "0",
-                    "cargo_capacity": "65",
-                    "consumables": "2 days",
-                    "vehicle_class": "starfighter",
-                    "pilots": [],
-                    "films": [
-                        "https://swapi.co/api/films/2/",
-                        "https://swapi.co/api/films/3/",
-                        "https://swapi.co/api/films/1/"
-                    ],
-                    "created": "2014-12-10T16:33:52.860000Z",
-                    "edited": "2014-12-22T18:21:15.606149Z",
-                    "url": "https://swapi.co/api/vehicles/8/"
-                },
-                {
-                    "name": "Snowspeeder",
-                    "model": "t-47 airspeeder",
-                    "manufacturer": "Incom corporation",
-                    "cost_in_credits": "unknown",
-                    "length": "4.5",
-                    "max_atmosphering_speed": "650",
-                    "crew": "2",
-                    "passengers": "0",
-                    "cargo_capacity": "10",
-                    "consumables": "none",
-                    "vehicle_class": "airspeeder",
-                    "pilots": [
-                        "https://swapi.co/api/people/1/",
-                        "https://swapi.co/api/people/18/"
-                    ],
-                    "films": [
-                        "https://swapi.co/api/films/2/"
-                    ],
-                    "created": "2014-12-15T12:22:12Z",
-                    "edited": "2014-12-22T18:21:15.623033Z",
-                    "url": "https://swapi.co/api/vehicles/14/"
-                },
-                {
-                    "name": "TIE bomber",
-                    "model": "TIE/sa bomber",
-                    "manufacturer": "Sienar Fleet Systems",
-                    "cost_in_credits": "unknown",
-                    "length": "7.8",
-                    "max_atmosphering_speed": "850",
-                    "crew": "1",
-                    "passengers": "0",
-                    "cargo_capacity": "none",
-                    "consumables": "2 days",
-                    "vehicle_class": "space/planetary bomber",
-                    "pilots": [],
-                    "films": [
-                        "https://swapi.co/api/films/2/",
-                        "https://swapi.co/api/films/3/"
-                    ],
-                    "created": "2014-12-15T12:33:15.838000Z",
-                    "edited": "2014-12-22T18:21:15.667730Z",
-                    "url": "https://swapi.co/api/vehicles/16/"
-                },
-                {
-                    "name": "AT-AT",
-                    "model": "All Terrain Armored Transport",
-                    "manufacturer": "Kuat Drive Yards, Imperial Department of Military Research",
-                    "cost_in_credits": "unknown",
-                    "length": "20",
-                    "max_atmosphering_speed": "60",
-                    "crew": "5",
-                    "passengers": "40",
-                    "cargo_capacity": "1000",
-                    "consumables": "unknown",
-                    "vehicle_class": "assault walker",
-                    "pilots": [],
-                    "films": [
-                        "https://swapi.co/api/films/2/",
-                        "https://swapi.co/api/films/3/"
-                    ],
-                    "created": "2014-12-15T12:38:25.937000Z",
-                    "edited": "2014-12-22T18:21:15.714673Z",
-                    "url": "https://swapi.co/api/vehicles/18/"
-                },
-                {
-                    "name": "AT-ST",
-                    "model": "All Terrain Scout Transport",
-                    "manufacturer": "Kuat Drive Yards, Imperial Department of Military Research",
-                    "cost_in_credits": "unknown",
-                    "length": "2",
-                    "max_atmosphering_speed": "90",
-                    "crew": "2",
-                    "passengers": "0",
-                    "cargo_capacity": "200",
-                    "consumables": "none",
-                    "vehicle_class": "walker",
-                    "pilots": [
-                        "https://swapi.co/api/people/13/"
-                    ],
-                    "films": [
-                        "https://swapi.co/api/films/2/",
-                        "https://swapi.co/api/films/3/"
-                    ],
-                    "created": "2014-12-15T12:46:42.384000Z",
-                    "edited": "2014-12-22T18:21:15.761584Z",
-                    "url": "https://swapi.co/api/vehicles/19/"
-                },
-                {
-                    "name": "Storm IV Twin-Pod cloud car",
-                    "model": "Storm IV Twin-Pod",
-                    "manufacturer": "Bespin Motors",
-                    "cost_in_credits": "75000",
-                    "length": "7",
-                    "max_atmosphering_speed": "1500",
-                    "crew": "2",
-                    "passengers": "0",
-                    "cargo_capacity": "10",
-                    "consumables": "1 day",
-                    "vehicle_class": "repulsorcraft",
-                    "pilots": [],
-                    "films": [
-                        "https://swapi.co/api/films/2/"
-                    ],
-                    "created": "2014-12-15T12:58:50.530000Z",
-                    "edited": "2014-12-22T18:21:15.783232Z",
-                    "url": "https://swapi.co/api/vehicles/20/"
-                },
-                {
-                    "name": "Sail barge",
-                    "model": "Modified Luxury Sail Barge",
-                    "manufacturer": "Ubrikkian Industries Custom Vehicle Division",
-                    "cost_in_credits": "285000",
-                    "length": "30",
-                    "max_atmosphering_speed": "100",
-                    "crew": "26",
-                    "passengers": "500",
-                    "cargo_capacity": "2000000",
-                    "consumables": "Live food tanks",
-                    "vehicle_class": "sail barge",
-                    "pilots": [],
-                    "films": [
-                        "https://swapi.co/api/films/3/"
-                    ],
-                    "created": "2014-12-18T10:44:14.217000Z",
-                    "edited": "2014-12-22T18:21:15.807906Z",
-                    "url": "https://swapi.co/api/vehicles/24/"
                 }
             ]
         };
 
-        httpClientSpy.get.and.returnValue(asyncData(expectedVehicles));
+        let $res = service.getVehicles();
 
-        swapiService.getVehicles().subscribe(
-            (vehicles: object) => {
-                console.log("Vehicles: ", vehicles);
-                expect(vehicles).toEqual(expectedVehicles, 'expect vehicles');
-            },
-            (error: any) => {
-                console.log("GetVehicles()::Caught error ", error);
-            }
-        );
+        $res.subscribe(response => {
+            expect(response['results'].length).toBe(1);
+            expect(response).toEqual(mockRes);
+        });
 
-        expect(httpClientSpy.get.calls.count()).toBe(1, 'one call');
-    });
+        tick();
 
-    it('should return expected generic call (HttpClient called once)', () => {
-        const expected: Film = {
-            "title": "A New Hope",
-            "episode_id": 4,
-            "opening_crawl": "It is a period of civil war.\r\nRebel spaceships, striking\r\nfrom a hidden base, have won\r\ntheir first victory against\r\nthe evil Galactic Empire.\r\n\r\nDuring the battle, Rebel\r\nspies managed to steal secret\r\nplans to the Empire's\r\nultimate weapon, the DEATH\r\nSTAR, an armored space\r\nstation with enough power\r\nto destroy an entire planet.\r\n\r\nPursued by the Empire's\r\nsinister agents, Princess\r\nLeia races home aboard her\r\nstarship, custodian of the\r\nstolen plans that can save her\r\npeople and restore\r\nfreedom to the galaxy....",
-            "director": "George Lucas",
-            "producer": "Gary Kurtz, Rick McCallum",
-            "release_date": "1977-05-25",
-            "characters": [
-                "https://swapi.co/api/people/1/",
-                "https://swapi.co/api/people/2/",
-                "https://swapi.co/api/people/3/",
-                "https://swapi.co/api/people/4/",
-                "https://swapi.co/api/people/5/",
-                "https://swapi.co/api/people/6/",
-                "https://swapi.co/api/people/7/",
-                "https://swapi.co/api/people/8/",
-                "https://swapi.co/api/people/9/",
-                "https://swapi.co/api/people/10/",
-                "https://swapi.co/api/people/12/",
-                "https://swapi.co/api/people/13/",
-                "https://swapi.co/api/people/14/",
-                "https://swapi.co/api/people/15/",
-                "https://swapi.co/api/people/16/",
-                "https://swapi.co/api/people/18/",
-                "https://swapi.co/api/people/19/",
-                "https://swapi.co/api/people/81/"
-            ],
-            "planets": [
-                "https://swapi.co/api/planets/2/",
-                "https://swapi.co/api/planets/3/",
-                "https://swapi.co/api/planets/1/"
-            ],
-            "starships": [
-                "https://swapi.co/api/starships/2/",
-                "https://swapi.co/api/starships/3/",
-                "https://swapi.co/api/starships/5/",
-                "https://swapi.co/api/starships/9/",
-                "https://swapi.co/api/starships/10/",
-                "https://swapi.co/api/starships/11/",
-                "https://swapi.co/api/starships/12/",
-                "https://swapi.co/api/starships/13/"
-            ],
-            "vehicles": [
-                "https://swapi.co/api/vehicles/4/",
-                "https://swapi.co/api/vehicles/6/",
-                "https://swapi.co/api/vehicles/7/",
-                "https://swapi.co/api/vehicles/8/"
-            ],
+        const req = httpTestingController.expectOne(environment.swapiBase + environment.swapiVehicles);
+ 
+        expect(req.request.method).toEqual('GET');
+
+        req.flush(mockRes);
+    }));
+
+    it('should return data from url (calls genericFetch)', fakeAsync(() => {
+        let mockRes = {
+            "name": "R2-D2",
+            "height": "96",
+            "mass": "32",
+            "hair_color": "n/a",
+            "skin_color": "white, blue",
+            "eye_color": "red",
+            "birth_year": "33BBY",
+            "gender": "n/a",
+            "homeworld": "fake.planet.url",
+            "films": ["fake.person.url"],
             "species": [
-                "https://swapi.co/api/species/5/",
-                "https://swapi.co/api/species/3/",
-                "https://swapi.co/api/species/2/",
-                "https://swapi.co/api/species/1/",
-                "https://swapi.co/api/species/4/"
+                "https://swapi.co/api/species/2/"
             ],
-            "created": "2014-12-10T14:23:31.880000Z",
-            "edited": "2015-04-11T09:46:52.774897Z",
-            "url": "https://swapi.co/api/films/1/"
+            "vehicles": [],
+            "starships": [],
+            "created": "2014-12-10T15:11:50.376000Z",
+            "edited": "2014-12-20T21:17:50.311000Z",
+            "url": "fake.r2d2.url"      
         };
 
-        httpClientSpy.get.and.returnValue(asyncData(expected));
+        let url = "fake.generic.url";
+        let $res = service.genericFetch(url);
 
-        let url = "https://swapi.co/api/films/1";
+        $res.subscribe(response => {
+            expect(response).not.toBeNull();
+            expect(response).toEqual(mockRes);
+        });
 
-        swapiService.genericFetch(url).subscribe(
-            (result: object) => {
-                console.log("Generic fetch result: ", result);
-                expect(result).toEqual(expected, 'expect film ep1');
-            },
-            (error: any) => {
-                console.log("GenericFetch()::Caught error ", error);
-            }
-        );
+        tick();
 
-        expect(httpClientSpy.get.calls.count()).toBe(1, 'one call');
-    });
+        const req = httpTestingController.expectOne(url);
+        expect(req.request.method).toEqual('GET');
 
-    it('should return expected results from array of urls (HttpClient called 4 times', () => {
-        const expected: Vehicle[] = [
-            {
-                "name": "Sand Crawler",
-                "model": "Digger Crawler",
-                "manufacturer": "Corellia Mining Corporation",
-                "cost_in_credits": "150000",
-                "length": "36.8",
-                "max_atmosphering_speed": "30",
-                "crew": "46",
-                "passengers": "30",
-                "cargo_capacity": "50000",
-                "consumables": "2 months",
-                "vehicle_class": "wheeled",
-                "pilots": [],
-                "films": [
-                    "https://swapi.co/api/films/5/",
-                    "https://swapi.co/api/films/1/"
-                ],
-                "created": "2014-12-10T15:36:25.724000Z",
-                "edited": "2014-12-22T18:21:15.523587Z",
-                "url": "https://swapi.co/api/vehicles/4/"
-            },
-            {
-                "name": "T-16 skyhopper",
-                "model": "T-16 skyhopper",
-                "manufacturer": "Incom Corporation",
-                "cost_in_credits": "14500",
-                "length": "10.4",
-                "max_atmosphering_speed": "1200",
-                "crew": "1",
-                "passengers": "1",
-                "cargo_capacity": "50",
-                "consumables": "0",
-                "vehicle_class": "repulsorcraft",
-                "pilots": [],
-                "films": [
-                    "https://swapi.co/api/films/1/"
-                ],
-                "created": "2014-12-10T16:01:52.434000Z",
-                "edited": "2014-12-22T18:21:15.552614Z",
-                "url": "https://swapi.co/api/vehicles/6/"
-            },
-            {
-                "name": "X-34 landspeeder",
-                "model": "X-34 landspeeder",
-                "manufacturer": "SoroSuub Corporation",
-                "cost_in_credits": "10550",
-                "length": "3.4",
-                "max_atmosphering_speed": "250",
-                "crew": "1",
-                "passengers": "1",
-                "cargo_capacity": "5",
-                "consumables": "unknown",
-                "vehicle_class": "repulsorcraft",
-                "pilots": [],
-                "films": [
-                    "https://swapi.co/api/films/1/"
-                ],
-                "created": "2014-12-10T16:13:52.586000Z",
-                "edited": "2014-12-22T18:21:15.583700Z",
-                "url": "https://swapi.co/api/vehicles/7/"
-            },
-            {
-                "name": "TIE/LN starfighter",
-                "model": "Twin Ion Engine/Ln Starfighter",
-                "manufacturer": "Sienar Fleet Systems",
-                "cost_in_credits": "unknown",
-                "length": "6.4",
-                "max_atmosphering_speed": "1200",
-                "crew": "1",
-                "passengers": "0",
-                "cargo_capacity": "65",
-                "consumables": "2 days",
-                "vehicle_class": "starfighter",
-                "pilots": [],
-                "films": [
-                    "https://swapi.co/api/films/2/",
-                    "https://swapi.co/api/films/3/",
-                    "https://swapi.co/api/films/1/"
-                ],
-                "created": "2014-12-10T16:33:52.860000Z",
-                "edited": "2014-12-22T18:21:15.606149Z",
-                "url": "https://swapi.co/api/vehicles/8/"
-            }
-        ];
-        
-        httpClientSpy.get.and.returnValues(asyncData(expected));
+        req.flush(mockRes);
+    })); 
 
-        let urls = ["https://swapi.co/api/vehicles/4/", 
-                    "https://swapi.co/api/vehicles/6/",
-                    "https://swapi.co/api/vehicles/7/",
-                    "https://swapi.co/api/vehicles/8/"
-                ];
+    // This is new. Testing multiple requests or complex/chained async calls.
+    it('should return data from array of urls (calls arrayFetch)', fakeAsync(() => {
+        let mockRes  = { "code": "200", "res": "nice response" };
+        let mockRes2 = { "code": "200", "res": "also nice response" };
 
-        swapiService.arrayFetch(urls).subscribe(
-            (results: Array<object>) => {
-                console.log("Array fetch results: ", results);
-                expect(results).toEqual(expected, 'expect array of 4 vehicles');
-            },
-            (error: any) => {
-                console.log("ArrayFetch()::Caught error ", error);
-            }
-        );
+        let urls = ["https://fake.data.url/people/1", "https://fake.data2.url/people/2"];
+        let $res = service.arrayFetch(urls);
 
-        expect(httpClientSpy.get.calls.count()).toBe(4, 'four calls');
-    });
+        $res.subscribe(response => {
+            expect(response).not.toBeNull();
+            expect(response.length).toBe(2);
+            expect(response).toEqual([mockRes, mockRes2]);
+        });
 
-    it('should return search results (HttpClient called once', () => {
-        const expected: CharacterModel = {
-            "count": 1,
+        tick();
+
+        const calls = httpTestingController.match((request) => {
+            return request.url.match(/people/) && request.method === 'GET';
+        });
+
+        expect(calls.length).toBe(2);
+        expect(calls[0].request.url).toEqual(urls[0]);
+        expect(calls[1].request.url).toEqual(urls[1]);
+
+        calls[0].flush(mockRes);
+        calls[1].flush(mockRes2);
+    }));
+
+    it('should return search result (calls search)', fakeAsync(() => {
+        let mockRes = {
+            "count": 2,
             "next": null,
             "previous": null,
             "results": [
                 {
-                    "name": "Luke Skywalker",
-                    "height": "172",
-                    "mass": "77",
-                    "hair_color": "blond",
-                    "skin_color": "fair",
-                    "eye_color": "blue",
-                    "birth_year": "19BBY",
-                    "gender": "male",
-                    "homeworld": "https://swapi.co/api/planets/1/",
-                    "films": [
-                        "https://swapi.co/api/films/2/",
-                        "https://swapi.co/api/films/6/",
-                        "https://swapi.co/api/films/3/",
-                        "https://swapi.co/api/films/1/",
-                        "https://swapi.co/api/films/7/"
-                    ],
-                    "species": [
-                        "https://swapi.co/api/species/1/"
-                    ],
-                    "vehicles": [
-                        "https://swapi.co/api/vehicles/14/",
-                        "https://swapi.co/api/vehicles/30/"
-                    ],
-                    "starships": [
-                        "https://swapi.co/api/starships/12/",
-                        "https://swapi.co/api/starships/22/"
-                    ],
-                    "created": "2014-12-09T13:50:51.644000Z",
-                    "edited": "2014-12-20T21:17:56.891000Z",
-                    "url": "https://swapi.co/api/people/1/"
+                    "name": "luke"
+                },
+                {
+                    "name": "luminara"
                 }
-            ]
+            ],
         };
 
-        httpClientSpy.get.and.returnValue(asyncData(expected));
+        let searchText = "lu";
+        let $res = service.search(searchText, environment.swapiPeople);
 
-        swapiService.search("luke", "people").subscribe(
-            (result: object) => {
-                console.log("Search results: ", result);
-                expect(result).toEqual(expected, 'expected return of luke skywalker');
-            },
-            (error: any) => {
-                console.log("Search()::Caught error ", error);
-            }
-        ); 
+        $res.subscribe(response => {
+            expect(response).not.toBeNull();
+            expect(response).toEqual(mockRes);
+        });
 
-        expect(httpClientSpy.get.calls.count()).toBe(1, 'one call');
-    });
+        tick();
+
+        const req = httpTestingController.expectOne(environment.swapiBase 
+                                                  + environment.swapiPeople 
+                                                  + "/"
+                                                  + environment.swapiSearch
+                                                  + searchText);
+                                    
+        expect(req.request.method).toEqual('GET');
+
+        req.flush(mockRes);
+    }));
 });
 

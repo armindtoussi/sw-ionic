@@ -14,7 +14,7 @@ export class ToastService {
     async presentToast(msg: string): Promise<void> {
         const toast = await this.toastCtrl.create({
             message: msg,
-            duration: 2000,
+            duration: 100000,
             buttons: [
                 {
                     text: 'Okay',

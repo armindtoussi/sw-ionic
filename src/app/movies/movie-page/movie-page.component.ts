@@ -58,6 +58,7 @@ export class MoviePageComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.movieSubs = [];
     this.handleData();
+    this._toast.presentToast("message");
   }
 
   /**

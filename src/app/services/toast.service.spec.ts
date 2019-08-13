@@ -1,6 +1,8 @@
 //Service.
 import { ToastService } from "./toast.service";
 import { ToastController } from '@ionic/angular';
+import { fakeAsync,tick } from '@angular/core/testing';
+
 
 
 describe('ToastService', () => {
@@ -12,10 +14,14 @@ describe('ToastService', () => {
         toastService = new ToastService(<any>toastCtrlSpy); //create service and inject spy DI;
     });
 
-    xit('should create the toast', async () => {
-        spyOn(toastService, 'presentToast');
-        await toastService.presentToast("it's a toast");
-        expect(toastService.presentToast).toHaveBeenCalled();
-    });
     // todo - come back here to figure out more tests. weird right now.
+    it('should ', fakeAsync(() => { 
+        spyOn(toastService, 'presentToast');
+        toastService.presentToast("testing");
+
+        tick();
+
+        expect(toastService.presentToast).toHaveBeenCalled();
+    }));
+
 });

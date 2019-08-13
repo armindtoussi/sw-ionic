@@ -1,7 +1,7 @@
 import { StorageService } from 'src/app/services/storage.service';
 import { Film } from 'src/app/models/films.model';
 import { Storage } from '@ionic/storage';
-var moviesJSON = require('../testing/data/movies.json');
+// var moviesJSON = require('../testing/data/movies.json');
 
 
 export class StorageStub extends Storage {
