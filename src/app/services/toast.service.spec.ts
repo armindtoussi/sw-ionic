@@ -23,5 +23,4 @@ describe('ToastService', () => {
 
         expect(toastService.presentToast).toHaveBeenCalled();
     }));
-
 });
