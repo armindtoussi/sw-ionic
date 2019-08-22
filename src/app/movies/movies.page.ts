@@ -69,7 +69,6 @@ export class MoviesPage implements OnInit, OnDestroy {
    * Search function, triggered on IonChange. 
    */
   search(): void {
-    console.log(this.searchText);
     this.movieSub[1] = this._swapiFetchService.search(this.searchText, 
                                                       environment.swapiMovies)
       .subscribe((results: any) => {

@@ -23,21 +23,16 @@ export class StorageService {
     }
 
     //get all movie list.
-    async getMovies(): Promise<Film[] | null> {
+    async getMovies(): Promise<Film[]> {
         const films = await this.storage.get(environment.MOVIES_KEY);
-        if (films && films.count && films.results.length === films.count) {
-            return films.results;
-        }
-        else {
-            return null;
-        }
+        return films.results; 
     }
 
     async getSingleEntry(id: any, key: string, valueKey: string): Promise<any> {
         return this.storage.get(key).then((result: any) => {
-            if(result) {
+            if(result && valueKey) {
                 return result.results.find((element: any) => { 
-                    return element[valueKey] === id;
+                    return element[valueKey] == id;
                 });
             } else {
                 return null;

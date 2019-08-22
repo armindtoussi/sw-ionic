@@ -78,7 +78,7 @@ export class SpeciesPageComponent implements OnInit, OnDestroy {
   /**
    * Gets main species data in the case of a reload or manual nav to this page. 
    */
-  private getSpecies(): void {
+  public getSpecies(): void {
     let id = this.parsePath();
 
     this.speciesSubs[0] = this._cache.search(environment.swapiSpecies, id)
@@ -95,7 +95,7 @@ export class SpeciesPageComponent implements OnInit, OnDestroy {
   /**
    * Fetches films that feature this species.
    */
-  private fetchFilms(): void {
+  public fetchFilms(): void {
     if(this.data.films.length === 0) {
       return;
     }
@@ -110,7 +110,7 @@ export class SpeciesPageComponent implements OnInit, OnDestroy {
   /**
    * Fetches Characters associated to this movie. 
    */
-  private fetchPeople(): void {
+  public fetchPeople(): void {
     if(this.data.people.length === 0) {
       return; 
     }
@@ -124,7 +124,7 @@ export class SpeciesPageComponent implements OnInit, OnDestroy {
   /**
    * Parses path to get id segment from url path. 
    */
-  private parsePath(): any {
+  public parsePath(): any {
     let idx = this.router.url.lastIndexOf('/');
     let id  = this.router.url.slice(idx + 1);
     return id;
@@ -133,7 +133,7 @@ export class SpeciesPageComponent implements OnInit, OnDestroy {
   /**
    * Handles main data on load of page. 
    */
-  private handleData(): void { 
+  public handleData(): void { 
     if(this.route.snapshot.data['special']) {
       this.data = this.route.snapshot.data['special'];
       this.getExtraData();
@@ -147,7 +147,7 @@ export class SpeciesPageComponent implements OnInit, OnDestroy {
    * @param a string to sort 
    * @param b string to sort
    */
-  private sortArr(a: string, b: string): number {
+  public sortArr(a: string, b: string): number {
     return (a).localeCompare(b);
   }
 
@@ -155,7 +155,7 @@ export class SpeciesPageComponent implements OnInit, OnDestroy {
    * Helper function to present not found toast, and redirect.
    * @param url url to redirect to.
    */
-  private async presentToast(url: string): Promise<void> {
+  public async presentToast(url: string): Promise<void> {
     await this._toast.presentToast(environment.notFound).then( 
       () => {
         this.router.navigateByUrl(url);
@@ -165,7 +165,7 @@ export class SpeciesPageComponent implements OnInit, OnDestroy {
   /**
    * Fetches extra data related to a page. 
    */
-  private getExtraData(): void {
+  public getExtraData(): void {
     this.fetchFilms();
     this.fetchPeople();
   }
@@ -173,7 +173,7 @@ export class SpeciesPageComponent implements OnInit, OnDestroy {
   /**
    * Unsubs from subs.
    */
-  private unsubscribe(): void {
+  public unsubscribe(): void {
     for(let i = 0; i < this.speciesSubs.length; i++) {
       if(this.speciesSubs[i] !== undefined) {
         this.speciesSubs[i].unsubscribe();

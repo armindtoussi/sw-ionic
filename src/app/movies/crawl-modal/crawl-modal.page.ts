@@ -1,6 +1,5 @@
 import { Component, Input, OnInit }   from '@angular/core';
 import { NavParams, ModalController } from '@ionic/angular';
-import * as $ from 'jquery';
 
 @Component({
     selector: 'crawl-modal',
@@ -27,19 +26,16 @@ export class CrawlModalPage implements OnInit {
     }
 
     dismiss(): void {
-        console.log("dismissing();");
         this.modalCtrl.dismiss();
         this.audio.pause();
     }
 
-    private startCrawl(): void {
+    public startCrawl(): void {
         const crawlEl = document.getElementById('crawl');
         const introEl = document.getElementById('intro');
         setTimeout(() => {
             crawlEl.style.display = "block";
             introEl.style.display = "none";
-            // $('.crawl').css('display', 'block');
-            // $('.intro').css('display', 'none');
         }, 9000);
     }
     

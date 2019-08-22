@@ -84,7 +84,7 @@ export class VehiclesPageComponent implements OnInit, OnDestroy {
   /**
    * Fetches films this vehicle was featured in. 
    */
-  private fetchFilms(): void {
+  public fetchFilms(): void {
     if(this.data.films.length === 0) {
       return;
     }
@@ -99,7 +99,7 @@ export class VehiclesPageComponent implements OnInit, OnDestroy {
   /**
    * Fetches pilots that piloted this vehicle.
    */
-  private fetchPilots(): void {
+  public fetchPilots(): void {
     if(this.data.pilots.length === 0) {
       return;
     }
@@ -114,7 +114,7 @@ export class VehiclesPageComponent implements OnInit, OnDestroy {
    * Gets main vehicle data in the case of a reload or 
    * manual nav to this page. 
    */
-  private getVehicle(): void {
+  public getVehicle(): void {
     let id = this.parsePath();
     id = this.replaceUnderscore(id);
 
@@ -132,7 +132,7 @@ export class VehiclesPageComponent implements OnInit, OnDestroy {
   /**
    * Parses path to get id segment from url path. 
    */
-  private parsePath(): any {
+  public parsePath(): any {
     let idx = this.router.url.lastIndexOf('/');
     let id  = this.router.url.slice(idx + 1);
     return id;
@@ -142,14 +142,14 @@ export class VehiclesPageComponent implements OnInit, OnDestroy {
    * Reverses the slash replacing.
    * @param str the string to replace. 
    */
-  private replaceUnderscore(str: string): string {
+  public replaceUnderscore(str: string): string {
     return str.replace(/_/g, "/");
   }
 
   /**
    * Handles main data on load of page. 
    */
-  private handleData(): void {
+  public handleData(): void {
     if(this.route.snapshot.data['special']) {
       this.data = this.route.snapshot.data['special'];
 
@@ -164,14 +164,14 @@ export class VehiclesPageComponent implements OnInit, OnDestroy {
    * @param a string to sort 
    * @param b string to sort
    */
-  private sortArr(a: string, b: string): number {
+  public sortArr(a: string, b: string): number {
     return (a).localeCompare(b);
   }
 
   /**
    * Fetches extra data related to a page. 
    */
-  private getExtraData(): void {
+  public getExtraData(): void {
     this.fetchPilots();
     this.fetchFilms();
   }
@@ -180,7 +180,7 @@ export class VehiclesPageComponent implements OnInit, OnDestroy {
    * Helper function to present not found toast, and redirect.
    * @param url url to redirect to.
    */
-  private async presentToast(url: string): Promise<void> {
+  public async presentToast(url: string): Promise<void> {
     await this._toast.presentToast(environment.notFound).then( 
       () => {
         this.router.navigateByUrl(url);
@@ -190,7 +190,7 @@ export class VehiclesPageComponent implements OnInit, OnDestroy {
   /**
    * Unsubs from subs.
    */
-  private unsubscribe(): void {
+  public unsubscribe(): void {
     for(let i = 0; i < this.vehicleSubs.length; i++) {
       if(this.vehicleSubs[i] !== undefined) {
         this.vehicleSubs[i].unsubscribe();
@@ -202,7 +202,7 @@ export class VehiclesPageComponent implements OnInit, OnDestroy {
    * replace slashes in vehicle ids for url segment.
    * @param str string to replace slash.
    */
-  private replaceSlashses(str: string): string {
+  public replaceSlashses(str: string): string {
     return str.replace(/\//g, "_");
   }
 }

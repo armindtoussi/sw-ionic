@@ -11,7 +11,7 @@ import { DataResolverService } from '../resolver/data-resolver.service';
 //Components
 import { StarshipsPageComponent } from './starships-page/starships-page.component';
 
-const routes: Routes = [
+export const routes: Routes = [
   {
     path: '',
     component: StarshipsPage

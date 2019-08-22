@@ -1,26 +1,52 @@
 //Service.
 import { ToastService } from "./toast.service";
+//Ionic
 import { ToastController } from '@ionic/angular';
-import { fakeAsync,tick } from '@angular/core/testing';
+//NgTesting
+import { fakeAsync,tick, TestBed } from '@angular/core/testing';
 
+class ToastControllerMock {
+    constructor() { }
 
+    create(obj: object): HTMLIonToastElement {
+        return new HTMLIonToastElement();
+    }
+}
+class HTMLIonToastElement {
+    constructor() {}
+
+    present() {
+        return "hello";
+    }
+}
 
 describe('ToastService', () => {
-    let toastCtrlSpy: { get: jasmine.Spy};
     let toastService: ToastService;
+    let toastCtrl: ToastController;
 
     beforeEach(() => {
-        toastCtrlSpy = jasmine.createSpyObj('ToastController', ['create']);
-        toastService = new ToastService(<any>toastCtrlSpy); //create service and inject spy DI;
+        TestBed.configureTestingModule({
+            providers: [
+                ToastService,
+                { provide: ToastController, useClass: ToastControllerMock },
+            ]
+        });
     });
 
-    // todo - come back here to figure out more tests. weird right now.
-    it('should ', fakeAsync(() => { 
-        spyOn(toastService, 'presentToast');
+    beforeEach(() => {
+        toastCtrl = TestBed.get(ToastController);
+        toastService = TestBed.get(ToastService);
+    });
+
+    it('[#presentToast] should call and create toast and call present', fakeAsync(() => { 
+        let spy = spyOn(toastService, 'presentToast').and.callThrough();
+        let tSpy = spyOn(toastCtrl, 'create').and.callThrough();
+
         toastService.presentToast("testing");
 
         tick();
 
-        expect(toastService.presentToast).toHaveBeenCalled();
+        expect(spy).toHaveBeenCalled();
+        expect(tSpy).toHaveBeenCalled();
     }));
 });

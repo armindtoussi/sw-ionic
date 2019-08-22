@@ -47,7 +47,6 @@ export class CharacterPageComponent implements OnInit, OnDestroy {
    * Handles data. 
    */
   ngOnInit(): void {
-    console.log("trying to call this right now in test");
     this.charSubs = [];
     this.handleData();
   }

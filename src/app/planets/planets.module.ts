@@ -12,7 +12,7 @@ import { PlanetPageComponent } from './planet-page/planet-page.component';
 import { DataResolverService } from '../resolver/data-resolver.service';
 
 
-const routes: Routes = [
+export const routes: Routes = [
   {
     path: '',
     component: PlanetsPage

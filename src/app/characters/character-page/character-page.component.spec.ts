@@ -2,6 +2,7 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 //Ng Testing
+import { RouterTestingModule } from '@angular/router/testing';
 import { async, ComponentFixture, 
          TestBed, fakeAsync, tick } from '@angular/core/testing';
 
@@ -13,7 +14,6 @@ import { ToastService } from 'src/app/services/toast.service';
 import { CacheService } from 'src/app/services/cache.service';
 //Modules
 import { routes } from '../characters.module'; 
-import { RouterTestingModule } from '@angular/router/testing';
 //Rxjs
 import { of } from 'rxjs';
 //MockData
@@ -32,7 +32,6 @@ class ToastServiceMock {
     return Promise.resolve(str);
   }
 }
-
 
 describe('CharacterPageComponent', () => {
   let component: CharacterPageComponent;
@@ -71,7 +70,6 @@ describe('CharacterPageComponent', () => {
     //Get services.
     router = TestBed.get(Router);
     toastService = TestBed.get(ToastService);
-    // cacheService = TestBed.get(CacheService);
 
     //create component
     fixture = TestBed.createComponent(CharacterPageComponent);
@@ -139,7 +137,6 @@ describe('CharacterPageComponent', () => {
   });
 
   it('[#navToElementPage] should access the else statement and call present toast', () => {
-    //Can't access the .then on the present toast, this probably goes back to my inability to test it.
     let id = undefined; 
     let segment = "/people";
     let spy  = spyOn(router, 'navigateByUrl'); 

@@ -11,7 +11,7 @@ import { DataResolverService } from '../resolver/data-resolver.service';
 //Components
 import { SpeciesPageComponent } from './species-page/species-page.component';
 
-const routes: Routes = [
+export const routes: Routes = [
   {
     path: '',
     component: SpeciesPage

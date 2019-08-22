@@ -83,7 +83,7 @@ export class StarshipsPageComponent implements OnInit, OnDestroy {
   /**
    * Fetches Films featuring this starship. 
    */
-  private fetchFilms(): void {
+  public fetchFilms(): void {
     if(this.data.films.length === 0) {
       return;
     }
@@ -98,7 +98,7 @@ export class StarshipsPageComponent implements OnInit, OnDestroy {
   /**
    * Fetches Pilots that pilot this ship. 
    */
-  private fetchPilots(): void {
+  public fetchPilots(): void {
     if(this.data.pilots.length === 0) {
       return; 
     }
@@ -113,7 +113,7 @@ export class StarshipsPageComponent implements OnInit, OnDestroy {
    * Gets main character data in the case of a reload or 
    * manual nav to this page. 
    */
-  private getStarship(): void {
+  public getStarship(): void {
     let id = this.parsePath();
     
     this.shipSub[0] = this._cache.search(environment.swapiShips, id)
@@ -130,7 +130,7 @@ export class StarshipsPageComponent implements OnInit, OnDestroy {
   /**
    * Handles main data on load of page. 
    */
-  private handleData(): void {
+  public handleData(): void {
     if(this.route.snapshot.data['special']) {
       this.data = this.route.snapshot.data['special'];
       this.getExtraData();
@@ -142,7 +142,7 @@ export class StarshipsPageComponent implements OnInit, OnDestroy {
   /**
    * Fetches extra data related to a page. 
    */
-  private getExtraData(): void {
+  public getExtraData(): void {
     this.fetchPilots();
     this.fetchFilms();
   }
@@ -150,7 +150,7 @@ export class StarshipsPageComponent implements OnInit, OnDestroy {
   /**
    * Parses path to get id segment from url path. 
    */
-  private parsePath(): any {
+  public parsePath(): any {
     let idx = this.router.url.lastIndexOf('/');
     let id  = this.router.url.slice(idx + 1);
     return id;
@@ -161,14 +161,14 @@ export class StarshipsPageComponent implements OnInit, OnDestroy {
    * @param a string to sort 
    * @param b string to sort
    */
-  private sortArr(a: string, b: string): number {
+  public sortArr(a: string, b: string): number {
     return (a).localeCompare(b);
   }
 
   /**
    * Unsubs from subs.
    */
-  private unsubscribe(): void {
+  public unsubscribe(): void {
     for(let i = 0; i < this.shipSub.length; i++) {
       if(this.shipSub[i] !== undefined) {
         this.shipSub[i].unsubscribe();
@@ -180,7 +180,7 @@ export class StarshipsPageComponent implements OnInit, OnDestroy {
    * Helper function to present not found toast, and redirect.
    * @param url url to redirect to.
    */
-  private async presentToast(url: string): Promise<void> {
+  public async presentToast(url: string): Promise<void> {
     await this._toast.presentToast(environment.notFound).then( 
       () => {
         this.router.navigateByUrl(url);
@@ -191,7 +191,7 @@ export class StarshipsPageComponent implements OnInit, OnDestroy {
    * replace slashes in vehicle ids for url segment.
    * @param str string to replace slash.
    */
-  private replaceSlashses(str: string): string {
+  public replaceSlashses(str: string): string {
     return str.replace(/\//g, "_");
   }
 }
