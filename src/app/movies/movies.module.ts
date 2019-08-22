@@ -12,7 +12,7 @@ import { MoviePageComponent } from './movie-page/movie-page.component';
 //Services
 import { DataResolverService } from '../resolver/data-resolver.service';
 
-const routes: Routes = [
+export const routes: Routes = [
   {
     path: '',
     component: MoviesPage

@@ -100,7 +100,9 @@ export class StarshipsPage implements OnInit, OnDestroy {
           this.ships = this.ships.concat(results['results'])
                                  .sort((a: Starship, b: Starship) => this.sortArr(a.name, b.name));;
           this.nextUrl = results['next'];
-          event.target.complete();
+
+          if(event !== null) 
+            event.target.complete();
 
           if(this.ships.length === this.count) {
             event.target.disabled = true;
@@ -116,14 +118,15 @@ export class StarshipsPage implements OnInit, OnDestroy {
                                .sort((a: Starship, b: Starship) => this.sortArr(a.name, b.name));
         this.nextUrl = results['next'];
 
-        event.target.complete();
+        if(event !== null)
+          event.target.complete();
       })
   }
 
   /**
    * Fetches the initial 20 results for display
    */
-  private getShips(): void {
+  public getShips(): void {
     this.shipSub[0] = this._swapiFetchService.getStarships()
       .pipe(
         map(res => {
@@ -154,7 +157,7 @@ export class StarshipsPage implements OnInit, OnDestroy {
   /**
    * Unsubscribes from subs.
    */
-  private unsubscribe(): void {
+  public unsubscribe(): void {
     for(let i = 0; i < this.shipSub.length; i++) {
       if(this.shipSub[i] !== undefined) {
         this.shipSub[i].unsubscribe();

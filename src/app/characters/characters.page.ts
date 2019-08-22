@@ -95,7 +95,10 @@ export class CharactersPage implements OnInit, OnDestroy {
           this.characters = this.characters.concat(results['results'])
                                            .sort((a: Character, b: Character) => this.sortArr(a.name, b.name));
           this.nextUrl = results['next'];
-          event.target.complete();
+
+          if(event != null) {
+            event.target.complete();
+          }    
 
           if(this.characters.length === this.count) {
             event.target.disabled = true;
@@ -109,15 +112,16 @@ export class CharactersPage implements OnInit, OnDestroy {
         this.characters = this.characters.concat(results['results'])
                                          .sort((a: Character, b: Character) => this.sortArr(a.name, b.name));
         this.nextUrl = results['next'];
-
-        event.target.complete();
+        
+        if(event !== null)
+          event.target.complete();
       });
   }
 
   /**
    * The initial character fetch, fetches 20 characters. 
    */
-  private getCharacters(): void {
+  public getCharacters(): void {
     this.characterSub[0] = this._swapiFetchService.getCharacters()
       .pipe(
         map(res => {
@@ -140,7 +144,9 @@ export class CharactersPage implements OnInit, OnDestroy {
   /**
    * Unsubs from subs.
    */
-  private unsubscribe(): void {
+  public unsubscribe(): void {
+    // if(this.characterSub === undefined) return; 
+
     for(let i = 0; i < this.characterSub.length; i++) {
       if(this.characterSub[i] !== undefined) {
         this.characterSub[i].unsubscribe();

@@ -63,7 +63,7 @@ describe('CacheService', () => {
 
         let $res = _cacheService.fetch(["fake.people.url/1/", "fake.people.url/2/"]);
 
-        $res.subscribe(response => {
+        $res.subscribe((response: object[]) => {
             expect(response).toEqual(mockRes);
         });
 

@@ -112,7 +112,9 @@ export class PlanetsPage implements OnInit, OnDestroy {
           this.planets = this.planets.concat(results['results'])
                                      .sort((a: Planet, b: Planet) => this.sortArr(a.name, b.name));
           this.nextUrl = results['next'];
-          event.target.complete();
+
+          if(event !== null)
+            event.target.complete();
 
           if(this.planets.length === this.count) {
             event.target.disabled = true;
@@ -127,14 +129,15 @@ export class PlanetsPage implements OnInit, OnDestroy {
                                    .sort((a: Planet, b: Planet) => this.sortArr(a.name, b.name));
         this.nextUrl = results['next'];
         
-        event.target.complete();
-      })
+        if(event !== null) 
+          event.target.complete();
+      });
   }
 
   /**
    * Gets first 20 planets through swapi service. 
    */
-  private getPlanets(): void {
+  public getPlanets(): void {
     this.planetSub[0] = this._swapiFetchService.getPlanets()
       .pipe(
         map(res => {
@@ -157,7 +160,7 @@ export class PlanetsPage implements OnInit, OnDestroy {
   /**
    * Unsubs to subs. 
    */
-  private unsubscribe(): void {
+  public unsubscribe(): void {
     for(let i = 0; i < this.planetSub.length; i++) {
       if(this.planetSub[i] !== undefined) {
         this.planetSub[i].unsubscribe();
@@ -170,7 +173,7 @@ export class PlanetsPage implements OnInit, OnDestroy {
    * @param a string to sort 
    * @param b string to sort
    */
-  private sortArr(a: string, b: string): number {
+  public sortArr(a: string, b: string): number {
     return (a).localeCompare(b);
   }
 }

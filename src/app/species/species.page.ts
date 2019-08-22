@@ -99,7 +99,9 @@ export class SpeciesPage implements OnInit, OnDestroy {
           this.species = this.species.concat(data['results'])
                                      .sort((a: Species, b: Species) => this.sortArr(a.name, b.name));
           this.nextUrl = data['next'];
-          event.target.complete();
+          
+          if(event !== null)
+            event.target.complete();
 
           if(this.species.length === this.count) {
             event.target.disabled = true;
@@ -114,14 +116,15 @@ export class SpeciesPage implements OnInit, OnDestroy {
                                    .sort((a: Species, b: Species) => this.sortArr(a.name, b.name));
         this.nextUrl = results['next'];
 
-        event.target.complete();
+        if(event !== null)
+          event.target.complete();
       });
   }
 
   /**
    * Fetches the first 20 species results.
    */
-  private getSpecies(): void {
+  public getSpecies(): void {
     this.speciesSub[0] = this._swapiFetchService.getSpecies()
       .pipe(
         map(res => {
@@ -145,14 +148,14 @@ export class SpeciesPage implements OnInit, OnDestroy {
    * @param a string to sort 
    * @param b string to sort
    */
-  private sortArr(a: string, b: string): number {
+  public sortArr(a: string, b: string): number {
     return (a).localeCompare(b);
   }
 
   /**
    * Unsubscribes from subs.
    */
-  private unsubscribe(): void {
+  public unsubscribe(): void {
     for(let i = 0; i < this.speciesSub.length; i++) {
       if(this.speciesSub[i] !== undefined) {
         this.speciesSub[i].unsubscribe();

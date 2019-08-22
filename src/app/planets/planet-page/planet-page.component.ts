@@ -62,7 +62,6 @@ export class PlanetPageComponent implements OnInit, OnDestroy {
    * @param segment the type of element.
    */
   navToElementPage(id: string, segment: string): void {
-    console.log("id: ", id);
     if(id && segment) {
       this.router.navigateByUrl(`/${segment}/${id}`);
     } else {
@@ -73,7 +72,7 @@ export class PlanetPageComponent implements OnInit, OnDestroy {
   /**
    * Fetches residents of this planet. 
    */
-  private fetchResidents(): void {
+  public fetchResidents(): void {
     if(this.data.residents.length === 0) {
       return;
     }
@@ -87,7 +86,7 @@ export class PlanetPageComponent implements OnInit, OnDestroy {
   /**
    * Fetches films in which this planet appeared.
    */
-  private fetchFilms(): void {
+  public fetchFilms(): void {
     if(this.data.films.length === 0) {
       return;
     }
@@ -102,7 +101,7 @@ export class PlanetPageComponent implements OnInit, OnDestroy {
   /**
    * Gets main planet in the case of a reload or manual nav to this page
    */
-  private getPlanet(): void {
+  public getPlanet(): void {
     let id = this.parsePath();
 
     this.planetSubs[2] = this._cache.search(environment.swapiPlanets, id)
@@ -119,7 +118,7 @@ export class PlanetPageComponent implements OnInit, OnDestroy {
   /**
    * Handles main data on load of page. 
    */
-  private handleData(): void {
+  public handleData(): void {
     if(this.route.snapshot.data['special']) {
       this.data = this.route.snapshot.data['special'];
       this.getExtraData();
@@ -131,7 +130,7 @@ export class PlanetPageComponent implements OnInit, OnDestroy {
   /**
    * Fetches extra data related to a page. 
    */
-  private getExtraData(): void {
+  public getExtraData(): void {
     this.fetchResidents();
     this.fetchFilms();
   }
@@ -139,7 +138,7 @@ export class PlanetPageComponent implements OnInit, OnDestroy {
   /**
    * Unsubs from subs.
    */
-  private unsubscribe(): void {
+  public unsubscribe(): void {
     for(let i = 0; i < this.planetSubs.length; i++) {
       if(this.planetSubs[i] !== undefined) {
         this.planetSubs[i].unsubscribe();
@@ -170,7 +169,7 @@ export class PlanetPageComponent implements OnInit, OnDestroy {
   /**
    * Parses path to get id segment from url path. 
    */
-  private parsePath(): any {
+  public parsePath(): any {
     let idx = this.router.url.lastIndexOf('/');
     let id  = this.router.url.slice(idx + 1);
     return id;

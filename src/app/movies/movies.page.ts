@@ -34,7 +34,6 @@ export class MoviesPage implements OnInit, OnDestroy {
    */
   constructor(private _swapiFetchService: SwapiService,
               private _dataService: DataService,
-              private _storage: StorageService,
               private router: Router) { }
 
   /**
@@ -44,7 +43,7 @@ export class MoviesPage implements OnInit, OnDestroy {
    */
   ngOnInit(): void {
     this.movieSub = [];
-    this.getFilms();
+    this.getMovies();
   }
 
   /**
@@ -79,29 +78,16 @@ export class MoviesPage implements OnInit, OnDestroy {
                         
   }
 
-  private getFilms(): void {
-    this._storage.getMovies().then((films: Film[] | null) => {
-      if(films) {
-        this.movies = films.sort((a: Film, b: Film) => {
-          return a.episode_id - b.episode_id;
-        });
-      } else {
-        this.getMovies();
-      }
-    });
-  }
-
   /**
    * Fetches all movies through swapi service.
    * 
    */
-  private getMovies(): void {
+  public getMovies(): void {
     this.movieSub[0] = this._swapiFetchService.getSWMovies()
       .subscribe(
         (results: FilmsModel) =>
         {
           this.movies = results['results'];
-          this._storage.addMovies(results);
         }
       );
   }
@@ -110,6 +96,8 @@ export class MoviesPage implements OnInit, OnDestroy {
    * Unsub to subs. 
    */
   private unsubscribe(): void {
+    if(this.movieSub === undefined) return; 
+    
     for(let i = 0; i < this.movieSub.length; i++) {
       if(this.movieSub[i] !== undefined) {
         this.movieSub[i].unsubscribe();

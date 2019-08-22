@@ -58,7 +58,6 @@ export class MoviePageComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.movieSubs = [];
     this.handleData();
-    this._toast.presentToast("message");
   }
 
   /**
@@ -83,7 +82,7 @@ export class MoviePageComponent implements OnInit, OnDestroy {
    * @param segment the type of element.
    */
   navToElementPage(id: string, segment: string): void {
-    if(id.search('//')) {
+    if(typeof id === 'string' && id.search('//')) {
       id = this.replaceSlashses(id);
     }
 
@@ -113,7 +112,7 @@ export class MoviePageComponent implements OnInit, OnDestroy {
   /**
    * Fetches Vehicles associated to this movie. 
    */
-  private fetchVehicles(): void {
+  public fetchVehicles(): void {
     if(this.data.vehicles.length === 0) {
       return; 
     }
@@ -127,7 +126,7 @@ export class MoviePageComponent implements OnInit, OnDestroy {
   /**
    * Fetches Starships associated to this movie. 
    */
-  private fetchStarships(): void {
+  public fetchStarships(): void {
     if(this.data.starships.length === 0) {
       return;
     }
@@ -141,7 +140,7 @@ export class MoviePageComponent implements OnInit, OnDestroy {
   /**
    * Fetches Species associated to this movie. 
    */
-  private fetchSpecies(): void {
+  public fetchSpecies(): void {
     if(this.data.species.length === 0) {
       return; 
     }
@@ -155,7 +154,7 @@ export class MoviePageComponent implements OnInit, OnDestroy {
   /**
    * Fetches Planets associated to this movie. 
    */
-  private fetchPlanets(): void {
+  public fetchPlanets(): void {
     if(this.data.planets.length === 0) {
       return;
     }
@@ -169,7 +168,7 @@ export class MoviePageComponent implements OnInit, OnDestroy {
   /**
    * Fetches Characters associated to this movie. 
    */
-  private fetchCharacters(): void {
+  public fetchCharacters(): void {
     if(this.data.characters.length === 0) {
       return;
     }
@@ -183,7 +182,7 @@ export class MoviePageComponent implements OnInit, OnDestroy {
   /**
    * Gets main movie data in the case of a reload or manual nav to this page. 
    */
-  private async getMovie(): Promise<void> {
+  public async getMovie(): Promise<void> {
     let id = this.parsePath();
 
     await this._cache.fetchSingleEntry(id, environment.MOVIES_KEY, 'episode_id')
@@ -201,7 +200,7 @@ export class MoviePageComponent implements OnInit, OnDestroy {
   /**
    * Handles main data on load of page. 
    */
-  private handleData(): void {
+  public handleData(): void {
     if(this.route.snapshot.data['special']) {
       this.data = this.route.snapshot.data['special'];
       this.getExtraData();
@@ -213,7 +212,7 @@ export class MoviePageComponent implements OnInit, OnDestroy {
   /**
    * Fetches extra data related to a page. 
    */
-  private getExtraData(): void {
+  public getExtraData(): void {
       this.fetchCharacters();
       this.fetchPlanets();
       this.fetchSpecies();
@@ -224,7 +223,7 @@ export class MoviePageComponent implements OnInit, OnDestroy {
   /**
    * Unsubs from subs.
    */
-  private unsubscribe(): void {
+  public unsubscribe(): void {
     for(let i = 0; i < this.movieSubs.length; i++) {
       if(this.movieSubs[i] !== undefined) {
         this.movieSubs[i].unsubscribe();
@@ -237,7 +236,7 @@ export class MoviePageComponent implements OnInit, OnDestroy {
    * @param a string to sort 
    * @param b string to sort
    */
-  private sortArr(a: string, b: string): number {
+  public sortArr(a: string, b: string): number {
     return (a).localeCompare(b);
   }
 
@@ -245,7 +244,7 @@ export class MoviePageComponent implements OnInit, OnDestroy {
    * Helper function to present not found toast, and redirect.
    * @param url url to redirect to.
    */
-  private async presentToast(url: string): Promise<void> {
+  public async presentToast(url: string): Promise<void> {
     await this._toast.presentToast(environment.notFound).then( 
       () => {
         this.router.navigateByUrl(url);
@@ -256,14 +255,14 @@ export class MoviePageComponent implements OnInit, OnDestroy {
    * replace slashes in vehicle ids for url segment.
    * @param str string to replace slash.
    */
-  private replaceSlashses(str: string): string {
+  public replaceSlashses(str: string): string {
     return str.replace(/\//g, "_");
   }
 
   /**
    * Parses path to get id segment from url path. 
    */
-  private parsePath(): number {
+  public parsePath(): number {
     let idx = this.router.url.lastIndexOf('/');
     let id  = this.router.url.slice(idx + 1);
     return parseInt(id);

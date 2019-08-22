@@ -1,4 +1,8 @@
-[
+{
+    "count": "7",
+    "previous": null,
+    "next": null,
+    "results": [
     {
         "title": "A New Hope",
         "episode_id": 4,
@@ -524,7 +528,9 @@
             "https://swapi.co/api/starships/77/",
             "https://swapi.co/api/starships/10/"
         ],
-        "vehicles": [],
+        "vehicles": [
+            
+        ],
         "species": [
             "https://swapi.co/api/species/3/",
             "https://swapi.co/api/species/2/",
@@ -534,4 +540,4 @@
         "edited": "2015-12-17T14:31:47.617768Z",
         "url": "https://swapi.co/api/films/7/"
     }
-]
+]}

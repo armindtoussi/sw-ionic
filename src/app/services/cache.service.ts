@@ -16,7 +16,7 @@ export class CacheService {
                 private _swapiService: SwapiService) { }
 
     
-    public fetch(fetchArr: string[]): Observable<void> {
+    public fetch(fetchArr: string[]): Observable<any> {
         return this._swapiService.arrayFetch(fetchArr);
     }
 

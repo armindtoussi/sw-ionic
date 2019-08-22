@@ -100,7 +100,9 @@ export class VehiclesPage implements OnInit, OnDestroy {
           this.vehicles = this.vehicles.concat(results['results'])
                                        .sort((a: Vehicle, b: Vehicle) => this.sortArr(a.name, b.name));
           this.nextUrl = results['next'];
-          event.target.complete();
+
+          if(event !== null)
+            event.target.complete();
 
           if(this.vehicles.length === this.count) {
             event.target.disabled = true;
@@ -116,7 +118,8 @@ export class VehiclesPage implements OnInit, OnDestroy {
                                      .sort((a: Vehicle, b: Vehicle) => this.sortArr(a.name, b.name));
         this.nextUrl = results['next'];
         
-        event.target.complete();
+        if(event !== null)
+          event.target.complete();
       });
   }
 
@@ -131,7 +134,7 @@ export class VehiclesPage implements OnInit, OnDestroy {
   /**
    * Fetches the initial 20 results for display
    */
-  private getVehicles(): void {
+  public getVehicles(): void {
     this.vehicleSub[0] = this._swapiFetchService.getVehicles()
       .pipe(
         map(res => {
@@ -162,7 +165,7 @@ export class VehiclesPage implements OnInit, OnDestroy {
   /**
    * Unsubscribes from subs.
    */
-  private unsubscribe(): void {
+  public unsubscribe(): void {
     for(let i = 0; i < this.vehicleSub.length; i++) {
       if(this.vehicleSub[i] !== undefined) {
         this.vehicleSub[i].unsubscribe();

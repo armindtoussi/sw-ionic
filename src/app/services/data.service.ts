@@ -18,7 +18,7 @@ export class DataService {
   setData(id: string, data: any): void {
     console.log("setting data: ", id, " Data: ", data);
     this.data[id] = data;
-    console.log("this.data: ", this.data);
+    console.log("the data", this.data);
   }
 
   /**

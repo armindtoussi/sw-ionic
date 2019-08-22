@@ -11,7 +11,7 @@ import { CharacterPageComponent } from './character-page/character-page.componen
 //Services
 import { DataResolverService } from '../resolver/data-resolver.service';
 
-const routes: Routes = [
+export const routes: Routes = [
   {
     path: '',
     component: CharactersPage
@@ -38,3 +38,4 @@ const routes: Routes = [
   ]
 })
 export class CharactersPageModule {}
+
