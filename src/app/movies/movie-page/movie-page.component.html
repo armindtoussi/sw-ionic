@@ -48,7 +48,7 @@
             <ion-label>Released:</ion-label>
           </ion-col>
           <ion-col text-wrap>
-            <ion-label color="primary"><strong>{{ data?.release_date | date:mediumDate }}</strong></ion-label>
+            <ion-label color="primary"><strong>{{ data?.release_date | date: 'MMM d, y' }}</strong></ion-label>
           </ion-col>
         </ion-row>
       </ion-grid>

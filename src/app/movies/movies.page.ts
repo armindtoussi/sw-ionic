@@ -1,15 +1,16 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 //Services
 import { SwapiService } from '../services/swapi.service';
 //RXJS
-import { Subscription } from 'rxjs';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 //Models
-import { FilmsModel, Film }     from '../models/films.model';
-import { DataService }    from '../services/data.service';
-import { StorageService } from '../services/storage.service';
+import { Film }        from '../models/films.model';
+import { DataService } from '../services/data.service';
 //ENV
 import { environment } from 'src/environments/environment';
+import { MoviesService } from './movies.service';
 
 @Component({
   selector: 'app-movies',
@@ -17,13 +18,13 @@ import { environment } from 'src/environments/environment';
   styleUrls: ['./movies.page.scss'],
 })
 
-export class MoviesPage implements OnInit, OnDestroy {
-  /** Movie fetch subscription. */
-  movieSub: Subscription[];
+export class MoviesPage implements OnInit {
   /** Movies result array. */
   movies: Film[];
   /** Search text. */
   searchText: string;
+  /** Observable, stream of sw movie. */
+  $movies: Observable<Film[]>;
   
   /**
    * ctor
@@ -34,6 +35,7 @@ export class MoviesPage implements OnInit, OnDestroy {
    */
   constructor(private _swapiFetchService: SwapiService,
               private _dataService: DataService,
+              private __movieService: MoviesService,
               private router: Router) { }
 
   /**
@@ -42,16 +44,7 @@ export class MoviesPage implements OnInit, OnDestroy {
    * 
    */
   ngOnInit(): void {
-    this.movieSub = [];
     this.getMovies();
-  }
-
-  /**
-   * OnDestroy lifecycle hook. 
-   * Unsubs from subs. 
-   */
-  ngOnDestroy(): void { 
-    this.unsubscribe();
   }
 
   /**
@@ -69,12 +62,9 @@ export class MoviesPage implements OnInit, OnDestroy {
    * Search function, triggered on IonChange. 
    */
   search(): void {
-    this.movieSub[1] = this._swapiFetchService.search(this.searchText, 
-                                                      environment.swapiMovies)
-      .subscribe((results: any) => {
-        this.movies = results.results;
-      });
-                        
+    this.$movies = this.__movieService
+                       .search(this.searchText, 
+                               environment.swapiMovies);            
   }
 
   /**
@@ -82,25 +72,6 @@ export class MoviesPage implements OnInit, OnDestroy {
    * 
    */
   public getMovies(): void {
-    this.movieSub[0] = this._swapiFetchService.getSWMovies()
-      .subscribe(
-        (results: FilmsModel) =>
-        {
-          this.movies = results['results'];
-        }
-      );
-  }
-
-  /**
-   * Unsub to subs. 
-   */
-  private unsubscribe(): void {
-    if(this.movieSub === undefined) return; 
-    
-    for(let i = 0; i < this.movieSub.length; i++) {
-      if(this.movieSub[i] !== undefined) {
-        this.movieSub[i].unsubscribe();
-      }
-    }
+    this.$movies = this.__movieService.getMovies();
   }
 }

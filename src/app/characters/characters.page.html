@@ -35,7 +35,7 @@
     </ion-infinite-scroll-content>
   </ion-infinite-scroll>
 
-  <ion-infinite-scroll *ngIf="isSearch && nextUrl" threshold="100px" (ionInfinite)="loadMoreSearch($event)">
+  <ion-infinite-scroll *ngIf="isSearch && hasNext" threshold="100px" (ionInfinite)="loadMoreSearch($event)">
     <ion-infinite-scroll-content
       loadingSpinner="bubbles"
       loadingText="Loading more characters...">

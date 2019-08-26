@@ -17,7 +17,8 @@
                    animated="true"
                    [(ngModel)]="searchText"
                    (ionChange)="search()"></ion-searchbar>
-    <ion-item *ngFor="let movie of movies" detail 
+    <!--      Example of using async pipe and with ngFor      -->
+    <ion-item *ngFor="let movie of $movies | async" detail 
               lines="full" 
               (click)="displayMovie(movie)">
       <ion-item-group>

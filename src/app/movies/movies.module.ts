@@ -11,6 +11,7 @@ import { CrawlModalPage } from './crawl-modal/crawl-modal.page';
 import { MoviePageComponent } from './movie-page/movie-page.component';
 //Services
 import { DataResolverService } from '../resolver/data-resolver.service';
+import { MoviesService } from './movies.service';
 
 export const routes: Routes = [
   {
@@ -37,6 +38,9 @@ export const routes: Routes = [
     MoviesPage, 
     MoviePageComponent,
     CrawlModalPage,
+  ],
+  providers: [
+    MoviesService,
   ],
   entryComponents: [
     CrawlModalPage,

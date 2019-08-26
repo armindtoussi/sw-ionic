@@ -5,6 +5,9 @@ import { environment } from 'src/environments/environment';
 //RXJS
 import { Observable, forkJoin } from 'rxjs';
 
+/**
+ * SWapi Wrapper service.
+ */
 @Injectable({
     providedIn: 'root'
 })
@@ -14,15 +17,8 @@ export class SwapiService {
     constructor(private _http: HttpClient) { }
 
 
-    /**
-     * Get request to swapi for star wars movie
-     * information. 
-     * 
-     * @returns Observable<object> containing all results.
-     */
-    getSWMovies(): Observable<object> {
-        return this._http.get(environment.swapiBase + 
-                              environment.swapiMovies);
+    get(type: string): Observable<object> {
+        return this._http.get(environment.swapiBase + type);
     }
 
     getPlanets(): Observable<object> {
