@@ -21,7 +21,7 @@ export class CacheService {
     }
 
     public search(type: string, value: string): Observable<any> {
-        let url = `${environment.swapiBase}${type}/${environment.swapiSearch}${value}`;        
+        let url = `${environment.swapiBase}${type}${environment.swapiSearch}${value}`;        
         return this._swapiService.genericFetch(url);
     }
 

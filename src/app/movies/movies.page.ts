@@ -1,15 +1,13 @@
+// Ng
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-//Services
-import { SwapiService } from '../services/swapi.service';
-//RXJS
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
-//Models
-import { Film }        from '../models/films.model';
+// Services
 import { DataService } from '../services/data.service';
-//ENV
-import { environment } from 'src/environments/environment';
+// RXJS
+import { Observable } from 'rxjs';
+// Models
+import { Film } from '../models/films.model';
+// Env
 import { MoviesService } from './movies.service';
 
 @Component({
@@ -18,6 +16,19 @@ import { MoviesService } from './movies.service';
   styleUrls: ['./movies.page.scss'],
 })
 
+/**
+ * Movie page Page.
+ *
+ * This page holds an example for how to do observables with
+ * the async pipe.
+ *
+ *
+ * TODO - add error handling, using the bookmark we saved on chrome as
+ *        inspiration so-to-speak. when i do error handling, i should
+ *        also do UI feedback on waiting for response.
+ *        Can maybe use ng-container element in conjunction with ngIf
+ *        in order to implement ui state feedback.
+ */
 export class MoviesPage implements OnInit {
   /** Movies result array. */
   movies: Film[];
@@ -25,23 +36,20 @@ export class MoviesPage implements OnInit {
   searchText: string;
   /** Observable, stream of sw movie. */
   $movies: Observable<Film[]>;
-  
+
+
   /**
-   * ctor
-   * @param _swapiFetchService swapi fetch service.
-   * @param _dataService service for passing data.
+   * ctor injects dependencies
+   * @param dataService service for passing data.
    * @param router for routing.
-   * 
    */
-  constructor(private _swapiFetchService: SwapiService,
-              private _dataService: DataService,
-              private __movieService: MoviesService,
+  constructor(private dataService: DataService,
+              private movieService: MoviesService,
               private router: Router) { }
 
   /**
-   * OnInit lifecycle hook. 
+   * OnInit lifecycle hook.
    * Gets movies.
-   * 
    */
   ngOnInit(): void {
     this.getMovies();
@@ -49,29 +57,26 @@ export class MoviesPage implements OnInit {
 
   /**
    * Click function that navigates to movie details page.
-   * Passes id, and data to service that gets resolved. 
-   * 
-   * @param movie the movie that was clicked. 
+   * Passes id, and data to service that gets resolved.
+   * @param movie the movie that was clicked.
    */
   displayMovie(movie: Film): void {
-    this._dataService.setData(movie.episode_id.toString(), movie);
+    this.dataService.setData(movie.episode_id.toString(), movie);
     this.router.navigateByUrl(`/movie/${movie.episode_id}`);
   }
 
   /**
-   * Search function, triggered on IonChange. 
+   * Search function, triggered on IonChange.
    */
   search(): void {
-    this.$movies = this.__movieService
-                       .search(this.searchText, 
-                               environment.swapiMovies);            
+    this.$movies = this.movieService
+                       .search(this.searchText);
   }
 
   /**
    * Fetches all movies through swapi service.
-   * 
    */
   public getMovies(): void {
-    this.$movies = this.__movieService.getMovies();
+    this.$movies = this.movieService.getMovies();
   }
 }

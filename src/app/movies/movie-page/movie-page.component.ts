@@ -1,22 +1,23 @@
+// Ng
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute, Router }       from '@angular/router';
-//Ionic
+import { ActivatedRoute, Router } from '@angular/router';
+// Ionic
 import { ModalController } from '@ionic/angular';
-//Models
-import { Film }      from 'src/app/models/films.model';
+// Models
+import { Film } from 'src/app/models/films.model';
 import { Character } from 'src/app/models/character.model';
-import { Planet }    from 'src/app/models/planets.model';
-import { Species }   from 'src/app/models/species.model';
-import { Starship }  from 'src/app/models/starships.model';
-import { Vehicle }   from 'src/app/models/vehicles.model';
-//Services
-import { ToastService }   from 'src/app/services/toast.service';
+import { Planet } from 'src/app/models/planets.model';
+import { Species } from 'src/app/models/species.model';
+import { Starship } from 'src/app/models/starships.model';
+import { Vehicle } from 'src/app/models/vehicles.model';
+// Services
+import { ToastService } from 'src/app/services/toast.service';
 import { CacheService } from 'src/app/services/cache.service';
-//RXJS
+// RXJS
 import { Subscription } from 'rxjs';
-//Env 
+// Env 
 import { environment } from 'src/environments/environment';
-//Modal
+// Modal
 import { CrawlModalPage } from '../crawl-modal/crawl-modal.page';
 
 
@@ -32,27 +33,27 @@ export class MoviePageComponent implements OnInit, OnDestroy {
   /** Data holding variables. */
   data: Film;
   characters: Character[];
-  planets:    Planet[];
-  species:    Species[];
-  starships:  Starship[];
-  vehicles:   Vehicle[];
+  planets: Planet[];
+  species: Species[];
+  starships: Starship[];
+  vehicles: Vehicle[];
 
   /**
    * ctor
    * @param route  Activated route ref.
-   * @param router router ref. 
-   * @param _toast toast presentation service. 
-   * @param _cache the caching service. 
-   * @param modalCtrl controller for modals. 
+   * @param router router ref.
+   * @param toastService toast presentation service.
+   * @param cacheService the caching service.
+   * @param modalCtrl controller for modals.
    */
-  constructor(private route:     ActivatedRoute, 
-              private router:    Router,
-              private _toast:    ToastService,
-              private _cache:    CacheService,
+  constructor(private route: ActivatedRoute,
+              private router: Router,
+              private toastService: ToastService,
+              private cacheService: CacheService,
               private modalCtrl: ModalController) { }
-  
+
   /**
-   * lifecycle hook runs when component is being created. 
+   * lifecycle hook runs when component is being created.
    * Handles data. 
    */
   ngOnInit(): void {
@@ -61,7 +62,7 @@ export class MoviePageComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * lifecycle hook runs when component is destroyed. 
+   * lifecycle hook runs when component is destroyed.
    * Unsubs to subs.
    */
   ngOnDestroy(): void {
@@ -100,9 +101,9 @@ export class MoviePageComponent implements OnInit, OnDestroy {
     const modal = await this.modalCtrl.create({
       component: CrawlModalPage,
       componentProps: {
-        'crawl': this.data.opening_crawl,
-        'id': this.data.episode_id,
-        'title': this.data.title,
+        crawl: this.data.opening_crawl,
+        id: this.data.episode_id,
+        title: this.data.title,
       }
     });
 
@@ -110,84 +111,84 @@ export class MoviePageComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Fetches Vehicles associated to this movie. 
+   * Fetches Vehicles associated to this movie.
    */
   public fetchVehicles(): void {
-    if(this.data.vehicles.length === 0) {
-      return; 
+    if (this.data.vehicles.length === 0) {
+      return;
     }
 
-    this.movieSubs[4] = this._cache.fetch(this.data.vehicles)
+    this.movieSubs[4] = this.cacheService.fetch(this.data.vehicles)
       .subscribe((data: any) => {
         this.vehicles = data.sort((a: Vehicle, b: Vehicle) => this.sortArr(a.name, b.name));
       });
   }
 
   /**
-   * Fetches Starships associated to this movie. 
+   * Fetches Starships associated to this movie.
    */
   public fetchStarships(): void {
-    if(this.data.starships.length === 0) {
+    if (this.data.starships.length === 0) {
       return;
     }
 
-    this.movieSubs[3] = this._cache.fetch(this.data.starships)
+    this.movieSubs[3] = this.cacheService.fetch(this.data.starships)
       .subscribe((data: any) => {
         this.starships = data.sort((a: Starship, b: Starship) => this.sortArr(a.name, b.name));
-      }); 
+      });
   }
 
   /**
-   * Fetches Species associated to this movie. 
+   * Fetches Species associated to this movie.
    */
   public fetchSpecies(): void {
-    if(this.data.species.length === 0) {
-      return; 
+    if (this.data.species.length === 0) {
+      return;
     }
 
-    this.movieSubs[2] = this._cache.fetch(this.data.species)
+    this.movieSubs[2] = this.cacheService.fetch(this.data.species)
       .subscribe((data: any) => {
         this.species = data.sort((a: Species, b: Species) => this.sortArr(a.name, b.name));
       });
   }
 
   /**
-   * Fetches Planets associated to this movie. 
+   * Fetches Planets associated to this movie.
    */
   public fetchPlanets(): void {
-    if(this.data.planets.length === 0) {
+    if (this.data.planets.length === 0) {
       return;
     }
 
-    this.movieSubs[1] = this._cache.fetch(this.data.planets)  
+    this.movieSubs[1] = this.cacheService.fetch(this.data.planets)
       .subscribe((data: any) => {
         this.planets = data.sort((a: Planet, b: Planet) => this.sortArr(a.name, b.name));
       });
   }
 
   /**
-   * Fetches Characters associated to this movie. 
+   * Fetches Characters associated to this movie.
    */
   public fetchCharacters(): void {
-    if(this.data.characters.length === 0) {
+    if (this.data.characters.length === 0) {
       return;
     }
 
-    this.movieSubs[0] = this._cache.fetch(this.data.characters)
+    this.movieSubs[0] = this.cacheService.fetch(this.data.characters)
       .subscribe((data: any) => {
           this.characters = data.sort((a: Character, b: Character) => this.sortArr(a.name, b.name)); 
       });
   }
 
   /**
-   * Gets main movie data in the case of a reload or manual nav to this page. 
+   * Gets main movie data in the case of a reload or manual nav to this page.
    */
   public async getMovie(): Promise<void> {
-    let id = this.parsePath();
+    const id = this.parsePath();
 
-    await this._cache.fetchSingleEntry(id, environment.MOVIES_KEY, 'episode_id')
+    await this.cacheService.fetchSingleEntry(id, environment.MOVIES_KEY, 'episode_id')
       .then((result) => {
-        if(result) {
+        if (result) {
           this.data = result;
 
           this.getExtraData();
@@ -198,11 +199,11 @@ export class MoviePageComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Handles main data on load of page. 
+   * Handles main data on load of page.
    */
   public handleData(): void {
-    if(this.route.snapshot.data['special']) {
-      this.data = this.route.snapshot.data['special'];
+    if (this.route.snapshot.data.special) {
+      this.data = this.route.snapshot.data.special;
       this.getExtraData();
     } else {
       this.getMovie();
@@ -210,7 +211,7 @@ export class MoviePageComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Fetches extra data related to a page. 
+   * Fetches extra data related to a page.
    */
   public getExtraData(): void {
       this.fetchCharacters();
@@ -224,16 +225,16 @@ export class MoviePageComponent implements OnInit, OnDestroy {
    * Unsubs from subs.
    */
   public unsubscribe(): void {
-    for(let i = 0; i < this.movieSubs.length; i++) {
-      if(this.movieSubs[i] !== undefined) {
-        this.movieSubs[i].unsubscribe();
+    this.movieSubs.forEach(sub => {
+      if (sub !== undefined) {
+        sub.unsubscribe();
       }
-    }
+    });
   }
 
   /**
-   * String sort function. 
-   * @param a string to sort 
+   * String sort function.
+   * @param a string to sort
    * @param b string to sort
    */
   public sortArr(a: string, b: string): number {
@@ -245,7 +246,7 @@ export class MoviePageComponent implements OnInit, OnDestroy {
    * @param url url to redirect to.
    */
   public async presentToast(url: string): Promise<void> {
-    await this._toast.presentToast(environment.notFound).then( 
+    await this.toastService.presentToast(environment.notFound).then(
       () => {
         this.router.navigateByUrl(url);
     });
@@ -256,15 +257,15 @@ export class MoviePageComponent implements OnInit, OnDestroy {
    * @param str string to replace slash.
    */
   public replaceSlashses(str: string): string {
-    return str.replace(/\//g, "_");
+    return str.replace(/\//g, '_');
   }
 
   /**
-   * Parses path to get id segment from url path. 
+   * Parses path to get id segment from url path.
    */
   public parsePath(): number {
-    let idx = this.router.url.lastIndexOf('/');
-    let id  = this.router.url.slice(idx + 1);
-    return parseInt(id);
+    const idx = this.router.url.lastIndexOf('/');
+    const id  = this.router.url.slice(idx + 1);
+    return parseInt(id, 10);
   }
 }

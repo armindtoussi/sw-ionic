@@ -1,15 +1,16 @@
-import { NgModule }             from '@angular/core';
-import { CommonModule }         from '@angular/common';
-import { FormsModule }          from '@angular/forms';
+import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { Routes, RouterModule } from '@angular/router';
-//Ionic
+// Ionic
 import { IonicModule } from '@ionic/angular';
-//Pages
+// Pages
 import { PlanetsPage } from './planets.page';
-//Components
+// Components
 import { PlanetPageComponent } from './planet-page/planet-page.component';
-//Services
+// Services
 import { DataResolverService } from '../resolver/data-resolver.service';
+import { PlanetsService } from './planets.service';
 
 
 export const routes: Routes = [
@@ -36,6 +37,9 @@ export const routes: Routes = [
   declarations: [
     PlanetsPage,
     PlanetPageComponent,
+  ],
+  providers: [
+    PlanetsService,
   ]
 })
 export class PlanetsPageModule {}

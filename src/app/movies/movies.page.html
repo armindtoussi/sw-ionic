@@ -15,6 +15,7 @@
     <ion-searchbar mode="ios" 
                    placeholder="Search Movies..."
                    animated="true"
+                   debounce="500"
                    [(ngModel)]="searchText"
                    (ionChange)="search()"></ion-searchbar>
     <!--      Example of using async pipe and with ngFor      -->

@@ -1,20 +1,31 @@
-import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { Component, OnInit,
+         OnDestroy, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-//Services 
-import { SwapiService } from '../services/swapi.service';
-import { DataService }  from '../services/data.service';
-import { CacheService } from '../services/cache.service';
-//Ionic
+// Services
+import { DataService } from '../services/data.service';
+import { PlanetsService } from './planets.service';
+// Ionic
 import { IonInfiniteScroll } from '@ionic/angular';
-//RXJS
+// RXJS
 import { Subscription } from 'rxjs';
-import { map, flatMap } from 'rxjs/operators';
-//Models
+// Models
 import { Planet } from '../models/planets.model';
-//ENV
-import { environment } from 'src/environments/environment';
 
 
+/**
+ * Planet Page.
+ *
+ * This page holds an example of how to do Observables with
+ * subscription using .add() to add more subscriptions under a
+ * single variable. This way we can only use one variable to hold
+ * it all.
+ *
+ * TODO - add error handling, using the bookmark we saved on chrome as
+ *        inspiration so-to-speak. when i do error handling, i should
+ *        also do UI feedback on waiting for response.
+ *        Can maybe use ng-container element in conjunction with ngIf
+ *        in order to implement ui state feedback.
+ */
 @Component({
   selector: 'app-planets',
   templateUrl: './planets.page.html',
@@ -25,35 +36,31 @@ export class PlanetsPage implements OnInit, OnDestroy {
   @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
 
   /** Planets subscription. */
-  planetSub: Subscription[];
-
+  planetsSub: Subscription;
   /** Planets array. */
   planets: Planet[];
-  /** url for next set of planets. */
-  nextUrl: string;
-  /** total number of planet entries. */
-  count: number;
-
+  /** The search text from ion-input box. */
   searchText: string;
+  /** State boolean recognizing an in progress search. */
   isSearch: boolean;
 
   /**
-   * ctor. 
+   * ctor.
    * 
-   * @param _swapiFetchService swapi fetch service. 
-   * @param _dataService data service for passing data. 
-   * @param router routing. 
+   * @param _swapiFetchService swapi fetch service.
+   * @param dataService data service for passing data.
+   * @param router routing.
    */
-  constructor(private _swapiFetchService: SwapiService,
-              private _dataService: DataService,
+  constructor(private planetService: PlanetsService,
+              private dataService: DataService,
               private router: Router) { }
-   
+
   /**
    * OnInit lifecycle hook.
-   * Inits the planet list. 
-   */            
+   * Inits the planet list.
+   */
   ngOnInit(): void {
-    this.planetSub = [];
+    this.planetsSub = new Subscription();
     this.getPlanets();
   }
 
@@ -62,7 +69,7 @@ export class PlanetsPage implements OnInit, OnDestroy {
    * Unsubscribes to observables.
    */
   ngOnDestroy(): void {
-    this.unsubscribe();
+    this.planetsSub.unsubscribe();
   }
 
   /**
@@ -73,107 +80,84 @@ export class PlanetsPage implements OnInit, OnDestroy {
     return !isNaN(parseFloat(arg)) && !isNaN(arg - 0);
   }
 
+  /**
+   * Issues a search to the api for the given text.
+   * Responsible for resetting search when ion-input box is reset.
+   */
   search(): void {
-    if(this.searchText === "" || this.searchText === undefined) {
+    if (this.searchText === '' || this.searchText === undefined) {
       return this.resetSearch();
     }
 
-    this.planetSub[2] = this._swapiFetchService.search(this.searchText, environment.swapiPlanets)
-      .subscribe((results: any) => {
+    const sub$ = this.planetService.search(this.searchText)
+      .subscribe((results: Planet[]) => {
         this.isSearch = true;
-        this.nextUrl = results['next'];
-        this.planets = results.results.sort((a: Planet, b: Planet) => this.sortArr(a.name, b.name));
-      });
+        this.planets = results;
+    });
+
+    this.planetsSub.add(sub$);
   }
 
+  /**
+   * Reset search function sets search to false and
+   * fetches regular data list.
+   */
   resetSearch(): void {
     this.isSearch = false;
     this.getPlanets();
   }
 
   /**
-   * Navigates to planet detail display page. 
-   * @param planet planet to display. 
+   * UI/UX boolean to control ion-infinite scroll.
+   * Fetches from character Service.
+   */
+  getHasNext(): boolean {
+    if (this.planetService.hasNext() === null) {
+      return false;
+    }
+    return true;
+  }
+
+  /**
+   * Navigates to planet detail display page.
+   * @param planet planet to display.
    */
   displayPlanet(planet: Planet): void {
-    this._dataService.setData(planet.name, planet);
+    this.dataService.setData(planet.name, planet);
     this.router.navigateByUrl(`/planet/${planet.name}`);
   }
 
   /**
-   * Loads data on infinite scroll event. 
-   * 
+   * Loads data on infinite scroll event.
    * @param event the scroll event.
    */
   loadData(event: any): void {
-    this.planetSub[1] = this._swapiFetchService.genericFetch(this.nextUrl)
+    const planet$ = this.planetService.loadMore()
       .subscribe(
-        (results: object) => {
-          this.planets = this.planets.concat(results['results'])
-                                     .sort((a: Planet, b: Planet) => this.sortArr(a.name, b.name));
-          this.nextUrl = results['next'];
+        (res: Planet[]) => {
+          this.planets = res;
 
-          if(event !== null)
+          if (event !== null) {
             event.target.complete();
+          }
 
-          if(this.planets.length === this.count) {
+          if (this.planets.length === this.planetService.getCount()) {
             event.target.disabled = true;
           }
-      });
-  }
+    });
 
-  loadMoreSearch(event: any): void {
-    this.planetSub[3] = this._swapiFetchService.genericFetch(this.nextUrl)
-      .subscribe((results: object) => {
-        this.planets = this.planets.concat(results['results'])
-                                   .sort((a: Planet, b: Planet) => this.sortArr(a.name, b.name));
-        this.nextUrl = results['next'];
-        
-        if(event !== null) 
-          event.target.complete();
-      });
+    this.planetsSub.add(planet$);
   }
 
   /**
-   * Gets first 20 planets through swapi service. 
+   * Gets first 20 planets through swapi service.
    */
   public getPlanets(): void {
-    this.planetSub[0] = this._swapiFetchService.getPlanets()
-      .pipe(
-        map(res => {
-          this.nextUrl = res['next'];
-          this.planets = res['results'];
-        }), 
-        map(res => this._swapiFetchService.genericFetch(this.nextUrl)),
-        flatMap(res => res),        
-      ).subscribe(
-        (results: object) => 
-        {
-          this.count   = results['count'];
-          this.nextUrl = results['next'];
-          this.planets = this.planets.concat(results['results'])
-                                     .sort((a: Planet, b: Planet) => this.sortArr(a.name, b.name));
-        }
-      );
-  }
+    const sub$ = this.planetService.getPlanets()
+      .subscribe((results: Planet[]) => {
+        this.planets = results;
+    });
 
-  /**
-   * Unsubs to subs. 
-   */
-  public unsubscribe(): void {
-    for(let i = 0; i < this.planetSub.length; i++) {
-      if(this.planetSub[i] !== undefined) {
-        this.planetSub[i].unsubscribe();
-      }
-    }
-  }
-
-  /**
-   * String sort function. 
-   * @param a string to sort 
-   * @param b string to sort
-   */
-  public sortArr(a: string, b: string): number {
-    return (a).localeCompare(b);
+    this.planetsSub.add(sub$);
   }
 }

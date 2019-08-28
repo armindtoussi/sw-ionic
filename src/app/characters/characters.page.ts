@@ -1,18 +1,27 @@
+// Ng
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-
-//RXJS
+// RXJS
 import { Subscription } from 'rxjs';
-import { map, flatMap } from 'rxjs/operators';
-
-//Services 
-import { SwapiService } from '../services/swapi.service';
+// Services
+import { CharacterService } from './character.service';
 import { DataService } from '../services/data.service';
-
-//Models
+// Models
 import { Character } from '../models/character.model';
-import { environment } from 'src/environments/environment';
 
+/**
+ * Character Page.
+ *
+ * This page holds an exmaple of how to do Observables with
+ * subscription array, and handles manual unsubscription using
+ * a for-each loop through the subscription array.
+ *
+ * TODO - add error handling, using the bookmark we saved on chrome as
+ *        inspiration so-to-speak. when i do error handling, i should
+ *        also do UI feedback on waiting for response.
+ *        Can maybe use ng-container element in conjunction with ngIf
+ *        in order to implement ui state feedback.
+ */
 @Component({
   selector: 'app-characters',
   templateUrl: './characters.page.html',
@@ -23,25 +32,23 @@ export class CharactersPage implements OnInit, OnDestroy {
   characterSub: Subscription[];
   /** Data holding variables. */
   characters: Character[];
-  nextUrl: string;
-  count: number;
-
-  searchText: string; 
+  /** The search text from ion-input box. */
+  searchText: string;
+  /** State boolean recognizing an in progress search. */
   isSearch: boolean;
 
   /**
    * ctor
-   * @param _swapiFetchService api service layer. 
-   * @param _dataService data passing service. 
-   * @param router router. 
+   * @param dataService data passing service.
+   * @param router router.
    */
-  constructor(private _swapiFetchService: SwapiService,
-              private _dataService: DataService,
+  constructor(private charService: CharacterService,
+              private dataService: DataService,
               private router: Router) { }
-  
+
   /**
-   * lifecycle hook runs when component is being created. 
-   * Handles data. 
+   * lifecycle hook runs when component is being created.
+   * Handles data fetch.
    */
   ngOnInit(): void {
     this.characterSub = [];
@@ -49,39 +56,33 @@ export class CharactersPage implements OnInit, OnDestroy {
   }
 
   /**
-   * lifecycle hook runs when component is destroyed. 
-   * Unsubs to subs.
+   * lifecycle hook runs when component is destroyed.
+   * Unsubs to subsriptions.
    */
   ngOnDestroy(): void {
     this.unsubscribe();
-  } 
-
-  search(): void {
-    if(this.searchText === "" || this.searchText === undefined) {
-      return this.resetSearch();
-    }
-    this.characterSub[2] = this._swapiFetchService.search(this.searchText, environment.swapiPeople)
-      .subscribe((results: any) => {
-        this.isSearch = true;
-        this.nextUrl = results['next'];
-        this.characters = results.results.sort((a: Character, b: Character) => this.sortArr(a.name, b.name));
-      });
-  }
-
-  resetSearch(): void {
-    this.isSearch = false;
-    this.getCharacters();
   }
 
   /**
    * Click function that navigates to movie details page.
-   * Passes id, and data to service that gets resolved. 
-   * 
-   * @param character the character that was clicked. 
+   * Passes id, and data to service that gets resolved.
+   *
+   * @param character the character that was clicked.
    */
   displayCharacter(character: Character): void {
-    this._dataService.setData(character.name, character);
+    this.dataService.setData(character.name, character);
     this.router.navigateByUrl(`/character/${character.name}`);
+  }
+
+  /**
+   * The initial character fetch, fetches 20 characters.
+   */
+  public getCharacters(): void {
+    this.characterSub[0] = this.charService.getCharacters()
+      .subscribe(
+        (results: Character[]) => {
+          this.characters = results;
+      });
   }
 
   /**
@@ -89,77 +90,65 @@ export class CharactersPage implements OnInit, OnDestroy {
    * @param event scroll event of reaching bottom of list.
    */
   loadData(event: any): void {
-    this.characterSub[1] = this._swapiFetchService.genericFetch(this.nextUrl)
+    this.characterSub[1] = this.charService.loadMore()
       .subscribe(
-        (results: object) => {
-          this.characters = this.characters.concat(results['results'])
-                                           .sort((a: Character, b: Character) => this.sortArr(a.name, b.name));
-          this.nextUrl = results['next'];
+        (result: Character[]) => {
+          this.characters = result;
 
-          if(event != null) {
+          if (event !== null) {
             event.target.complete();
-          }    
+          }
 
-          if(this.characters.length === this.count) {
+          if (this.characters.length === this.charService.getCount()) {
             event.target.disabled = true;
           }
       });
   }
 
-  loadMoreSearch(event: any): void {
-    this.characterSub[3] = this._swapiFetchService.genericFetch(this.nextUrl)
-      .subscribe((results: object) => {
-        this.characters = this.characters.concat(results['results'])
-                                         .sort((a: Character, b: Character) => this.sortArr(a.name, b.name));
-        this.nextUrl = results['next'];
-        
-        if(event !== null)
-          event.target.complete();
+  /**
+   * Issues a search to the api for the given text.
+   * Responsible for resetting search when ion-input box is reset.
+   */
+  search(): void {
+    if (this.searchText === '' || this.searchText === undefined) {
+      return this.resetSearch();
+    }
+
+    this.characterSub[2] = this.charService.search(this.searchText)
+      .subscribe((results: Character[]) => {
+        this.isSearch = true;
+        this.characters = results;
       });
   }
 
   /**
-   * The initial character fetch, fetches 20 characters. 
+   * Reset search function sets search to false and
+   * fetches regular data list.
    */
-  public getCharacters(): void {
-    this.characterSub[0] = this._swapiFetchService.getCharacters()
-      .pipe(
-        map(res => {
-          this.nextUrl = res['next'];
-          this.characters = res['results'];
-        }),
-        map(res => this._swapiFetchService.genericFetch(this.nextUrl)),
-        flatMap(res => res),
-      ).subscribe(
-        (results: object) =>
-        {
-          this.count = results['count'];
-          this.nextUrl = results['next'];
-          this.characters = this.characters.concat(results['results'])
-                                           .sort((a: Character, b: Character) => this.sortArr(a.name, b.name));
-        }
-      )
+  resetSearch(): void {
+    this.isSearch = false;
+    this.getCharacters();
   }
 
   /**
-   * Unsubs from subs.
+   * UI/UX boolean to control ion-infinite scroll.
+   * Fetches from character Service.
+   */
+  getHasNext(): boolean {
+    if (this.charService.hasNext() === null) {
+      return false;
+    }
+    return true;
+  }
+
+  /**
+   * Unsubs from subscriptions using forEach.
    */
   public unsubscribe(): void {
-    // if(this.characterSub === undefined) return; 
-
-    for(let i = 0; i < this.characterSub.length; i++) {
-      if(this.characterSub[i] !== undefined) {
-        this.characterSub[i].unsubscribe();
+    this.characterSub.forEach((sub: Subscription) => {
+      if (sub !== undefined) {
+        sub.unsubscribe();
       }
-    }
-  }
-
-  /**
-   * String sort function. 
-   * @param a string to sort 
-   * @param b string to sort
-   */
-  private sortArr(a: string, b: string): number {
-    return (a).localeCompare(b);
+    });
   }
 }
