@@ -10,6 +10,7 @@ import { SpeciesPage } from './species.page';
 import { DataResolverService } from '../resolver/data-resolver.service';
 //Components
 import { SpeciesPageComponent } from './species-page/species-page.component';
+import { SpeciesService } from './species.service';
 
 export const routes: Routes = [
   {
@@ -35,6 +36,9 @@ export const routes: Routes = [
   declarations: [
     SpeciesPage,
     SpeciesPageComponent,
+  ],
+  providers: [
+    SpeciesService,
   ]
 })
 export class SpeciesPageModule {}

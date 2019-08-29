@@ -39,6 +39,7 @@ export class CharactersPage implements OnInit, OnDestroy {
 
   /**
    * ctor
+   * @param charService character module service.
    * @param dataService data passing service.
    * @param router router.
    */

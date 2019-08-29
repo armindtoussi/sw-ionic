@@ -14,6 +14,7 @@
       <ion-searchbar mode="ios" 
                      placeholder="Search Species..."
                      animated="true"
+                     debounce="500"
                      [(ngModel)]="searchText"
                      (ionChange)="search()"
                      ></ion-searchbar>
@@ -23,19 +24,24 @@
               (click)="displaySpecies(spec)">
       <ion-item-group>
         <ion-label>{{ spec.name }}</ion-label>
-        <ion-note>{{ spec.population }}</ion-note>
+        <ion-note>{{ spec.classification }}</ion-note>
       </ion-item-group>
     </ion-item>
   </ion-list>
 
-  <ion-infinite-scroll *ngIf="!isSearch" threshold="100px" (ionInfinite)="loadData($event)">
+  <ion-infinite-scroll *ngIf="!isSearch" 
+                       threshold="100px"
+                       id="ion-scroll"
+                       (ionInfinite)="loadData($event)">
     <ion-infinite-scroll-content
       loadingSpinner="bubbles"
       loadingText="Loading more species...">
     </ion-infinite-scroll-content>
   </ion-infinite-scroll>
 
-  <ion-infinite-scroll *ngIf="isSearch && nextUrl" threshold="100px" (ionInfinite)="loadMoreSearch($event)">
+  <ion-infinite-scroll *ngIf="isSearch && getHasNext()" 
+                       threshold="100px" 
+                       (ionInfinite)="loadData($event)">
       <ion-infinite-scroll-content
         loadingSpinner="bubbles"
         loadingText="Loading more species...">
