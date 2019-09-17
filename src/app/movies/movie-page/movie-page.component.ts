@@ -15,7 +15,7 @@ import { ToastService } from 'src/app/services/toast.service';
 import { CacheService } from 'src/app/services/cache.service';
 // RXJS
 import { Subscription } from 'rxjs';
-// Env 
+// Env
 import { environment } from 'src/environments/environment';
 // Modal
 import { CrawlModalPage } from '../crawl-modal/crawl-modal.page';
@@ -54,7 +54,7 @@ export class MoviePageComponent implements OnInit, OnDestroy {
 
   /**
    * lifecycle hook runs when component is being created.
-   * Handles data. 
+   * Handles data.
    */
   ngOnInit(): void {
     this.movieSubs = [];
@@ -83,11 +83,11 @@ export class MoviePageComponent implements OnInit, OnDestroy {
    * @param segment the type of element.
    */
   navToElementPage(id: string, segment: string): void {
-    if(typeof id === 'string' && id.search('//')) {
+    if (typeof id === 'string' && id.search('//')) {
       id = this.replaceSlashses(id);
     }
 
-    if(id && segment) {
+    if (id && segment) {
       this.router.navigateByUrl(`/${segment}/${id}`);
     } else {
       this.presentToast(`/`);

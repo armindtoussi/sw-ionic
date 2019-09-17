@@ -1,15 +1,16 @@
-import { NgModule }                from '@angular/core';
-import { CommonModule }            from '@angular/common';
-import { FormsModule }             from '@angular/forms';
-import { Routes, RouterModule }    from '@angular/router';
-//Ionic
+// Ng
+import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { Routes, RouterModule } from '@angular/router';
+// Ionic
 import { IonicModule } from '@ionic/angular';
-//Pages
-import { MoviesPage }     from './movies.page';
+// Pages
+import { MoviesPage } from './movies.page';
 import { CrawlModalPage } from './crawl-modal/crawl-modal.page';
-//Components
+// Components
 import { MoviePageComponent } from './movie-page/movie-page.component';
-//Services
+// Services
 import { DataResolverService } from '../resolver/data-resolver.service';
 import { MoviesService } from './movies.service';
 
@@ -35,7 +36,7 @@ export const routes: Routes = [
     RouterModule.forChild(routes),
   ],
   declarations: [
-    MoviesPage, 
+    MoviesPage,
     MoviePageComponent,
     CrawlModalPage,
   ],

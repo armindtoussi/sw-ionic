@@ -1,15 +1,17 @@
+// Ng
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Routes, RouterModule } from '@angular/router';
-//Ionic
+// Ionic
 import { IonicModule } from '@ionic/angular';
-//Pages
+// Pages
 import { StarshipsPage } from './starships.page';
-//Services
+// Services
 import { DataResolverService } from '../resolver/data-resolver.service';
-//Components
+// Components
 import { StarshipsPageComponent } from './starships-page/starships-page.component';
+import { StarshipsService } from './starships.service';
 
 export const routes: Routes = [
   {
@@ -35,6 +37,9 @@ export const routes: Routes = [
   declarations: [
     StarshipsPage,
     StarshipsPageComponent,
+  ],
+  providers: [
+    StarshipsService,
   ]
 })
 export class StarshipsPageModule {}

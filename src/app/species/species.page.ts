@@ -1,5 +1,5 @@
 // Ng
-import { Component, OnInit, 
+import { Component, OnInit,
          ViewChild, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 // Ionic
@@ -115,7 +115,6 @@ export class SpeciesPage implements OnInit, OnDestroy {
       ).subscribe((results: Species[]) => {
         this.isSearch = true;
         this.species = results;
-        console.log('Species: ', this.species);
       });
   }
 

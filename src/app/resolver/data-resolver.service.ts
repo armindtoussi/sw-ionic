@@ -1,7 +1,7 @@
+// Ng
 import { Injectable } from '@angular/core';
 import { Resolve, ActivatedRouteSnapshot } from '@angular/router';
-
-//Services
+// Services
 import { DataService } from '../services/data.service';
 
 @Injectable({
@@ -11,17 +11,17 @@ export class DataResolverService implements Resolve<any> {
 
   /**
    * ctor.
-   * @param _dataService service for passing data. 
+   * @param _dataService service for passing data.
    */
-  constructor(private _dataService: DataService) { }
+  constructor(private dataService: DataService) { }
 
   /**
-   * Resolves the data being passed. 
+   * Resolves the data being passed.
    * 
    * @param route the route snapshot.
    */
   resolve(route: ActivatedRouteSnapshot): object {
-    let id = route.paramMap.get('id');
-    return this._dataService.getData(id);
+    const id = route.paramMap.get('id');
+    return this.dataService.getData(id);
   }
 }

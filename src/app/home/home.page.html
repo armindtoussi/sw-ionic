@@ -9,61 +9,16 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content >
+<ion-content>
   <ion-grid>
-    <ion-row>
-      <ion-card [routerLink]="['/movies']">
-        <img src="/assets/sw-films.jpeg" alt="Star Wars film image card link" />
+    <ion-row *ngFor="let card of cards">
+      <ion-card [routerLink]="[card.url]">
+        <img src="{{card.src}}" alt="{{card.alt}}}" />
         <ion-card-header>
-          <ion-card-title>Movies</ion-card-title>
+          <ion-card-title>{{card.title}}</ion-card-title>
         </ion-card-header>
-        <ion-card-content>Refresh your Star Wars movie knowledge</ion-card-content>
+        <ion-card-content>{{card.description}}</ion-card-content>
       </ion-card>
     </ion-row> 
-    <ion-row>
-      <ion-card [routerLink]="['/characters']">
-        <img src="/assets/sw-people.jpeg" alt="Star Wars people image card link" />
-        <ion-card-header>
-          <ion-card-title>Characters</ion-card-title>
-        </ion-card-header>
-        <ion-card-content>Get information on your favourite Star Wars characters</ion-card-content>
-      </ion-card>
-    </ion-row>
-    <ion-row>
-      <ion-card [routerLink]="['/planets']">
-        <img src="/assets/sw-planets.jpg" alt="Star Wars planet image card link" />
-        <ion-card-header>
-          <ion-card-title>Planets</ion-card-title>
-        </ion-card-header>
-        <ion-card-content>Details on Planets in the Star Wars universe</ion-card-content>
-      </ion-card>
-    </ion-row>
-    <ion-row>
-      <ion-card [routerLink]="['/starships']">
-        <img src="/assets/sw-ships.jpg" alt="Star Wars ship image card link" />
-        <ion-card-header>
-          <ion-card-title>Starships</ion-card-title>
-        </ion-card-header>
-        <ion-card-content>Details and technical specs for Star Wars starships</ion-card-content>
-      </ion-card>
-    </ion-row>
-    <ion-row>
-      <ion-card [routerLink]="['/species']">
-        <img src="/assets/sw-species.jpg" alt="Star Wars species image card link" />
-        <ion-card-header>
-          <ion-card-title>Species</ion-card-title>
-        </ion-card-header>
-        <ion-card-content>Descriptions of a variety of species in the Star Wars universe</ion-card-content>
-      </ion-card>
-    </ion-row>
-    <ion-row>
-      <ion-card [routerLink]="['/vehicles']">
-        <img src="/assets/sw-vehicles.jpg" alt="Star Wars species image card link" />
-        <ion-card-header>
-          <ion-card-title>Vehicles</ion-card-title>
-        </ion-card-header>
-        <ion-card-content>Details and technical specs for Star Wars vehicles</ion-card-content>
-      </ion-card>
-    </ion-row>
   </ion-grid>
 </ion-content>

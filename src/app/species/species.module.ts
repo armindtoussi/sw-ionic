@@ -1,14 +1,15 @@
+// Ng
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Routes, RouterModule } from '@angular/router';
-//ionic
+// Ionic
 import { IonicModule } from '@ionic/angular';
-//Pages
+// Pages
 import { SpeciesPage } from './species.page';
-//Services
+// Services
 import { DataResolverService } from '../resolver/data-resolver.service';
-//Components
+// Components
 import { SpeciesPageComponent } from './species-page/species-page.component';
 import { SpeciesService } from './species.service';
 

@@ -1,27 +1,28 @@
 // Ng
 import { Injectable } from '@angular/core';
+// Models
+import { Starship, StarshipsModel } from '../models/starships.model';
 // Services
 import { SwapiService } from '../services/swapi.service';
-// Model
-import { Species, SpeciesModel } from '../models/species.model';
 // Rxjs
-import { Observable, UnaryFunction, pipe } from 'rxjs';
+import { Observable, pipe, UnaryFunction } from 'rxjs';
 import { map, flatMap } from 'rxjs/operators';
 // Env
 import { environment } from 'src/environments/environment';
 
+
 /**
- * Species Service implementation acts as a layer
- * between species component and SWapi wrapper.
+ * Starships service implementation acts as a layer
+ * between starships component and swapiwrapper.
  */
 @Injectable()
-export class SpeciesService {
+export class StarshipsService {
     /** Holds the url for the next page of results. */
     private nextUrl: string;
     /** Holds the total count of results for a given query. */
     private count: number;
     /** Holds the results of queries. */
-    private species: Species[];
+    private ships: Starship[];
 
     /**
      * ctor, injects dependencies.
@@ -30,11 +31,11 @@ export class SpeciesService {
     constructor(private swService: SwapiService) { }
 
     /**
-     * Gets characters via swapi service.
-     * @returns a sorted array of Character objects.
+     * Gets starships via swapi service.
+     * @returns a sorted array of Starship objects.
      */
-    getSpecies(): Observable<Species[]> {
-        return this.swService.get(environment.swapiSpecies)
+    getStarships(): Observable<Starship[]> {
+        return this.swService.get(environment.swapiShips)
             .pipe(
                 this.mapAndFetch(),
                 this.mapSetAndReturn(),
@@ -43,10 +44,10 @@ export class SpeciesService {
 
     /**
      * Loads more results either from search or basic
-     * character load functionality.
-     * @returns a sorted array of Character objects.
+     * starship load functionality.
+     * @returns a sorted array of Starship objects.
      */
-    loadMore(): Observable<Species[]> {
+    loadMore(): Observable<Starship[]> {
         return this.swService.genericFetch(this.nextUrl)
             .pipe(
                 this.mapNextAndReturn(),
@@ -54,11 +55,11 @@ export class SpeciesService {
     }
 
     /**
-     * Searches the swapi people for the given text.
+     * Searches the swapi starships for the given text.
      * @param searchText the text to search for.
      */
-    search(searchText: string): Observable<Species[]> {
-        const url = `${environment.swapiBase}${environment.swapiSpecies}${environment.swapiSearch}${searchText}`;
+    search(searchText: string): Observable<Starship[]> {
+        const url = `${environment.swapiBase}${environment.swapiShips}${environment.swapiSearch}${searchText}`;
         return this.swService.genericFetch(url)
             .pipe(
                 this.mapAndFetch(),
@@ -93,11 +94,11 @@ export class SpeciesService {
      *
      * It takes in an observable stream and returns out an observable stream.
      */
-    private mapAndFetch(): UnaryFunction<Observable<SpeciesModel>, Observable<object>> {
+    private mapAndFetch(): UnaryFunction<Observable<StarshipsModel>, Observable<object>> {
         return pipe(
-            map((res: SpeciesModel) => {
+            map((res: StarshipsModel) => {
                 this.nextUrl = res.next;
-                this.species = res.results;
+                this.ships = res.results;
             }),
             map(() => this.swService.genericFetch(this.nextUrl)),
             flatMap(res => res)
@@ -108,19 +109,19 @@ export class SpeciesService {
      * Custom operator, maps the url, count, and characters,
      * sorts and returns the character stream.
      */
-    private mapSetAndReturn(): UnaryFunction<Observable<SpeciesModel>, Observable<Species[]>> {
+    private mapSetAndReturn(): UnaryFunction<Observable<StarshipsModel>, Observable<Starship[]>> {
         return pipe(
-            map((res: SpeciesModel) => {
+            map((res: StarshipsModel) => {
                 if (res === null || res === undefined) {
-                    return this.species;
+                    return this.ships;
                 }
                 this.nextUrl = res.next;
                 this.count = res.count;
-                this.species = this.species.concat(res.results)
-                                   .sort((a: Species,
-                                          b: Species) =>
-                                          this.sortArr(a.name, b.name));
-                return this.species;
+                this.ships = this.ships.concat(res.results)
+                                       .sort((a: Starship,
+                                              b: Starship) =>
+                                              this.sortArr(a.name, b.name));
+                return this.ships;
               }),
         );
     }
@@ -129,15 +130,15 @@ export class SpeciesService {
      * Custom operator, maps the url and characters,
      * sorts and returns the character stream out of the pipe.
      */
-    private mapNextAndReturn(): UnaryFunction<Observable<SpeciesModel>, Observable<Species[]>> {
+    private mapNextAndReturn(): UnaryFunction<Observable<StarshipsModel>, Observable<Starship[]>> {
         return pipe(
-            map((res: SpeciesModel) => {
+            map((res: StarshipsModel) => {
                 this.nextUrl = res.next;
-                this.species = this.species.concat(res.results)
-                                   .sort((a: Species,
-                                          b: Species) =>
-                                          this.sortArr(a.name, b.name));
-                return this.species;
+                this.ships = this.ships.concat(res.results)
+                                       .sort((a: Starship,
+                                              b: Starship) =>
+                                              this.sortArr(a.name, b.name));
+                return this.ships;
             })
         );
     }

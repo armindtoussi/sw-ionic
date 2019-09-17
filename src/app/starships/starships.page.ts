@@ -1,17 +1,21 @@
+// Ng
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-//Ionic
+// Ionic
 import { IonInfiniteScroll } from '@ionic/angular';
-//Services
+// Services
 import { SwapiService } from '../services/swapi.service';
 import { DataService } from '../services/data.service';
-//RXJS
-import { Subscription } from 'rxjs';
-import { map, flatMap } from 'rxjs/operators';
-//Models
+import { StarshipsService } from './starships.service';
+
+// RXJS
+import { Subscription, Subject } from 'rxjs';
+import { map, flatMap, takeUntil } from 'rxjs/operators';
+// Models
 import { Starship } from '../models/starships.model';
-//ENV
+// ENV
 import { environment } from 'src/environments/environment';
+
 
 @Component({
   selector: 'app-starships',
@@ -21,147 +25,127 @@ import { environment } from 'src/environments/environment';
 export class StarshipsPage implements OnInit, OnDestroy {
   /** Infinit scroll view child ref. */
   @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
-  /** Subscriptions. */
-  shipSub: Subscription[];
   /** Ship fetch result. */
   ships: Starship[];
   /** Next set of ship results url. */
   nextUrl: string;
   /** Total number of results.  */
   count: number;
-
+  /** The search text from ion-input box. */
   searchText: string;
+  /** State boolean recognizing an in progress search. */
   isSearch: boolean;
+
+  private unsubscribe$: Subject<void>;
 
   /**
    * ctor
-   * @param _swapiFetchService sw api service
-   * @param _dataService data passing service
+   * @param swapiFetchService sw api service
+   * @param dataService data passing service
    * @param router router
    */
-  constructor(private _swapiFetchService: SwapiService,
-              private _dataService: DataService,
+  constructor(private swapiFetchService: SwapiService,
+              private shipService: StarshipsService,
+              private dataService: DataService,
               private router: Router) { }
 
   /**
-   * lifecycle hook runs when component is being created. 
+   * lifecycle hook runs when component is being created.
    * inits subs gets data.
    */
   ngOnInit(): void {
-    this.shipSub = [];
+    this.unsubscribe$ = new Subject();
     this.getShips();
   }
 
   /**
-   * lifecycle hook runs when component is destroyed. 
+   * lifecycle hook runs when component is destroyed.
    * Unsubs to subs.
    */
   ngOnDestroy(): void {
-    this.unsubscribe();
-  }
-
-  search(): void { 
-    if(this.searchText === "" || this.searchText === undefined) {
-      return this.resetSearch();
-    }
-
-    this.shipSub[2] = this._swapiFetchService.search(this.searchText, environment.swapiShips)
-      .subscribe((results: any) => {
-        this.isSearch = true;
-        this.nextUrl = results['next'];
-        this.ships = results.results.sort((a: Starship, b: Starship) => this.sortArr(a.name, b.name));
-      });
-  }
-  
-  resetSearch(): void {
-    this.isSearch = false;
-    this.getShips();
-  }
-
-  /**
-   * Click function that navigates to ship details page.
-   * Passes id, and data to service that gets resolved. 
-   * 
-   * @param ship the ship that was clicked. 
-   */
-  displayShip(ship: Starship): void {
-    this._dataService.setData(ship.name, ship);
-    this.router.navigateByUrl(`/starship/${ship.name}`);
-  }
-  
-  /**
-   * Infinite scroll hook, fetchings the next set of results for display.
-   * @param event the screen scroll event that triggers this.
-   */
-  loadData(event: any): void {
-    this.shipSub[1] = this._swapiFetchService.genericFetch(this.nextUrl)
-      .subscribe(
-        (results: object) => {
-          this.ships = this.ships.concat(results['results'])
-                                 .sort((a: Starship, b: Starship) => this.sortArr(a.name, b.name));;
-          this.nextUrl = results['next'];
-
-          if(event !== null) 
-            event.target.complete();
-
-          if(this.ships.length === this.count) {
-            event.target.disabled = true;
-          }
-        }
-      );
-  }
-
-  loadMoreSearch(event: any): void { 
-    this.shipSub[3] = this._swapiFetchService.genericFetch(this.nextUrl)
-      .subscribe((results: object) => {
-        this.ships = this.ships.concat(results['results'])
-                               .sort((a: Starship, b: Starship) => this.sortArr(a.name, b.name));
-        this.nextUrl = results['next'];
-
-        if(event !== null)
-          event.target.complete();
-      })
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
   }
 
   /**
    * Fetches the initial 20 results for display
    */
   public getShips(): void {
-    this.shipSub[0] = this._swapiFetchService.getStarships()
-      .pipe(
-        map(res => {
-          this.nextUrl = res['next'];
-          this.ships = res['results'];
-        }),
-        map(res => this._swapiFetchService.genericFetch(this.nextUrl)),
-        flatMap(res => res)
-      ).subscribe(
-        (results: object) => {
-          this.count = results['count'];
-          this.nextUrl = results['next'];
-          this.ships = this.ships.concat(results['results'])
-                                 .sort((a: Starship, b: Starship) => this.sortArr(a.name, b.name));
+    this.shipService.getStarships().pipe(
+      takeUntil(this.unsubscribe$)
+    ).subscribe(
+      (results: Starship[]) => {
+        this.ships = results;
+    });
+  }
+
+  /**
+   * Infinite scroll hook, fetchings the next set of results for display.
+   * @param event the screen scroll event that triggers this.
+   */
+  loadData(event: any): void {
+    this.shipService.loadMore().pipe(
+      takeUntil(this.unsubscribe$)
+    ).subscribe(
+      (results: Starship[]) => {
+        this.ships = results;
+
+        if (event !== null) {
+          event.target.complete();
         }
-      );
+
+        if (this.ships.length === this.shipService.getCount()) {
+          event.target.disabled = true;
+        }
+    });
   }
 
   /**
-   * String sort function. 
-   * @param a string to sort 
-   * @param b string to sort
+   * Issues a search to the api for the given text.
+   * Responsible for resetting search when ion-input box is reset.
    */
-  private sortArr(a: string, b: string): number {
-    return (a).localeCompare(b);
-  }
-
-  /**
-   * Unsubscribes from subs.
-   */
-  public unsubscribe(): void {
-    for(let i = 0; i < this.shipSub.length; i++) {
-      if(this.shipSub[i] !== undefined) {
-        this.shipSub[i].unsubscribe();
-      }
+  search(): void {
+    if (this.searchText === '' || this.searchText === undefined) {
+      return this.resetSearch();
     }
+
+    this.shipService.search(this.searchText)
+      .pipe(
+        takeUntil(this.unsubscribe$)
+      ).subscribe((results: Starship[]) => {
+        this.isSearch = true;
+        this.ships = results;
+      });
+  }
+
+  /**
+   * Reset search function sets search to false and
+   * fetches regular data list.
+   */
+  resetSearch(): void {
+    this.isSearch = false;
+    this.getShips();
+  }
+
+  /**
+   * UI/UX boolean to control ion-infinite scroll.
+   * Fetches from character Service.
+   */
+  getHasNext(): boolean {
+    if (this.shipService.hasNext() === null) {
+      return false;
+    }
+    return true;
+  }
+
+  /**
+   * Click function that navigates to ship details page.
+   * Passes id, and data to service that gets resolved.
+   * 
+   * @param ship the ship that was clicked.
+   */
+  displayShip(ship: Starship): void {
+    this.dataService.setData(ship.name, ship);
+    this.router.navigateByUrl(`/starship/${ship.name}`);
   }
 }

@@ -17,7 +17,8 @@
                      [(ngModel)]="searchText"
                      (ionChange)="search()"
                      ></ion-searchbar>
-    <ion-item *ngFor="let ship of ships" detail
+    <ion-item *ngFor="let ship of ships" 
+              detail
               lines="full"
               (click)="displayShip(ship)">
       <ion-item-group>
@@ -27,14 +28,19 @@
     </ion-item>
   </ion-list>
 
-  <ion-infinite-scroll *ngIf="!isSearch" threshold="100px" (ionInfinite)="loadData($event)">
+  <ion-infinite-scroll *ngIf="!isSearch" 
+                       threshold="100px" 
+                       id="ion-scroll" 
+                       (ionInfinite)="loadData($event)">
     <ion-infinite-scroll-content
       loadingSpinner="bubbles"
       loadingText="Loading more starships...">
     </ion-infinite-scroll-content>
   </ion-infinite-scroll>
 
-  <ion-infinite-scroll *ngIf="isSearch && nextUrl" threshold="100px" (ionInfinite)="loadMoreSearch($event)">
+  <ion-infinite-scroll *ngIf="isSearch && getHasNext()" 
+                       threshold="100px" 
+                       (ionInfinite)="loadData($event)">
     <ion-infinite-scroll-content
       loadingSpinner="bubbles"
       loadingText="Loading more starships...">

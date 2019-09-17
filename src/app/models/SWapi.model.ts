@@ -6,6 +6,6 @@ export interface SWapiModel {
 
 export interface SWapi {
     created: string;
-    edited:  string;
-    url:     string;
+    edited: string;
+    url: string;
 }
