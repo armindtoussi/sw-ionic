@@ -30,8 +30,8 @@ export class SpeciesService {
     constructor(private swService: SwapiService) { }
 
     /**
-     * Gets characters via swapi service.
-     * @returns a sorted array of Character objects.
+     * Gets Species via swapi service.
+     * @returns a sorted array of Species objects.
      */
     getSpecies(): Observable<Species[]> {
         return this.swService.get(environment.swapiSpecies)

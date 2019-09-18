@@ -14,10 +14,12 @@
       <ion-searchbar mode="ios" 
                      placeholder="Search Vehicles..."
                      animated="true"
+                     debounce="500"
                      [(ngModel)]="searchText"
                      (ionChange)="search()"
                      ></ion-searchbar>
-    <ion-item *ngFor="let vehicle of vehicles" detail
+    <ion-item *ngFor="let vehicle of vehicles" 
+              detail
               lines="full"
               (click)="displayVehicle(vehicle)">
       <ion-item-group>
@@ -27,14 +29,19 @@
     </ion-item>
   </ion-list>
 
-  <ion-infinite-scroll *ngIf="!isSearch" threshold="100px" (ionInfinite)="loadData($event)">
+  <ion-infinite-scroll *ngIf="!isSearch" 
+                       threshold="100px"
+                       id="ion-scroll"
+                       (ionInfinite)="loadData($event)">
     <ion-infinite-scroll-content
       loadingSpinner="bubbles"
       loadingText="Loading more vehicles...">
     </ion-infinite-scroll-content>
   </ion-infinite-scroll>
 
-  <ion-infinite-scroll *ngIf="isSearch && nextUrl" threshold="100px" (ionInfinite)="loadMoreSearch($event)">
+  <ion-infinite-scroll *ngIf="isSearch && getHasNext()" 
+                       threshold="100px" 
+                       (ionInfinite)="loadData($event)">
     <ion-infinite-scroll-content
       loadingSpinner="bubbles"
       loadingText="Loading more vehicles...">

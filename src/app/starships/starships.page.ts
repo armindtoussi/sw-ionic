@@ -1,5 +1,6 @@
 // Ng
-import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
+import { Component, OnInit, 
+         ViewChild, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 // Ionic
 import { IonInfiniteScroll } from '@ionic/angular';
@@ -7,16 +8,26 @@ import { IonInfiniteScroll } from '@ionic/angular';
 import { SwapiService } from '../services/swapi.service';
 import { DataService } from '../services/data.service';
 import { StarshipsService } from './starships.service';
-
 // RXJS
-import { Subscription, Subject } from 'rxjs';
-import { map, flatMap, takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 // Models
 import { Starship } from '../models/starships.model';
-// ENV
-import { environment } from 'src/environments/environment';
 
 
+/**
+ * Starships Page.
+ *
+ * This page holds an exmaple of how to do Observables using the
+ * takeUntil operator in conjunction with a Subject. The subject
+ * must call .next() and .complete() in the destroy lifecycle hook.
+ *
+ * TODO - add error handling, using the bookmark we saved on chrome as
+ *        inspiration so-to-speak. when i do error handling, i should
+ *        also do UI feedback on waiting for response.
+ *        Can maybe use ng-container element in conjunction with ngIf
+ *        in order to implement ui state feedback.
+ */
 @Component({
   selector: 'app-starships',
   templateUrl: './starships.page.html',
@@ -27,25 +38,21 @@ export class StarshipsPage implements OnInit, OnDestroy {
   @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
   /** Ship fetch result. */
   ships: Starship[];
-  /** Next set of ship results url. */
-  nextUrl: string;
-  /** Total number of results.  */
-  count: number;
   /** The search text from ion-input box. */
   searchText: string;
   /** State boolean recognizing an in progress search. */
   isSearch: boolean;
 
+  /** Subject for unsubscribing to obs. */
   private unsubscribe$: Subject<void>;
 
   /**
    * ctor
-   * @param swapiFetchService sw api service
+   * @param shipService starship service
    * @param dataService data passing service
    * @param router router
    */
-  constructor(private swapiFetchService: SwapiService,
-              private shipService: StarshipsService,
+  constructor(private shipService: StarshipsService,
               private dataService: DataService,
               private router: Router) { }
 

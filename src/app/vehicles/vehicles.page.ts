@@ -1,17 +1,19 @@
-import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+// Ng
+import { Component, OnInit,
+         OnDestroy, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-//Ionic
+// Ionic
 import { IonInfiniteScroll } from '@ionic/angular';
-//RXJS
-import { Subscription } from 'rxjs';
-import { map, flatMap } from 'rxjs/operators';
-//Services
-import { SwapiService } from '../services/swapi.service';
+// RXJS
+import { Subject } from 'rxjs';
+import { takeUntil, take } from 'rxjs/operators';
+// Services
 import { DataService } from '../services/data.service';
-//Models
+import { VehicleService } from './vehicle.service';
+// Models
 import { Vehicle } from '../models/vehicles.model';
-//ENV
-import { environment } from 'src/environments/environment';
+
+
 
 @Component({
   selector: 'app-vehicles',
@@ -21,72 +23,54 @@ import { environment } from 'src/environments/environment';
 export class VehiclesPage implements OnInit, OnDestroy {
   /** Infinit scroll view child ref. */
   @ViewChild(IonInfiniteScroll) infiniteScroll: IonInfiniteScroll;
-  /** Subscriptions. */
-  vehicleSub: Subscription[];
   /** Vehicle fetch results. */
   vehicles: Vehicle[];
-  /** Next set of ship results url. */
-  nextUrl: string;
-  /** Total number of results. */
-  count: number;
-
+  /** The search text from ion-input box. */
   searchText: string;
-  isSearch: boolean; 
+  /** State boolean recognizing an in progress search. */
+  isSearch: boolean;
+
+  /** Subject for unsubscribing to obs. */
+  private unsubscribe$: Subject<void>;
 
   /**
    * ctor
-   * @param _swapiFetchService sw api service
-   * @param _dataService data passing service
+   * @param swapiFetchService sw api service
+   * @param dataService data passing service
    * @param router router
    */
-  constructor(private _swapiFetchService: SwapiService,
-              private _dataService: DataService,
+  constructor(private vehicleService: VehicleService,
+              private dataService: DataService,
               private router: Router) { }
 
   /**
-   * lifecycle hook runs when component is being created. 
+   * lifecycle hook runs when component is being created.
    * inits subs gets data.
    */
   ngOnInit(): void {
-    this.vehicleSub = [];
+    this.unsubscribe$ = new Subject();
     this.getVehicles();
   }
 
   /**
-   * lifecycle hook runs when component is destroyed. 
+   * lifecycle hook runs when component is destroyed.
    * Unsubs to subs.
    */
   ngOnDestroy(): void {
-    this.unsubscribe();
-  }
-
-  search(): void {
-    if(this.searchText === "" || this.searchText === undefined) {
-      return this.resetSearch(); 
-    }
-
-    this.vehicleSub[2] = this._swapiFetchService.search(this.searchText, environment.swapiVehicles)
-      .subscribe((results: any) => {
-        this.isSearch = true;
-        this.nextUrl = results['next'];
-        this.vehicles = results.results.sort((a: Vehicle, b: Vehicle) => this.sortArr(a.name, b.name));
-      });
-  }
-
-  resetSearch(): void {
-    this.isSearch = false;
-    this.getVehicles();
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
   }
 
   /**
-   * Click function that navigates to vehicle details page.
-   * Passes id, and data to service that gets resolved. 
-   * 
-   * @param vehicle the vehicle that was clicked. 
+   * Fetches the initial 20 results for display
    */
-  displayVehicle(vehicle: Vehicle): void {
-    this._dataService.setData(this.replaceSlashses(vehicle.name), vehicle);
-    this.router.navigateByUrl(`/vehicle/${this.replaceSlashses(vehicle.name)}`);
+  public getVehicles(): void {
+    this.vehicleService.getVehicles().pipe(
+      take(1),
+    ).subscribe(
+      (results: Vehicle[]) => {
+        this.vehicles = results;
+    });
   }
 
   /**
@@ -94,33 +78,69 @@ export class VehiclesPage implements OnInit, OnDestroy {
    * @param event the screen scroll event that triggers this.
    */
   loadData(event: any): void {
-    this.vehicleSub[1] = this._swapiFetchService.genericFetch(this.nextUrl)
-      .subscribe(
-        (results: object) => {
-          this.vehicles = this.vehicles.concat(results['results'])
-                                       .sort((a: Vehicle, b: Vehicle) => this.sortArr(a.name, b.name));
-          this.nextUrl = results['next'];
+    this.vehicleService.loadMore().pipe(
+      takeUntil(this.unsubscribe$),
+    ).subscribe(
+      (results: Vehicle[]) => {
+        this.vehicles = results;
 
-          if(event !== null)
-            event.target.complete();
-
-          if(this.vehicles.length === this.count) {
-            event.target.disabled = true;
-          }
+        if (event !== null) {
+          event.target.complete();
         }
-      );
+
+        if (this.vehicles.length === this.vehicleService.getCount()) {
+          event.target.disabled = true;
+        }
+    });
   }
 
-  loadMoreSearch(event: any): void {
-    this.vehicleSub[3] = this._swapiFetchService.genericFetch(this.nextUrl) 
-      .subscribe((results: object) => {
-        this.vehicles = this.vehicles.concat(results['results'])
-                                     .sort((a: Vehicle, b: Vehicle) => this.sortArr(a.name, b.name));
-        this.nextUrl = results['next'];
-        
-        if(event !== null)
-          event.target.complete();
+  /**
+   * Issues a search to the api for the given text.
+   * Responsible for resetting search when ion-input box is reset.
+   */
+  search(): void {
+    if (this.searchText === '' || this.searchText === undefined) {
+      return this.resetSearch();
+    }
+
+    this.vehicleService.search(this.searchText)
+      .pipe(
+        takeUntil(this.unsubscribe$),
+      ).subscribe((results: Vehicle[]) => {
+        this.isSearch = true;
+        this.vehicles = results;
       });
+  }
+
+  /**
+   * Reset search function sets search to false and
+   * fetches regular data list.
+   */
+  resetSearch(): void {
+    this.isSearch = false;
+    this.getVehicles();
+  }
+
+  /**
+   * UI/UX boolean to control ion-infinite scroll.
+   * Fetches from character Service.
+   */
+  getHasNext(): boolean {
+    if (this.vehicleService.hasNext() === null) {
+      return false;
+    }
+    return true;
+  }
+
+  /**
+   * Click function that navigates to vehicle details page.
+   * Passes id, and data to service that gets resolved.
+   * 
+   * @param vehicle the vehicle that was clicked.
+   */
+  displayVehicle(vehicle: Vehicle): void {
+    this.dataService.setData(this.replaceSlashses(vehicle.name), vehicle);
+    this.router.navigateByUrl(`/vehicle/${this.replaceSlashses(vehicle.name)}`);
   }
 
   /**
@@ -128,48 +148,6 @@ export class VehiclesPage implements OnInit, OnDestroy {
    * @param str string to replace slash.
    */
   private replaceSlashses(str: string): string {
-    return str.replace(/\//g, "_");
-  }
-
-  /**
-   * Fetches the initial 20 results for display
-   */
-  public getVehicles(): void {
-    this.vehicleSub[0] = this._swapiFetchService.getVehicles()
-      .pipe(
-        map(res => {
-          this.nextUrl = res['next'];
-          this.vehicles = res['results'];
-        }),
-        map(res => this._swapiFetchService.genericFetch(this.nextUrl)),
-        flatMap(res => res),
-      ).subscribe(
-        (results: object) => {
-          this.count = results['count'];
-          this.nextUrl = results['next'];
-          this.vehicles = this.vehicles.concat(results['results'])
-                                       .sort((a: Vehicle, b: Vehicle) => this.sortArr(a.name, b.name));
-        }
-      );
-  }
-
-  /**
-   * String sort function. 
-   * @param a string to sort 
-   * @param b string to sort
-   */
-  private sortArr(a: string, b: string): number {
-    return (a).localeCompare(b);
-  }
-
-  /**
-   * Unsubscribes from subs.
-   */
-  public unsubscribe(): void {
-    for(let i = 0; i < this.vehicleSub.length; i++) {
-      if(this.vehicleSub[i] !== undefined) {
-        this.vehicleSub[i].unsubscribe();
-      }
-    }
+    return str.replace(/\//g, '_');
   }
 }
