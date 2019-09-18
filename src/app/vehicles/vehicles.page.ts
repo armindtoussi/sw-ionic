@@ -63,6 +63,8 @@ export class VehiclesPage implements OnInit, OnDestroy {
 
   /**
    * Fetches the initial 20 results for display
+   *
+   * Example of take(1) sub management.
    */
   public getVehicles(): void {
     this.vehicleService.getVehicles().pipe(

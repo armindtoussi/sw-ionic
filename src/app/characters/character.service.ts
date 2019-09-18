@@ -68,6 +68,22 @@ export class CharacterService {
             );
     }
 
+    fetchCharacter(id: string): Observable<Character> {
+        const url = `${environment.swapiBase}${environment.swapiPeople}${environment.swapiSearch}${id}`;
+        return this.swService.genericFetch(url)
+            .pipe(
+                map((res: CharacterModel) => res.results[0]),
+            );
+    }
+
+    /**
+     * Fetches array of data of a particular type.
+     * @param arr array of urls to fetch.
+     */
+    fetchArrayData(arr: string[]): Observable<object[]> {
+        return this.swService.arrayFetch(arr);
+    }
+
     /**
      * exposes the nextUrl field for reading.
      */
