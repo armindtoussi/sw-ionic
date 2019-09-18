@@ -1,5 +1,5 @@
 // Ng
-import { Component, OnInit, 
+import { Component, OnInit,
          ViewChild, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 // Ionic

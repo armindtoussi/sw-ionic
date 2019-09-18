@@ -15,40 +15,34 @@ import { Observable, forkJoin, of } from 'rxjs';
 export class SwapiService {
 
 
+    /**
+     * ctor, injects httpcleint for http requests.
+     * @param http httpclient for requests.
+     */
     constructor(private http: HttpClient) { }
 
-
+    /**
+     * Generic get method, pass in type for request.
+     * @param type the type to fetch.
+     */
     get(type: string): Observable<object> {
         return this.http.get(environment.swapiBase + type);
     }
 
-    getPlanets(): Observable<object> {
-        return this.http.get(environment.swapiBase +
-                              environment.swapiPlanets);
-    }
-
-    getSpecies(): Observable<object> {
-        return this.http.get(environment.swapiBase +
-                              environment.swapiSpecies);
-    }
-
-    getStarships(): Observable<object> {
-        return this.http.get(environment.swapiBase +
-                              environment.swapiShips);
-    }
-
-    getVehicles(): Observable<object> {
-        return this.http.get(environment.swapiBase +
-                              environment.swapiVehicles);
-    }
-
+    /**
+     * Generic url fetch. Pass a url in, it'll fetch it.
+     * @param url the url to issue get request with.
+     */
     genericFetch(url: string): Observable<object> {
         if (url === null) { // To handle url null case on a next.
             return of(null);
         }
         return this.http.get(url);
     }
-
+    /**
+     * Generic fetch for an array of urls.
+     * @param urls array of urls to fetch.
+     */
     arrayFetch(urls: string[]): Observable<any> {
         const arr = [];
         for (const i of urls) {
