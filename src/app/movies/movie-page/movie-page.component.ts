@@ -12,15 +12,14 @@ import { Starship } from 'src/app/models/starships.model';
 import { Vehicle } from 'src/app/models/vehicles.model';
 // Services
 import { ToastService } from 'src/app/services/toast.service';
-import { CacheService } from 'src/app/services/cache.service';
 import { MoviesService } from '../movies.service';
 // RXJS
 import { Subscription, Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 // Env
 import { environment } from 'src/environments/environment';
 // Modal
 import { CrawlModalPage } from '../crawl-modal/crawl-modal.page';
-import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-movie-page',

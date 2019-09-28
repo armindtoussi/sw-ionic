@@ -63,6 +63,26 @@ export class PlanetsService {
     }
 
     /**
+     * Fetches array of data of a particular type.
+     * @param arr array of urls to fetch.
+     */
+    fetchArrayData(arr: string[]): Observable<object[]> {
+        return this.swService.arrayFetch(arr);
+    }
+
+    /**
+     * Fetches a single planet by id.
+     * @param id the planet id to fetch.
+     */
+    fetchPlanet(id: string): Observable<Planet> {
+        const url = `${environment.swapiBase}${environment.swapiPlanets}${environment.swapiSearch}${id}`;
+        return this.swService.genericFetch(url)
+            .pipe(
+                map((res: PlanetsModel) => res.results[0]),
+            );
+    }
+
+    /**
      * exposes the nextUrl field for reading.
      */
     hasNext(): string | null {
