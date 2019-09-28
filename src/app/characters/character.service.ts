@@ -68,6 +68,10 @@ export class CharacterService {
             );
     }
 
+    /**
+     * Fetches a single character by id.
+     * @param id the charater id to fetch.
+     */
     fetchCharacter(id: string): Observable<Character> {
         const url = `${environment.swapiBase}${environment.swapiPeople}${environment.swapiSearch}${id}`;
         return this.swService.genericFetch(url)

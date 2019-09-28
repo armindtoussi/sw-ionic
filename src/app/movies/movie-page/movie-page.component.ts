@@ -13,13 +13,14 @@ import { Vehicle } from 'src/app/models/vehicles.model';
 // Services
 import { ToastService } from 'src/app/services/toast.service';
 import { CacheService } from 'src/app/services/cache.service';
+import { MoviesService } from '../movies.service';
 // RXJS
-import { Subscription } from 'rxjs';
+import { Subscription, Subject } from 'rxjs';
 // Env
 import { environment } from 'src/environments/environment';
 // Modal
 import { CrawlModalPage } from '../crawl-modal/crawl-modal.page';
-
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-movie-page',
@@ -37,6 +38,8 @@ export class MoviePageComponent implements OnInit, OnDestroy {
   species: Species[];
   starships: Starship[];
   vehicles: Vehicle[];
+  /* Subject for Subscription management */
+  private unsub$: Subject<void>;
 
   /**
    * ctor
@@ -49,7 +52,7 @@ export class MoviePageComponent implements OnInit, OnDestroy {
   constructor(private route: ActivatedRoute,
               private router: Router,
               private toastService: ToastService,
-              private cacheService: CacheService,
+              private movieService: MoviesService,
               private modalCtrl: ModalController) { }
 
   /**
@@ -57,7 +60,7 @@ export class MoviePageComponent implements OnInit, OnDestroy {
    * Handles data.
    */
   ngOnInit(): void {
-    this.movieSubs = [];
+    this.unsub$ = new Subject();
     this.handleData();
   }
 
@@ -66,7 +69,8 @@ export class MoviePageComponent implements OnInit, OnDestroy {
    * Unsubs to subs.
    */
   ngOnDestroy(): void {
-    this.unsubscribe();
+    this.unsub$.next();
+    this.unsub$.complete();
   }
 
   /**
@@ -118,9 +122,12 @@ export class MoviePageComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.movieSubs[4] = this.cacheService.fetch(this.data.vehicles)
-      .subscribe((data: any) => {
-        this.vehicles = data.sort((a: Vehicle, b: Vehicle) => this.sortArr(a.name, b.name));
+    this.movieService.fetchArrayData(this.data.vehicles)
+      .pipe(
+        takeUntil(this.unsub$)
+      ).subscribe((data: Vehicle[]) => {
+        this.vehicles = data.sort((a: Vehicle, b: Vehicle) =>
+                        this.sortArr(a.name, b.name));
       });
   }
 
@@ -132,9 +139,12 @@ export class MoviePageComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.movieSubs[3] = this.cacheService.fetch(this.data.starships)
-      .subscribe((data: any) => {
-        this.starships = data.sort((a: Starship, b: Starship) => this.sortArr(a.name, b.name));
+    this.movieService.fetchArrayData(this.data.starships)
+      .pipe(
+        takeUntil(this.unsub$),
+      ).subscribe((data: Starship[]) => {
+        this.starships = data.sort((a: Starship, b: Starship) =>
+                         this.sortArr(a.name, b.name));
       });
   }
 
@@ -146,9 +156,12 @@ export class MoviePageComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.movieSubs[2] = this.cacheService.fetch(this.data.species)
-      .subscribe((data: any) => {
-        this.species = data.sort((a: Species, b: Species) => this.sortArr(a.name, b.name));
+    this.movieService.fetchArrayData(this.data.starships)
+      .pipe(
+        takeUntil(this.unsub$),
+      ).subscribe((data: Species[]) => {
+        this.species = data.sort((a: Species, b: Species) =>
+                       this.sortArr(a.name, b.name));
       });
   }
 
@@ -160,9 +173,12 @@ export class MoviePageComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.movieSubs[1] = this.cacheService.fetch(this.data.planets)
-      .subscribe((data: any) => {
-        this.planets = data.sort((a: Planet, b: Planet) => this.sortArr(a.name, b.name));
+    this.movieService.fetchArrayData(this.data.planets)
+      .pipe(
+        takeUntil(this.unsub$),
+      ).subscribe((data: Planet[]) => {
+        this.planets = data.sort((a: Planet, b: Planet) =>
+                       this.sortArr(a.name, b.name));
       });
   }
 
@@ -174,9 +190,12 @@ export class MoviePageComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.movieSubs[0] = this.cacheService.fetch(this.data.characters)
-      .subscribe((data: any) => {
-          this.characters = data.sort((a: Character, b: Character) => this.sortArr(a.name, b.name)); 
+    this.movieService.fetchArrayData(this.data.characters)
+      .pipe(
+        takeUntil(this.unsub$),
+      ).subscribe((data: Character[]) => {
+        this.characters = data.sort((a: Character, b: Character) =>
+                           this.sortArr(a.name, b.name));
       });
   }
 
@@ -186,16 +205,16 @@ export class MoviePageComponent implements OnInit, OnDestroy {
   public async getMovie(): Promise<void> {
     const id = this.parsePath();
 
-    await this.cacheService.fetchSingleEntry(id, environment.MOVIES_KEY, 'episode_id')
-      .then((result) => {
-        if (result) {
-          this.data = result;
-
-          this.getExtraData();
-        } else {
-          this.presentToast(`/`);
-        }
-      });
+    this.movieService.fetchMovie(id).pipe(
+      takeUntil(this.unsub$),
+    ).subscribe((result: Film) => {
+      if (result) {
+        this.data = result;
+        this.getExtraData();
+      } else {
+        this.presentToast(`/`);
+      }
+    });
   }
 
   /**
@@ -219,17 +238,6 @@ export class MoviePageComponent implements OnInit, OnDestroy {
       this.fetchSpecies();
       this.fetchStarships();
       this.fetchVehicles();
-  }
-
-  /**
-   * Unsubs from subs.
-   */
-  public unsubscribe(): void {
-    this.movieSubs.forEach(sub => {
-      if (sub !== undefined) {
-        sub.unsubscribe();
-      }
-    });
   }
 
   /**

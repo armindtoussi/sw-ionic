@@ -39,6 +39,26 @@ export class MoviesService {
     }
 
     /**
+     * Fetches a single movie by id.
+     * @param id the movie id to fetch.
+     */
+    fetchMovie(id: number): Observable<Film> {
+        const url = `${environment.swapiBase}${environment.swapiMovies}${id}`;
+        return this.swService.genericFetch(url)
+            .pipe(
+                map((res: Film) => res),
+            );
+    }
+
+    /**
+     * Fetches array of data of a particular type.
+     * @param arr array of urls to fetch.
+     */
+    fetchArrayData(arr: string[]): Observable<object[]> {
+        return this.swService.arrayFetch(arr);
+    }
+
+    /**
      * Searches api for given text, sorts asc.
      *
      * @param searchText text to search for
