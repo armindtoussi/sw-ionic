@@ -26,7 +26,7 @@ export class PlanetPageComponent implements OnInit, OnDestroy {
   data: Planet;
   films: Film[];
   residents: Character[];
-
+  /* Subject for Subscription management */
   private unsub$: Subject<void>;
 
   constructor(private route: ActivatedRoute,

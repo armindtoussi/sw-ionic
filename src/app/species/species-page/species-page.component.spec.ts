@@ -1,14 +1,14 @@
-//Ng
+// Ng
 import { Router, ActivatedRoute } from '@angular/router';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-//Ng Testing
+// Ng Testing
 import { RouterTestingModule } from '@angular/router/testing';
 import { async, ComponentFixture, 
          TestBed, fakeAsync, tick } from '@angular/core/testing';
-//Pages
+// Pages
 import { SpeciesPageComponent } from './species-page.component';
 import { SpeciesPage } from '../species.page';
-//Services
+// Services
 import { ToastService } from 'src/app/services/toast.service';
 import { CacheService } from 'src/app/services/cache.service';
 //Routes

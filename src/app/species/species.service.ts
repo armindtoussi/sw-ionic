@@ -67,6 +67,26 @@ export class SpeciesService {
     }
 
     /**
+     * Fetches a single Species by id.
+     * @param id the Species id to fetch.
+     */
+    fetchSpecies(id: string): Observable<Species> {
+        const url = `${environment.swapiBase}${environment.swapiSpecies}${environment.swapiSearch}${id}`;
+        return this.swService.genericFetch(url)
+            .pipe(
+                map((res: SpeciesModel) => res.results[0]),
+            );
+    }
+
+    /**
+     * Fetches array of data of a particular type.
+     * @param arr array of urls to fetch.
+     */
+    fetchArrayData(arr: string[]): Observable<object[]> {
+        return this.swService.arrayFetch(arr);
+    }
+
+    /**
      * exposes the nextUrl field for reading.
      */
     hasNext(): string | null {

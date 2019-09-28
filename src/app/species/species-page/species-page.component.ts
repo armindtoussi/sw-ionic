@@ -1,15 +1,17 @@
+// Ng
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute, Router }       from '@angular/router';
-//RXJS
-import { Subscription } from 'rxjs';
-//Services 
-import { CacheService } from 'src/app/services/cache.service';
+import { ActivatedRoute, Router } from '@angular/router';
+// RXJS
+import { Subscription, Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+// Services
 import { ToastService } from 'src/app/services/toast.service';
-//Models
-import { Species }   from 'src/app/models/species.model';
-import { Film }      from 'src/app/models/films.model';
+import { SpeciesService } from '../species.service';
+// Models
+import { Species } from 'src/app/models/species.model';
+import { Film } from 'src/app/models/films.model';
 import { Character } from 'src/app/models/character.model';
-//ENV
+// ENV
 import { environment } from 'src/environments/environment';
 
 @Component({
@@ -21,39 +23,43 @@ export class SpeciesPageComponent implements OnInit, OnDestroy {
   /** Species subs. */
   speciesSubs: Subscription[];
   /** Data holding vars. */
-  data:   Species;
-  films:  Film[];
+  data: Species;
+  films: Film[];
   people: Character[];
+
+  /* Subject for Subscription management */
+  private unsub$: Subject<void>;
 
   /**
    * ctor
    * @param route  Activated route ref.
-   * @param router router ref. 
-   * @param _toast toast presentation service. 
-   * @param _cache the caching service. 
+   * @param router router ref.
+   * @param toast toast presentation service.
+   * @param cache the caching service.
    */
-  constructor(private route:  ActivatedRoute,
+  constructor(private route: ActivatedRoute,
               private router: Router,
-              private _cache: CacheService,
-              private _toast: ToastService) { }
-  
+              private speciesService: SpeciesService,
+              private toast: ToastService) { }
+
   /**
-   * lifecycle hook runs when component is being created. 
-   * Handles data. 
+   * lifecycle hook runs when component is being created.
+   * Handles data.
    */
   ngOnInit(): void {
-    this.speciesSubs = [];
+    this.unsub$ = new Subject();
     this.handleData();
   }
 
   /**
-   * lifecycle hook runs when component is destroyed. 
+   * lifecycle hook runs when component is destroyed.
    * Unsubs to subs.
    */
-  ngOnDestroy(): void { 
-    this.unsubscribe();
+  ngOnDestroy(): void {
+    this.unsub$.next();
+    this.unsub$.complete();
   }
-  
+
   /**
    * Determines if it's a number.
    * @param arg value to check if it's a number.
@@ -62,13 +68,13 @@ export class SpeciesPageComponent implements OnInit, OnDestroy {
     return !isNaN(parseFloat(arg)) && !isNaN(arg - 0);
   }
 
-    /**
-   * Navigates to a sub-page, for characters, planets etc. 
+  /**
+   * Navigates to a sub-page, for characters, planets etc.
    * @param id the id/name of the element.
    * @param segment the type of element.
    */
   navToElementPage(id: string, segment: string): void {
-    if(id && segment) {
+    if (id && segment) {
       this.router.navigateByUrl(`/${segment}/${id}`);
     } else {
       this.presentToast(`/`);
@@ -76,66 +82,74 @@ export class SpeciesPageComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Gets main species data in the case of a reload or manual nav to this page. 
-   */
-  public getSpecies(): void {
-    let id = this.parsePath();
-
-    this.speciesSubs[0] = this._cache.search(environment.swapiSpecies, id)
-      .subscribe((data: any) => {
-        if(data) {
-          this.data = data.results[0];
-          this.getExtraData();
-        } else {
-          this.presentToast(`/`);
-        }
-      });
-  }
-
-  /**
    * Fetches films that feature this species.
    */
   public fetchFilms(): void {
-    if(this.data.films.length === 0) {
+    if (this.data.films.length === 0) {
       return;
     }
 
-    this.speciesSubs[1] = this._cache.fetch(this.data.films)
-      .subscribe((data: any) => {
-        this.films = data.sort((a: Film, b: Film) => 
-                     this.sortArr(a.episode_id.toString(), b.episode_id.toString()));
+    this.speciesService.fetchArrayData(this.data.films)
+      .pipe(
+        takeUntil(this.unsub$),
+      ).subscribe((data: Film[]) => {
+        this.films = data.sort((a: Film, b: Film) =>
+                     this.sortArr(a.episode_id.toString(),
+                                  b.episode_id.toString()));
+
       });
   }
 
   /**
-   * Fetches Characters associated to this movie. 
+   * Fetches Characters associated to this movie.
    */
   public fetchPeople(): void {
-    if(this.data.people.length === 0) {
-      return; 
+    if (this.data.people.length === 0) {
+      return;
     }
 
-    this.speciesSubs[2] = this._cache.fetch(this.data.people)
-      .subscribe((data: any) => {
-        this.people = data.sort((a: Character, b: Character) => this.sortArr(a.name, b.name));
+    this.speciesService.fetchArrayData(this.data.people)
+      .pipe(
+        takeUntil(this.unsub$),
+      ).subscribe((data: Character[]) => {
+        this.people = data.sort((a: Character, b: Character) =>
+                      this.sortArr(a.name, b.name));
       });
   }
 
   /**
-   * Parses path to get id segment from url path. 
+   * Gets main species data in the case of a reload or manual nav to this page.
+   */
+  public getSpecies(): void {
+    const id = this.parsePath();
+
+    this.speciesService.fetchSpecies(id).pipe(
+      takeUntil(this.unsub$),
+    ).subscribe((result: Species) => {
+      if (result) {
+        this.data = result;
+        this.getExtraData();
+      } else {
+        this.presentToast(`/`);
+      }
+    });
+  }
+
+  /**
+   * Parses path to get id segment from url path.
    */
   public parsePath(): any {
-    let idx = this.router.url.lastIndexOf('/');
-    let id  = this.router.url.slice(idx + 1);
+    const idx = this.router.url.lastIndexOf('/');
+    const id  = this.router.url.slice(idx + 1);
     return id;
   }
 
   /**
-   * Handles main data on load of page. 
+   * Handles main data on load of page.
    */
-  public handleData(): void { 
-    if(this.route.snapshot.data['special']) {
-      this.data = this.route.snapshot.data['special'];
+  public handleData(): void {
+    if (this.route.snapshot.data.special) {
+      this.data = this.route.snapshot.data.special;
       this.getExtraData();
     } else {
       this.getSpecies();
@@ -143,8 +157,8 @@ export class SpeciesPageComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * String sort function. 
-   * @param a string to sort 
+   * String sort function.
+   * @param a string to sort
    * @param b string to sort
    */
   public sortArr(a: string, b: string): number {
@@ -156,28 +170,17 @@ export class SpeciesPageComponent implements OnInit, OnDestroy {
    * @param url url to redirect to.
    */
   public async presentToast(url: string): Promise<void> {
-    await this._toast.presentToast(environment.notFound).then( 
+    await this.toast.presentToast(environment.notFound).then(
       () => {
         this.router.navigateByUrl(url);
     });
   }
 
   /**
-   * Fetches extra data related to a page. 
+   * Fetches extra data related to a page.
    */
   public getExtraData(): void {
     this.fetchFilms();
     this.fetchPeople();
-  }
-
-  /**
-   * Unsubs from subs.
-   */
-  public unsubscribe(): void {
-    for(let i = 0; i < this.speciesSubs.length; i++) {
-      if(this.speciesSubs[i] !== undefined) {
-        this.speciesSubs[i].unsubscribe();
-      }
-    }
   }
 }
