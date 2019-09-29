@@ -69,6 +69,26 @@ export class VehicleService {
     }
 
     /**
+     * Fetches a single Vehicle by id.
+     * @param id the Vehicle id to fetch.
+     */
+    fetchVehicle(id: string): Observable<Vehicle> {
+        const url = `${environment.swapiBase}${environment.swapiVehicles}${environment.swapiSearch}${id}`;
+        return this.swService.genericFetch(url)
+            .pipe(
+                map((res: VehiclesModel) => res.results[0]),
+            );
+    }
+
+    /**
+     * Fetches array of data of a particular type.
+     * @param arr array of urls to fetch.
+     */
+    fetchArrayData(arr: string[]): Observable<object[]> {
+        return this.swService.arrayFetch(arr);
+    }
+
+    /**
      * exposes the nextUrl field for reading.
      */
     hasNext(): string | null {

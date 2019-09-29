@@ -5,7 +5,7 @@ import { Planet } from 'src/app/models/planets.model';
 import { Film } from 'src/app/models/films.model';
 import { Character } from 'src/app/models/character.model';
 // RXJS
-import { Subscription, Subject } from 'rxjs';
+import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 // ENV
 import { environment } from 'src/environments/environment';
@@ -19,8 +19,6 @@ import { PlanetsService } from '../planets.service';
   styleUrls: ['./planet-page.component.scss'],
 })
 export class PlanetPageComponent implements OnInit, OnDestroy {
-  /** Subscriptions */
-  planetSubs: Subscription[];
 
   /** Data holding variables. */
   data: Planet;

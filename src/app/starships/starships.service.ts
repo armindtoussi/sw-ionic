@@ -68,6 +68,26 @@ export class StarshipsService {
     }
 
     /**
+     * Fetches a single Starship by id.
+     * @param id the Starship id to fetch.
+     */
+    fetchStarship(id: string): Observable<Starship> {
+        const url = `${environment.swapiBase}${environment.swapiShips}${environment.swapiSearch}${id}`;
+        return this.swService.genericFetch(url)
+            .pipe(
+                map((res: StarshipsModel) => res.results[0]),
+            );
+    }
+
+    /**
+     * Fetches array of data of a particular type.
+     * @param arr array of urls to fetch.
+     */
+    fetchArrayData(arr: string[]): Observable<object[]> {
+        return this.swService.arrayFetch(arr);
+    }
+
+    /**
      * exposes the nextUrl field for reading.
      */
     hasNext(): string | null {

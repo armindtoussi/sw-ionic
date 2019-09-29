@@ -2,7 +2,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 // RXJS
-import { Subscription, Subject } from 'rxjs';
+import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 // Services
 import { ToastService } from 'src/app/services/toast.service';
@@ -20,8 +20,7 @@ import { environment } from 'src/environments/environment';
   styleUrls: ['./species-page.component.scss'],
 })
 export class SpeciesPageComponent implements OnInit, OnDestroy {
-  /** Species subs. */
-  speciesSubs: Subscription[];
+
   /** Data holding vars. */
   data: Species;
   films: Film[];

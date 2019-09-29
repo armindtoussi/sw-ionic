@@ -14,7 +14,7 @@ import { Vehicle } from 'src/app/models/vehicles.model';
 import { ToastService } from 'src/app/services/toast.service';
 import { MoviesService } from '../movies.service';
 // RXJS
-import { Subscription, Subject } from 'rxjs';
+import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 // Env
 import { environment } from 'src/environments/environment';
@@ -27,8 +27,6 @@ import { CrawlModalPage } from '../crawl-modal/crawl-modal.page';
   styleUrls: ['./movie-page.component.scss'],
 })
 export class MoviePageComponent implements OnInit, OnDestroy {
-  /** Subscriptions.  */
-  movieSubs: Subscription[];
 
   /** Data holding variables. */
   data: Film;
