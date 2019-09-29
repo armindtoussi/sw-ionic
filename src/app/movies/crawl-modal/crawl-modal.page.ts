@@ -1,4 +1,4 @@
-import { Component, Input, OnInit }   from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { NavParams, ModalController } from '@ionic/angular';
 
 @Component({
@@ -34,13 +34,13 @@ export class CrawlModalPage implements OnInit {
         const crawlEl = document.getElementById('crawl');
         const introEl = document.getElementById('intro');
         setTimeout(() => {
-            crawlEl.style.display = "block";
-            introEl.style.display = "none";
+            crawlEl.style.display = 'block';
+            introEl.style.display = 'none';
         }, 9000);
     }
-    
+
     private onAudio(): void {
-        this.audio.src="https://s.cdpn.io/1202/Star_Wars_original_opening_crawl_1977.mp3";
+        this.audio.src = 'https://s.cdpn.io/1202/Star_Wars_original_opening_crawl_1977.mp3';
         this.audio.load();
         this.audio.play();
     }

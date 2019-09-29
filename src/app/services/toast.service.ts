@@ -1,5 +1,6 @@
+// Ng
 import { Injectable } from '@angular/core';
-//Ionic
+// Ionic
 import { ToastController } from '@ionic/angular';
 
 
@@ -11,6 +12,10 @@ export class ToastService {
 
     constructor(private toastCtrl: ToastController) { }
 
+    /**
+     * Presents an ionic toast message on the screen.
+     * @param msg the message.
+     */
     async presentToast(msg: string): Promise<void> {
         const toast = await this.toastCtrl.create({
             message: msg,

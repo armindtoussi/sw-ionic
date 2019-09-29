@@ -15,9 +15,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { NavListService } from './services/nav-list.service';
 import { SwapiService } from './services/swapi.service';
 import { DataService } from './services/data.service';
-import { StorageService } from './services/storage.service';
 import { ToastService } from './services/toast.service';
-import { CacheService } from './services/cache.service';
 import { HomeService } from './services/home.service';
 // Modules.
 import { MoviesPageModule } from './movies/movies.module';
@@ -52,8 +50,6 @@ import { VehiclesPageModule } from './vehicles/vehicles.module';
     NavListService,
     SwapiService,
     DataService,
-    StorageService,
-    CacheService,
     ToastService,
     HomeService,
   ],

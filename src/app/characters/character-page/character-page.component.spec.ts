@@ -1,29 +1,27 @@
-//Ng
+// Ng
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-//Ng Testing
+// Ng Testing
 import { RouterTestingModule } from '@angular/router/testing';
 import { async, ComponentFixture, 
          TestBed, fakeAsync, tick } from '@angular/core/testing';
-
-//Pages/Components
+// Pages/Components
 import { CharacterPageComponent } from './character-page.component';
 import { CharactersPage } from '../characters.page';
-//Services
+// Services
 import { ToastService } from 'src/app/services/toast.service';
-import { CacheService } from 'src/app/services/cache.service';
-//Modules
-import { routes } from '../characters.module'; 
-//Rxjs
+// Modules
+import { routes } from '../characters.module';
+// Rxjs
 import { of } from 'rxjs';
-//MockData
-import charsJSON   from '../../testing/data/characters.json';
-import filmsJSON   from '../../testing/data/movies.json';
-import specJSON    from '../../testing/data/species.json';
+// MockData
+import charsJSON from '../../testing/data/characters.json';
+import filmsJSON from '../../testing/data/movies.json';
+import specJSON from '../../testing/data/species.json';
 import vehicleJSON from '../../testing/data/vehicles.json';
-import shipsJSON   from '../../testing/data/ships.json';
+import shipsJSON from '../../testing/data/ships.json';
 
-//Mock Class
+// Mock Class
 class ToastServiceMock {
 
   constructor() { }
@@ -36,12 +34,9 @@ class ToastServiceMock {
 describe('CharacterPageComponent', () => {
   let component: CharacterPageComponent;
   let fixture: ComponentFixture<CharacterPageComponent>;
-  let cacheService: CacheService;
   let toastService: ToastService;
 
   let router: Router;
-
-  const cacheSpyObj  = jasmine.createSpyObj('CacheService', ['fetch', 'search']);
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -49,7 +44,6 @@ describe('CharacterPageComponent', () => {
       schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
       providers: [
         { provide: ToastService, useClass: ToastServiceMock },
-        { provide: CacheService, useValue: cacheSpyObj },
         {
           provide: ActivatedRoute,
           useValue: {
@@ -67,20 +61,20 @@ describe('CharacterPageComponent', () => {
   }));
 
   beforeEach(() => {
-    //Get services.
+    // Get services.
     router = TestBed.get(Router);
     toastService = TestBed.get(ToastService);
 
-    //create component
+    // create component
     fixture = TestBed.createComponent(CharacterPageComponent);
     component = fixture.componentInstance;
 
-    //Init component. 
+    // Init component. 
     spyOn(component, 'handleData').and.returnValue(undefined);
 
     fixture.detectChanges();
 
-    //init things for the component, nav, subs, data(field).
+    // init things for the component, nav, subs, data(field).
     router.initialNavigation();
     component.charSubs = [];
     component.data = charsJSON.results[3];

@@ -10,27 +10,27 @@ const routes: Routes = [
   },
   {
     path: 'movies',
-    loadChildren: './movies/movies.module#MoviesPageModule'
+    loadChildren: () => import('./movies/movies.module').then(m => m.MoviesPageModule),
   },
   {
     path: 'characters',
-    loadChildren: './characters/characters.module#CharactersPageModule'
+    loadChildren: () => import('./characters/characters.module').then(m => m.CharactersPageModule),
   },
   {
     path: 'planets',
-    loadChildren: './planets/planets.module#PlanetsPageModule'
+    loadChildren: () => import('./planets/planets.module').then(m => m.PlanetsPageModule),
   },
   {
     path: 'starships',
-    loadChildren: './starships/starships.module#StarshipsPageModule'
+    loadChildren: () => import('./starships/starships.module').then(m => m.StarshipsPageModule),
   },
   {
     path: 'species',
-    loadChildren: './species/species.module#SpeciesPageModule'
+    loadChildren: () => import('./species/species.module').then(m => m.SpeciesPageModule),
   },
   {
     path: 'vehicles',
-    loadChildren: './vehicles/vehicles.module#VehiclesPageModule'
+    loadChildren: () => import('./vehicles/vehicles.module').then(m => m.VehiclesPageModule),
   },
   {
     path: '',
@@ -38,6 +38,7 @@ const routes: Routes = [
     pathMatch: 'full'
   },
 ];
+
 
 @NgModule({
   imports: [
